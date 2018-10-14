@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android 控件详解," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1、View 树的加载流程当我们调用 startActivity() 方法的时候，会调用到 ActivityThread 中的 performLaunchActivity() 获取一个 Activity 实例， 并在 Instrumentation 的 callActivityOnCreate()  方法中调用 Activity 的 onCreate() 完成 DecorView 的创建。这样我们">
+<meta name="keywords" content="Android 控件详解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="View 体系详解：View 的工作流程">
+<meta property="og:url" content="http://yoursite.com/2018/10/14/View 体系详解：View 的工作流程/index.html">
+<meta property="og:site_name" content="WngShhng 的博客">
+<meta property="og:description" content="1、View 树的加载流程当我们调用 startActivity() 方法的时候，会调用到 ActivityThread 中的 performLaunchActivity() 获取一个 Activity 实例， 并在 Instrumentation 的 callActivityOnCreate()  方法中调用 Activity 的 onCreate() 完成 DecorView 的创建。这样我们">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-14T08:44:21.503Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="View 体系详解：View 的工作流程">
+<meta name="twitter:description" content="1、View 树的加载流程当我们调用 startActivity() 方法的时候，会调用到 ActivityThread 中的 performLaunchActivity() 获取一个 Activity 实例， 并在 Instrumentation 的 callActivityOnCreate()  方法中调用 Activity 的 onCreate() 完成 DecorView 的创建。这样我们">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/14/View 体系详解：View 的工作流程/"/>
+
+
+
+
+
+  <title>View 体系详解：View 的工作流程 | WngShhng 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WngShhng 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Focus on Java, Android & life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/14/View 体系详解：View 的工作流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WngShhng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WngShhng 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">View 体系详解：View 的工作流程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-14T14:39:19+08:00">
+                2018-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android-控件详解/" itemprop="url" rel="index">
+                    <span itemprop="name">Android 控件详解</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1、View-树的加载流程"><a href="#1、View-树的加载流程" class="headerlink" title="1、View 树的加载流程"></a>1、View 树的加载流程</h2><p>当我们调用 <code>startActivity()</code> 方法的时候，会调用到 <code>ActivityThread</code> 中的 <code>performLaunchActivity()</code> 获取一个 Activity 实例， 并在 <code>Instrumentation</code> 的 <code>callActivityOnCreate()</code>  方法中调用 Activity 的 <code>onCreate()</code> 完成 DecorView 的创建。这样我们就获取了一个 Activity 的实例，然后我们调用 <code>handleResumeActivity()</code> 来回调 Activity 的 <code>onResume()</code>：</p>
+<pre><code>private void handleLaunchActivity(ActivityClientRecord r, Intent customIntent, String reason) {
+    // ....
+    WindowManagerGlobal.initialize();
+    // 创建 Activity 的实例，在这里完成对 Activity 的 onCreate() 方法的回调
+    Activity a = performLaunchActivity(r, customIntent);
+    if (a != null) {
+        // ...
+        // 在这里回调 Activity 的 onResume() 方法
+        handleResumeActivity(r.token, false, r.isForward,
+                !r.activity.mFinished &amp;&amp; !r.startsNotResumed, r.lastProcessedSeq, reason);
+        if (!r.activity.mFinished &amp;&amp; r.startsNotResumed) {
+            // 在这里完成对 Activity 的 onPause() 方法的回调
+            performPauseActivityIfNeeded(r, reason);
+            // ...
+        }
+    }
+    // ...
+}
+</code></pre><p>然后，在 <code>handleResumeActivity()</code> 方法中的 <code>performResumeActivity()</code> 会回调 Activity 的 <code>onResume()</code> 方法。在该方法中，我们会从 Window 中获取之前添加进去的 DecorView，然后将其添加到 WindowManager 中：</p>
+<pre><code>final void handleResumeActivity(IBinder token, boolean clearHide, boolean isForward, boolean reallyResume, int seq, String reason) {
+    // 在这里会回调 Activity 的 onResume()
+    r = performResumeActivity(token, clearHide, reason);
+    if (r != null) {
+        final Activity a = r.activity;
+        // ...
+        if (r.window == null &amp;&amp; !a.mFinished &amp;&amp; willBeVisible) {
+            r.window = r.activity.getWindow();
+            // 在这里获取 DecorView
+            View decor = r.window.getDecorView();
+            decor.setVisibility(View.INVISIBLE);
+            // 获取 WindowManager 实例，实际是 WindowManagerImpl 
+            ViewManager wm = a.getWindowManager();
+            WindowManager.LayoutParams l = r.window.getAttributes();
+            a.mDecor = decor;
+            l.type = WindowManager.LayoutParams.TYPE_BASE_APPLICATION;
+            l.softInputMode |= forwardBit;
+            if (r.mPreserveWindow) {
+                a.mWindowAdded = true;
+                r.mPreserveWindow = false;
+                // Activity 被重建，复用 DecorView，通知子元素
+                ViewRootImpl impl = decor.getViewRootImpl();
+                if (impl != null) {
+                    impl.notifyChildRebuilt();
+                }
+            }
+            if (a.mVisibleFromClient) {
+                if (!a.mWindowAdded) {
+                    a.mWindowAdded = true;
+                    // 将 DecorView 添加到 WindowManager 中
+                    wm.addView(decor, l);
+                } else {
+                    a.onWindowAttributesChanged(l);
+                }
+            }
+        }
+    }
+}
+</code></pre><p>这里的 <code>WindowManager</code> 是 <code>WindowManagerImpl</code> 的实例，而调用它的 <code>addView()</code> 方法的时候会使用 <code>WindowManagerGlobal</code> 的 <code>addView()</code> 方法。在该方法中会 new 出来一个 <code>ViewRootImpl</code>，然后调用它的 <code>setView()</code> 把传进来的 <code>DecorView</code> 添加到 <code>Window</code> 里。同时，会调用 <code>requestLayout()</code> 方法进行布局，然后，并最终调用 <code>performTraversals()</code> 完成对整个 View 树进行遍历：</p>
+<pre><code>private void performTraversals() {
+    // ...
+    if (!mStopped || mReportNextDraw) {
+        // ...
+        performMeasure(childWidthMeasureSpec, childHeightMeasureSpec);
+    }
+    // ...
+    final boolean didLayout = layoutRequested &amp;&amp; (!mStopped || mReportNextDraw);
+    boolean triggerGlobalLayoutListener = didLayout
+            || mAttachInfo.mRecomputeGlobalAttributes;
+    if (didLayout) {
+        performLayout(lp, mWidth, mHeight);
+        // ...
+    }
+    // ...
+    if (!cancelDraw &amp;&amp; !newSurface) {
+        // ...
+        performDraw();
+    }
+}
+</code></pre><p>在该方法中会调用 <code>performMeasure()</code>、<code>performLayout()</code> 和 <code>performDraw()</code> 三个方法，它们分别会调用 DecorView 的 <code>measure()</code>、<code>layout()</code> 和 <code>draw()</code> 完成对<strong>整个 View 树的测量、布局和绘制</strong>，一个界面也就呈现给用户了。如果您做过自定义 View 的话，那么您对 <code>onMeasure()</code>、<code>onLayout()</code> 和 <code>onDraw()</code>三个方法一定不会陌生，前面的三个方法与后面的三个方法之间的关系就是：后面的三个方法会被前面的三个方法调用，本质上就是提供给用户用来自定义的方法。下面我们就看下这三个方法究竟各自做了什么操作，当然，我们尽可能从自定义控件的角度来分析，因为这对一个开发者可能帮助更大。</p>
+<h2 id="2、measure"><a href="#2、measure" class="headerlink" title="2、measure()"></a>2、measure()</h2><p>View 的大小不仅由自身所决定，同时也会受到父控件的影响，为了我们的控件能更好的适应各种情况，一般会自己进行测量。在上面我们提到了 <code>measure()</code> 方法，它是用来测量 View 的大小的，但实际上测量的主要工作是交给 <code>onMeasure()</code> 方法的。在 View 中，<code>onMeasure()</code> 是一个 <code>protected</code> 的方法，显然它设计的目的就是：提供给子 View 按照父容器提供的限制条件，控制自身的大小，实现自己大小的测量逻辑。所以，当我们自定义一个控件的时候，只会去覆写 <code>onMeasure()</code> 而不去覆写 <code>measure()</code> 方法。</p>
+<p>在 Android 中，我们的控件分成 View 和 ViewGroup 两种类型。根据上面的分析，对 View 的测量，我们可以得出如下结论：在 Android 中，ViewGroup 会根据其自身的布局特点，把限制条件封装成 <code>widthMeasureSpec</code> 和 <code>heightMeasureSpec</code> 两个参数传递给子元素；然后，在子元素中根据这两个参数来调整自身的大小。所以，ViewGroup 的 <code>measure()</code> 方法会根据其布局特性的不同而不同；而 View 的 <code>measure()</code>，不论其父容器是哪种类型，只根据 <code>widthMeasureSpec</code> 和 <code>heightMeasureSpec</code> 决定。</p>
+<p>下面我们来看一下 <code>onMeasure()</code> 在 View 和 ViewGroup 中的不同表现形式。</p>
+<h3 id="2-1-View-的-onMeasure"><a href="#2-1-View-的-onMeasure" class="headerlink" title="2.1 View 的 onMeasure()"></a>2.1 View 的 onMeasure()</h3><p>下面是 View 类中的 <code>onMeasure()</code> 方法。这是一个默认的实现，调用了 <code>setMeasuredDimension()</code> 方法来存储测量之后的宽度和高度。<strong>当我们自定义 View 的时候，也需要调用 setMeasuredDimension() 方法把最终的测量结果存储起来</strong>：</p>
+<pre><code>protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    setMeasuredDimension(
+        getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+        getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
+}
+</code></pre><p>显然，我们的测量依据就是 <code>widthMeasureSpec</code> 和 <code>heightMeasureSpec</code> 两个参数。它们是整型的、32位变量，包含了测量模式和测量数值的信息（按位存储到整型变量上，包装成整型的目的是为了节约存储空间）。一般我们会像下面这样来分别获取高度和宽度的测量模式和测量数值（实际就是按位截取）：</p>
+<pre><code>int widthsize = MeasureSpec.getSize(widthMeasureSpec);      // 测量数值
+int widthmode = MeasureSpec.getMode(widthMeasureSpec);      // 测量模式    
+int heightsize = MeasureSpec.getSize(heightMeasureSpec);    // 测量数值
+int heightmode = MeasureSpec.getMode(heightMeasureSpec);    // 测量模式
+</code></pre><p>测量模式共有 <code>MeasureSpec.UNSPECIFIED</code>、<code>MeasureSpec.AT_MOST</code> 和 <code>MeasureSpec.EXACTLY</code> 三种，分别对应二进制数值 <code>00</code>、<code>01</code> 和 <code>10</code>，它们各自的含义如下：</p>
+<ol>
+<li><code>UNSPECIFIED</code>：默认值，父控件没有给子 View 任何限制，子 View 可以设置为任意大小；</li>
+<li><code>EXACTLY</code>：表示父控件已经确切的指定了子 View 的大小；</li>
+<li><code>AT_MOST</code>：表示子 View 具体大小没有尺寸限制，但是存在上限，上限一般为父 View 大小。</li>
+</ol>
+<p>这里，我不打算详细介绍 View 中默认测量逻辑的具体实现。它的大致逻辑是这样的：首先我们会用 <code>getDefaultSize()</code> 获取默认的宽度或者高度，这个方法接收两个参数，一个是默认的尺寸，一个测量模式。如果父控件没有给它任何限制，它就使用默认的尺寸，否则使用测量数值。这里的默认的尺寸通过 <code>getSuggestedMinimumHeight()</code>/<code>getSuggestedMinimumWidth()</code> 方法得到，它会根据背景图片高度/宽度和 <code>mMinHeight</code>/<code>mMinWidth</code> 的值，取一个最大的值作为控件的高度/宽度。</p>
+<p>所以，View 的默认的测量逻辑的实际效果是：首先 View 的大小受父容器的影响，如果父容器没有给它限制的话，它会取背景图片和最小的高度或者宽度中取一个最大的值作为自己的大小。</p>
+<h3 id="2-2-ViewGroup-的-onMeasure"><a href="#2-2-ViewGroup-的-onMeasure" class="headerlink" title="2.2 ViewGroup 的 onMeasure()"></a>2.2 ViewGroup 的 onMeasure()</h3><h4 id="2-2-1-ViewGroup-中的方法"><a href="#2-2-1-ViewGroup-中的方法" class="headerlink" title="2.2.1 ViewGroup 中的方法"></a>2.2.1 ViewGroup 中的方法</h4><p>由于 ViewGroup 本身没有布局的特点，所以它没有覆写 <code>onMeasure()</code>。有自身布局特点的，比如 <code>LinearLayout</code> 和 <code>RelativeLayout</code> 等都覆写并实现了这个方法。尽管如此，ViewGroup 提供了一些方法帮助我们进行测量，首先是 <code>measureChildren()</code> 方法：</p>
+<pre><code>protected void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
+    final int size = mChildrenCount;
+    final View[] children = mChildren;
+    for (int i = 0; i &lt; size; ++i) {
+        final View child = children[i];
+        if ((child.mViewFlags &amp; VISIBILITY_MASK) != GONE) {
+            measureChild(child, widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+}
+</code></pre><p>这里的逻辑比较简单，就是对子元素进行遍历并判断如果指定的 View 是否位 <code>GONE</code> 的状态，如果不是就调用 <code>measureChild()</code> 方法：</p>
+<pre><code>protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
+    final LayoutParams lp = child.getLayoutParams();
+    final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+            mPaddingLeft + mPaddingRight, lp.width);
+    final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
+            mPaddingTop + mPaddingBottom, lp.height);
+    child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+}
+</code></pre><p>该方法也比较容易理解，就是将子元素的布局参数 <code>LayoutParams</code> 取出，获取它的宽度和高度之后，将所有信息传递给 <code>getChildMeasureSpec()</code>。这样就得到了用于子元素布局的 <code>childWidthMeasureSpec</code> 和 <code>childHeightMeasureSpec</code> 参数。然后，再调用子元素的 <code>measure()</code> 方法，从而依次完成对整个 View 树的遍历。下面我们看下 <code>getChildMeasureSpec()</code> 方法做了什么操作：</p>
+<pre><code>public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
+    // 首先从 spec 中取出父控件的测量模式和测量数值
+    int specMode = MeasureSpec.getMode(spec);
+    int specSize = MeasureSpec.getSize(spec);
+    // 这里需要保证 size 不能为负数，也就是预留给子元素的最大空间，由父元素的测量数值减去填充得到
+    int size = Math.max(0, specSize - padding);
+    // 用于返回的值
+    int resultSize = 0;
+    int resultMode = 0;
+    // 根据父空间的测量模式
+    switch (specMode) {
+        // 父控件的大小是固定的
+        case MeasureSpec.EXACTLY:
+            if (childDimension &gt;= 0) {
+                // 子 View 指定了大小
+                resultSize = childDimension;
+                resultMode = MeasureSpec.EXACTLY;
+            } else if (childDimension == LayoutParams.MATCH_PARENT) {
+                // 子元素希望大小与父控件相同（填满整个父控件）
+                resultSize = size;
+                resultMode = MeasureSpec.EXACTLY;
+            } else if (childDimension == LayoutParams.WRAP_CONTENT) {
+                // 子元素希望有自己决定大小，但是不能比父控件大
+                resultSize = size;
+                resultMode = MeasureSpec.AT_MOST;
+            }
+            break;
+        // 父控件的具体大小没有尺寸限制，但是存在上限
+        case MeasureSpec.AT_MOST:
+            if (childDimension &gt;= 0) {
+                // 子 View 指定了大小
+                resultSize = childDimension;
+                resultMode = MeasureSpec.EXACTLY;
+            } else if (childDimension == LayoutParams.MATCH_PARENT) {
+                // 子控件希望与父控件大小一致，但是父控件的大小也是不确定的，故让子控件不要比父控件大
+                resultSize = size;
+                resultMode = MeasureSpec.AT_MOST;
+            } else if (childDimension == LayoutParams.WRAP_CONTENT) {
+                // 子控件希望自己决定大小，限制其不要比父控件大
+                resultSize = size;
+                resultMode = MeasureSpec.AT_MOST;
+            }
+            break;
+        // 父控件没有任何限制，可以设置为任意大小
+        case MeasureSpec.UNSPECIFIED:
+            if (childDimension &gt;= 0) {
+                // 子元素设置了大小
+                resultSize = childDimension;
+                resultMode = MeasureSpec.EXACTLY;
+            } else if (childDimension == LayoutParams.MATCH_PARENT) {
+                // 子控件希望和父控件一样大，但是父控件多大都不确定；系统23以下返回true，以上返回size
+                resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+                resultMode = MeasureSpec.UNSPECIFIED;
+            } else if (childDimension == LayoutParams.WRAP_CONTENT) {
+                resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+                resultMode = MeasureSpec.UNSPECIFIED;
+            }
+            break;
+    }
+    // 返回一个封装好的测量结果，就是把测量数值和测量模式封装成一个32位的整数
+    return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
+}
+</code></pre><p>上面我们已经为这段代码作了非常详细的注释。只需要注意，这里在获取子元素的测量结果的时候是基于父控件的测量结果来的，需要根据父元素的测量模式和测量数值结合自身的布局特点分成上面九种情况。或者可以按照下面的写法将其划分成下面几种情况：</p>
+<pre><code>public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
+    int specMode = MeasureSpec.getMode(spec), specSize = MeasureSpec.getSize(spec);
+    int size = Math.max(0, specSize - padding);
+    int resultSize = 0, resultMode = 0;
+    if (childDimension &gt;= 0) {
+        // 子元素指定了具体的大小，就用子元素的大小
+        resultSize = childDimension;
+        resultMode = MeasureSpec.EXACTLY;
+    } else if (childDimension == ViewGroup.LayoutParams.MATCH_PARENT) {
+        // 子元素希望和父控件一样大，需要设置其上限，然后测量模式与父控件一致即可
+        if (specMode == MeasureSpec.EXACTLY || specMode == MeasureSpec.AT_MOST) {
+            resultSize = size;
+            resultMode = specMode;
+        } else if (specMode == MeasureSpec.UNSPECIFIED) {
+            // API23一下就是0，父控件没有指定大小的时候，子控件只能是0；以上是size
+            resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+            resultMode = MeasureSpec.UNSPECIFIED;
+        }
+    } else if (childDimension == ViewGroup.LayoutParams.WRAP_CONTENT) {
+        // 子元素希望自己决定大小，设置其大小的上限是父控件的大小即可
+        if (specMode == MeasureSpec.EXACTLY || specMode == MeasureSpec.AT_MOST) {
+            resultSize = size;
+            resultMode = MeasureSpec.AT_MOST;
+        } else if (specMode == MeasureSpec.UNSPECIFIED) {
+            // API23一下就是0，父控件没有指定大小的时候，子控件只能是0；以上是size
+            resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+            resultMode = MeasureSpec.UNSPECIFIED;
+        }
+    }
+    return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
+}
+</code></pre><p>这两种方式只是划分的角度不一样，后面的这种方法是从子元素的布局参数上面来考虑的。另外，这里有个 <code>sUseZeroUnspecifiedMeasureSpec</code> 布尔参数需要提及一下，会根据系统的版本来进行赋值：</p>
+<pre><code>sUseZeroUnspecifiedMeasureSpec = targetSdkVersion &lt; Build.VERSION_CODES.M;
+</code></pre><p>也就是当系统是 API23 以下的时候的为 <code>true</code>. 加入这个参数的原因是，API23 之后，当父控件的测量模式是 <code>UNSPECIFIED</code> 的时候，子元素可以给父控件提供一个可能的大小。下面是注释的原话 ;-)</p>
+<pre><code>// In M and newer, our widgets can pass a &quot;hint&quot; value in the size
+// for UNSPECIFIED MeasureSpecs. This lets child views of scrolling containers
+// know what the expected parent size is going to be, so e.g. list items can size
+// themselves at 1/3 the size of their container. It breaks older apps though,
+// specifically apps that use some popular open source libraries.
+</code></pre><h4 id="2-2-2-LinearLayout-的-onMeasure"><a href="#2-2-2-LinearLayout-的-onMeasure" class="headerlink" title="2.2.2 LinearLayout 的 onMeasure()"></a>2.2.2 LinearLayout 的 onMeasure()</h4><p>上面我们分析的是 ViewGroup 中提供的一些方法，下面我们以 LinearLayout 为例，看一下一个标准的容器类型的控件是如何实现其测量的逻辑的。</p>
+<p>下面是其 <code>onMeasure()</code> 方法，显然在进行测量的时候会根据其布局的方向分别实现测量的逻辑：</p>
+<pre><code>protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    if (mOrientation == VERTICAL) {
+        measureVertical(widthMeasureSpec, heightMeasureSpec);
+    } else {
+        measureHorizontal(widthMeasureSpec, heightMeasureSpec);
+    }
+}
+</code></pre><p>然后，我们以 <code>measureVertical()</code> 为例，来看一下 LinearLayout 在垂直方向上面是如何进行测量的。这段代码比较长，我们只截取其中的一部分来进行分析：</p>
+<pre><code>void measureVertical(int widthMeasureSpec, int heightMeasureSpec) {
+    // ...
+    // 获取LinearLayout的测量模式
+    final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+    final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+    // ...
+    mTotalLength += mPaddingTop + mPaddingBottom;
+    int heightSize = mTotalLength;
+    heightSize = Math.max(heightSize, getSuggestedMinimumHeight());
+    // ...
+        for (int i = 0; i &lt; count; ++i) {
+            final View child = getVirtualChildAt(i);
+            if (child == null || child.getVisibility() == View.GONE) {
+                continue;
+            }
+            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            final float childWeight = lp.weight;
+            if (childWeight &gt; 0) {
+                // ...
+                // 获取一个测量的数值和测量模式
+                final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                        Math.max(0, childHeight), MeasureSpec.EXACTLY);
+                final int childWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
+                        mPaddingLeft + mPaddingRight + lp.leftMargin + lp.rightMargin,
+                        lp.width);
+                // 调用子元素进行测量
+                child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+                childState = combineMeasuredStates(childState, child.getMeasuredState()
+                        &amp; (MEASURED_STATE_MASK&gt;&gt;MEASURED_HEIGHT_STATE_SHIFT));
+            }
+
+            final int margin =  lp.leftMargin + lp.rightMargin;
+            final int measuredWidth = child.getMeasuredWidth() + margin;
+            maxWidth = Math.max(maxWidth, measuredWidth);
+
+            boolean matchWidthLocally = widthMode != MeasureSpec.EXACTLY &amp;&amp;
+                    lp.width == LayoutParams.MATCH_PARENT;
+
+            alternativeMaxWidth = Math.max(alternativeMaxWidth,
+                    matchWidthLocally ? margin : measuredWidth);
+
+            allFillParent = allFillParent &amp;&amp; lp.width == LayoutParams.MATCH_PARENT;
+
+            final int totalLength = mTotalLength;
+            // 将宽度增加到 mTotalLength 上
+            mTotalLength = Math.max(totalLength, totalLength + child.getMeasuredHeight() +
+                    lp.topMargin + lp.bottomMargin + getNextLocationOffset(child));
+        }
+        mTotalLength += mPaddingTop + mPaddingBottom;
+    // ...
+    maxWidth += mPaddingLeft + mPaddingRight;
+    maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+    // 最终确定测量的大小
+    setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState),
+            heightSizeAndState);
+    // ...
+}
+</code></pre><p>上面是 LinearLayout 在垂直方向上面的测量的过程，在测量的时候会根据子元素的布局将子元素的测量高度添加到 <code>mTotalLength</code> 上，然后再加上填充的大小，作为最终的测量结果。</p>
+<h2 id="3、layout"><a href="#3、layout" class="headerlink" title="3、layout()"></a>3、layout()</h2><p> <code>layout()</code> 用于确定控件的位置，它提供了 <code>onLayout()</code> 来交给字类实现，同样我们在自定义控件的时候只要实现 <code>onLayout()</code> 方法即可。在我们自定义 View 的时候，如果定义的是非 ViewGroup 类型的控件，一般是不需要覆写 <code>onLayout()</code> 方法的。</p>
+<p>下面我们先看一下 <code>layout()</code> 方法在 View 中的实现：</p>
+<pre><code>public void layout(int l, int t, int r, int b) {
+    if ((mPrivateFlags3 &amp; PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT) != 0) {
+        onMeasure(mOldWidthMeasureSpec, mOldHeightMeasureSpec);
+        mPrivateFlags3 &amp;= ~PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT;
+    }
+
+    int oldL = mLeft;
+    int oldT = mTop;
+    int oldB = mBottom;
+    int oldR = mRight;
+
+    boolean changed = isLayoutModeOptical(mParent) ?
+            setOpticalFrame(l, t, r, b) : setFrame(l, t, r, b);
+
+    if (changed || (mPrivateFlags &amp; PFLAG_LAYOUT_REQUIRED) == PFLAG_LAYOUT_REQUIRED) {
+        onLayout(changed, l, t, r, b);
+        // ...
+    }
+
+    // ...
+}
+</code></pre><p>这里会调用 <code>setFrame()</code> 方法，它的主要作用是根据新的布局参数和老的布局参数做一个对比，以判断控件的大小是否发生了变化，如果变化了的话就调用 <code>invalidate()</code> 方法并传入参数 <code>true</code>，以表明绘图的缓存也发生了变化。这里就不给出这个方法的具体实现了。然后注意到，在 <code>layout()</code> 方法中会回调 <code>onLayout()</code> 方法来完成各个控件的位置的确定。</p>
+<p>对于 ViewGroup，它重写了 <code>layout()</code> 并在其中调用了 View 中的 <code>layout()</code> 方法，不过整体并没有做太多的逻辑。与测量过程类似，ViewGroup 并没有实现 <code>onLayout</code> 方法。同样，对于 ViewGroup 类型的控件，我们还是以 LinearLayout 为例说明一下 <code>onLayout()</code> 的实现逻辑：</p>
+<p>与测量过程类似，LinearLayout 在 layout 的时候也根据布局的方向分成两种情形：</p>
+<pre><code>protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    if (mOrientation == VERTICAL) {
+        layoutVertical(l, t, r, b);
+    } else {
+        layoutHorizontal(l, t, r, b);
+    }
+}
+</code></pre><p>这里我们仍以垂直方向的方法为例。与测量的过程相比，layout 的过程的显得简单、清晰得多：</p>
+<pre><code>void layoutVertical(int left, int top, int right, int bottom) {
+    // ...
+    // 根据控件的 gravity 特点得到顶部的位置
+    switch (majorGravity) {
+       case Gravity.BOTTOM:
+           childTop = mPaddingTop + bottom - top - mTotalLength;
+           break;
+       case Gravity.CENTER_VERTICAL:
+           childTop = mPaddingTop + (bottom - top - mTotalLength) / 2;
+           break;
+       case Gravity.TOP:
+       default:
+           childTop = mPaddingTop;
+           break;
+    }
+
+    // 遍历子控件
+    for (int i = 0; i &lt; count; i++) {
+        final View child = getVirtualChildAt(i);
+        if (child == null) {
+            childTop += measureNullChild(i);
+        } else if (child.getVisibility() != GONE) {
+            final int childWidth = child.getMeasuredWidth();
+            final int childHeight = child.getMeasuredHeight();
+
+            final LinearLayout.LayoutParams lp =
+                    (LinearLayout.LayoutParams) child.getLayoutParams();
+
+            int gravity = lp.gravity;
+            if (gravity &lt; 0) {
+                gravity = minorGravity;
+            }
+            final int layoutDirection = getLayoutDirection();
+            final int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
+            // 得到子控件的左边的位置
+            switch (absoluteGravity &amp; Gravity.HORIZONTAL_GRAVITY_MASK) {
+                case Gravity.CENTER_HORIZONTAL:
+                    childLeft = paddingLeft + ((childSpace - childWidth) / 2)
+                            + lp.leftMargin - lp.rightMargin;
+                    break;
+                case Gravity.RIGHT:
+                    childLeft = childRight - childWidth - lp.rightMargin;
+                    break;
+                case Gravity.LEFT:
+                default:
+                    childLeft = paddingLeft + lp.leftMargin;
+                    break;
+            }
+
+            if (hasDividerBeforeChildAt(i)) {
+                childTop += mDividerHeight;
+            }
+
+            childTop += lp.topMargin;
+            // 本质上调用子控件的 layout() 方法
+            setChildFrame(child, childLeft, childTop + getLocationOffset(child),
+                    childWidth, childHeight);
+            childTop += childHeight + lp.bottomMargin + getNextLocationOffset(child);
+            i += getChildrenSkipCount(child, i);
+        }
+    }
+}
+</code></pre><p>因为布局方向是垂直方向的，所以在对子元素进行遍历之前，先对自身的顶部的位置进行计算，然后再依次遍历子元素，并对顶部的高度不断叠加，最后调用 <code>setChildFrame()</code> 方法:</p>
+<pre><code>private void setChildFrame(View child, int left, int top, int width, int height) {
+    child.layout(left, top, left + width, top + height);
+}
+</code></pre><p>这样就完成了对整个 View 树的 <code>layout()</code> 方法的调用。</p>
+<h2 id="4、draw"><a href="#4、draw" class="headerlink" title="4、draw()"></a>4、draw()</h2><p>View 的 <code>draw()</code> 方法实现的逻辑也很清晰。在绘制的过程会按照如下的步骤进行：</p>
+<ol>
+<li>绘制背景</li>
+<li>保存 canvas</li>
+<li>绘制自身的内容</li>
+<li>绘制子控件</li>
+<li>绘制 View 的褪色边缘，比如阴影效果之类的</li>
+<li>绘制装饰，比如滚动条之类的</li>
+</ol>
+<p>View 中提供了 <code>onDraw()</code> 方法用来完成对自身的内容的绘制，所以，我们自定义 View 的时候只要重写这个方法就可以了。当我们要自定义一个 ViewGroup 类型的控件的时候，一般是不需要重写 <code>onDraw()</code> 方法的，因为它只需要遍历子控件并依次调用它们的 <code>draw()</code> 方法就可以了。（当然，如果非要实现的话，也是可以的。）</p>
+<p>下面是这部分代码，代码的注释中也详细注释了每个步骤的逻辑：</p>
+<pre><code>public void draw(Canvas canvas) {
+    final int privateFlags = mPrivateFlags;
+    final boolean dirtyOpaque = (privateFlags &amp; PFLAG_DIRTY_MASK) == PFLAG_DIRTY_OPAQUE &amp;&amp;
+            (mAttachInfo == null || !mAttachInfo.mIgnoreDirtyState);
+    mPrivateFlags = (privateFlags &amp; ~PFLAG_DIRTY_MASK) | PFLAG_DRAWN;
+
+    // Step 1, draw the background, if needed
+    int saveCount;
+
+    if (!dirtyOpaque) {
+        drawBackground(canvas);
+    }
+
+    // skip step 2 &amp; 5 if possible (common case)
+    final int viewFlags = mViewFlags;
+    boolean horizontalEdges = (viewFlags &amp; FADING_EDGE_HORIZONTAL) != 0;
+    boolean verticalEdges = (viewFlags &amp; FADING_EDGE_VERTICAL) != 0;
+    if (!verticalEdges &amp;&amp; !horizontalEdges) {
+        // Step 3, draw the content
+        if (!dirtyOpaque) onDraw(canvas);
+
+        // Step 4, draw the children
+        dispatchDraw(canvas);
+
+        drawAutofilledHighlight(canvas);
+
+        // Overlay is part of the content and draws beneath Foreground
+        if (mOverlay != null &amp;&amp; !mOverlay.isEmpty()) {
+            mOverlay.getOverlayView().dispatchDraw(canvas);
+        }
+
+        // Step 6, draw decorations (foreground, scrollbars)
+        onDrawForeground(canvas);
+
+        // Step 7, draw the default focus highlight
+        drawDefaultFocusHighlight(canvas);
+
+        if (debugDraw()) {
+            debugDrawFocus(canvas);
+        }
+
+        // we&apos;re done...
+        return;
+    }
+
+    // ...
+}
+</code></pre><p>注意到在上面的方法中会调用 <code>dispatchDraw(canvas)</code> 方法来分发绘制事件给子控件来完成整个 View 树的绘制。在 View 中，这是一个空的方法，ViewGroup 覆写了这个方法，并在其中调用 <code>drawChild()</code> 来完成对指定的 View 的 <code>draw()</code> 方法的调用：</p>
+<pre><code>protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+    return child.draw(canvas, this, drawingTime);
+}
+</code></pre><p>而对于 LinearLayout 这样本身没有绘制需求的控件，没有覆写 <code>onDraw()</code> 和  <code>dispatchDraw(canvas)</code>  等方法，因为 View 和 ViewGroup 中提供的功能已经足够使用。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>上文中，我们介绍了在 Android 系统中整个 View 树的工作的流程，从 DecorView 被加载到窗口中，到测量、布局和绘制三个方法的实现。本质上整个工作的流程就是对 View 树的一个深度优先的遍历过程。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wx.png" alt="WngShhng wechat" style="width: 200px; max-width: 100%;"/>
+    <div>关注作者的微信公众号获取更多的学习内容</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>支持作者</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/mm_pay.png" alt="WngShhng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/ali_pay.jpg" alt="WngShhng 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-控件详解/" rel="tag"># Android 控件详解</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/14/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="WngShhng" />
+            
+              <p class="site-author-name" itemprop="name">WngShhng</p>
+              <p class="site-description motion-element" itemprop="description">生命就是一种表达</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Shouheng88" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shouheng2015@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/u/0/102173602321685428586" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/5527475/shouheng-wang" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/user/585555e11b69e6006c907a2a" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、View-树的加载流程"><span class="nav-number">1.</span> <span class="nav-text">1、View 树的加载流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、measure"><span class="nav-number">2.</span> <span class="nav-text">2、measure()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-View-的-onMeasure"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 View 的 onMeasure()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-ViewGroup-的-onMeasure"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 ViewGroup 的 onMeasure()</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-ViewGroup-中的方法"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 ViewGroup 中的方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-LinearLayout-的-onMeasure"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 LinearLayout 的 onMeasure()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、layout"><span class="nav-number">3.</span> <span class="nav-text">3、layout()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、draw"><span class="nav-number">4.</span> <span class="nav-text">4、draw()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结："><span class="nav-number">5.</span> <span class="nav-text">总结：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WngShhng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
