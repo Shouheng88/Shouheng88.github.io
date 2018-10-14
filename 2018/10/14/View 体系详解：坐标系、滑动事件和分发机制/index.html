@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,控件体系,源码阅读," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WngShhng 的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="1、位置1.1 坐标系下面是 Android 中的 View 坐标系的基本图。要获得一个 View 的位置，我们可以借助两个对象，一个是 View ，一个是 MotionEvent。以下是它们的一些方法的位置的含义：  在 View 中共有 mLeft, mRight, mTop 和 mBottom 四个变量包含 View 的坐标信息，你可以在源码中获取它们的含义：  mLeft：指定控件的左边缘">
+<meta name="keywords" content="Android,控件体系,源码阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="View 体系详解：坐标系、滑动事件和分发机制">
+<meta property="og:url" content="http://yoursite.com/2018/10/14/View 体系详解：坐标系、滑动事件和分发机制/index.html">
+<meta property="og:site_name" content="WngShhng 的博客">
+<meta property="og:description" content="1、位置1.1 坐标系下面是 Android 中的 View 坐标系的基本图。要获得一个 View 的位置，我们可以借助两个对象，一个是 View ，一个是 MotionEvent。以下是它们的一些方法的位置的含义：  在 View 中共有 mLeft, mRight, mTop 和 mBottom 四个变量包含 View 的坐标信息，你可以在源码中获取它们的含义：  mLeft：指定控件的左边缘">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/8/16653ef1d5df5353?w=700&h=400&f=png&s=20452">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/8/16653eed99af2732?w=1041&h=489&f=png&s=10028">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/9/16658e46bb7e228a?w=1446&h=807&f=png&s=134084">
+<meta property="og:updated_time" content="2018-10-14T10:07:56.076Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="View 体系详解：坐标系、滑动事件和分发机制">
+<meta name="twitter:description" content="1、位置1.1 坐标系下面是 Android 中的 View 坐标系的基本图。要获得一个 View 的位置，我们可以借助两个对象，一个是 View ，一个是 MotionEvent。以下是它们的一些方法的位置的含义：  在 View 中共有 mLeft, mRight, mTop 和 mBottom 四个变量包含 View 的坐标信息，你可以在源码中获取它们的含义：  mLeft：指定控件的左边缘">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2018/10/8/16653ef1d5df5353?w=700&h=400&f=png&s=20452">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/14/View 体系详解：坐标系、滑动事件和分发机制/"/>
+
+
+
+
+
+  <title>View 体系详解：坐标系、滑动事件和分发机制 | WngShhng 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WngShhng 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Focus on Java, Android & life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/14/View 体系详解：坐标系、滑动事件和分发机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WngShhng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WngShhng 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">View 体系详解：坐标系、滑动事件和分发机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-14T18:07:19+08:00">
+                2018-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android控件详解/" itemprop="url" rel="index">
+                    <span itemprop="name">Android控件详解</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1、位置"><a href="#1、位置" class="headerlink" title="1、位置"></a>1、位置</h2><h3 id="1-1-坐标系"><a href="#1-1-坐标系" class="headerlink" title="1.1 坐标系"></a>1.1 坐标系</h3><p>下面是 Android 中的 View 坐标系的基本图。要获得一个 View 的位置，我们可以借助两个对象，一个是 View ，一个是 MotionEvent。以下是它们的一些方法的位置的含义：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/8/16653ef1d5df5353?w=700&amp;h=400&amp;f=png&amp;s=20452" alt="Android View 坐标系"></p>
+<p>在 View 中共有 <code>mLeft</code>, <code>mRight</code>, <code>mTop</code> 和 <code>mBottom</code> 四个变量包含 View 的坐标信息，你可以在源码中获取它们的含义：</p>
+<ol>
+<li><code>mLeft</code>：指定控件的左边缘距离其父控件左边缘的位置，单位：像素；</li>
+<li><code>mRight</code>：指定控件的右边缘距离其父控件左边缘的位置，单位：像素；</li>
+<li><code>mTop</code>：指定控件的上边缘距离其父控件上边缘的位置，单位：像素；</li>
+<li><code>mBottom</code>：指定控件的下边缘距离其父控件上边缘的位置，单位：像素。</li>
+</ol>
+<p>此外，View 中还有几个方法用来获取控件的位置等信息，实际上就是上面四个变量的 getter 方法：</p>
+<ol>
+<li><code>getLeft()</code>：即 <code>mLeft</code>；</li>
+<li><code>getRight()</code>：即 <code>mRight</code>；</li>
+<li><code>getTop()</code>：即 <code>mTop</code>；</li>
+<li><code>getBottom()</code>：即 <code>mBottom</code>；</li>
+</ol>
+<p>所以，我们可以得到两个获取 View 高度和宽度信息的方法：</p>
+<ol>
+<li><code>getHeight()</code>：即 <code>mBottom - mTop</code>；</li>
+<li><code>getWidth()</code>：即 <code>mRight - mLeft</code>；</li>
+</ol>
+<p>另外，就是 View 中的 <code>getX()</code> 和 <code>getY()</code> 两个方法，你需要注意将其与 MotionEvent 中的同名方法进行区分。在没有对控件进行平移的时候，<code>getX()</code> 与 <code>getLeft()</code> 返回结果相同，只是前者会在后者的基础上加上平移的距离：</p>
+<ol>
+<li><code>getX()</code>：即 <code>mLeft + getTranslationX()</code>，即控件的左边缘加上 X 方向平移的距离；</li>
+<li><code>getY()</code>：即 <code>mTop + getTranslationY()</code>，即控件的上边缘加上 Y 方向平移的距离；</li>
+</ol>
+<p>以上是我们对 View 中获取控件位置的方法的梳理，你可以到源码中查看它们更加相详尽的定义，那更有助于自己的理解。</p>
+<h3 id="1-2-MotionEvent"><a href="#1-2-MotionEvent" class="headerlink" title="1.2 MotionEvent"></a>1.2 MotionEvent</h3><p>通常当你对控件进行触摸监听的时候会用到 MotionEvent ，它封住了触摸的位置等信息。下面我们对 MotionEvent 中的获取点击事件的位置的方法进行梳理，它主要涉及下面四个方法：</p>
+<ol>
+<li><code>MotionEvent.getX()</code>：获取点击事件距离控件左边缘的距离，单位：像素；</li>
+<li><code>MotionEvent.getY()</code>：获取点击事件距离控件上边缘的距离，单位：像素；</li>
+<li><code>MotionEvent.getRawX()</code>：获取点击事件距离屏幕左边缘的距离，单位：像素；</li>
+<li><code>MotionEvent.getRawY()</code>：获取点击事件距离屏幕上边缘的距离，单位：像素。</li>
+</ol>
+<p>另外是触摸事件中的三种典型的行为，按下、移动和抬起。接下来的代码示例中我们会用到它们来判断手指的行为，并对其做响应的处理：</p>
+<ol>
+<li><code>MotionEvent.ACTION_DOWN</code>：按下的行为；</li>
+<li><code>MotionEvent.ACTION_MOVE</code>：手指在屏幕上移动的行为；</li>
+<li><code>MotionEvent.ACTION_UP</code>：手指抬起的行为。</li>
+</ol>
+<h2 id="2、滑动"><a href="#2、滑动" class="headerlink" title="2、滑动"></a>2、滑动</h2><p>我们有几种方式实现 View 的滑动：</p>
+<h3 id="2-1-layout-方法"><a href="#2-1-layout-方法" class="headerlink" title="2.1 layout() 方法"></a>2.1 layout() 方法</h3><p>调用控件的 <code>layout()</code> 方法进行滑动，下面是该方法的定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public void layout(int l, int t, int r, int b) &#123; /*...*/ &#125;</span><br></pre></td></tr></table></figure>
+<p>其中的四个参数 <code>l</code>, <code>t</code>, <code>r</code>, <code>b</code>分别表示控件相对于父控件的左、上、右、下的距离，分别对应于上面的 <code>mLeft</code>, <code>mTop</code>, <code>mRight</code> 和 <code>mBottom</code>。所以，调用该方法同时可以改变控件的高度和宽度，但有时候我们不需要改变控件的高度和宽度，只要移动其位置即可。所以，我们又有方法 <code>offsetLeftAndRight()</code> 和 <code>offsetTopAndBottom()</code> 可以使用，后者只会对控件的位置进行平移。因此，我们可以进行如下的代码测试：</p>
+<pre><code>private int lastX, lastY;
+
+private void layoutMove(MotionEvent event) {
+    int x = (int) event.getX(), y = (int) event.getY();
+    switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            lastX = x;
+            lastY = y;
+            break;
+        case MotionEvent.ACTION_MOVE:
+            int offsetX = x - lastX, offsetY = y - lastY;
+            getBinding().v.layout(getBinding().v.getLeft() + offsetX,
+                    getBinding().v.getTop() + offsetY,
+                    getBinding().v.getRight() + offsetX,
+                    getBinding().v.getBottom() + offsetY);
+            break;
+        case MotionEvent.ACTION_UP:
+            break;
+    }
+}
+</code></pre><p>上面的代码的效果是指定的控件会随着手指的移动而移动。这里我们先记录下按下的位置，然后手指移动的时候记录下平移的位置，最后调用 <code>layout()</code> 即可。</p>
+<h3 id="2-2-offsetLeftAndRight-和-offsetTopAndBottom"><a href="#2-2-offsetLeftAndRight-和-offsetTopAndBottom" class="headerlink" title="2.2 offsetLeftAndRight() 和 offsetTopAndBottom()"></a>2.2 offsetLeftAndRight() 和 offsetTopAndBottom()</h3><p>上面已经提到过这两个方法，它们只改变控件的位置，无法改变大小。我们只需要对上述代码做少量修改就可以实现同样的效果：</p>
+<pre><code>getBinding().v.offsetLeftAndRight(offsetX);
+getBinding().v.offsetTopAndBottom(offsetY);
+</code></pre><h3 id="2-3-改变布局参数"><a href="#2-3-改变布局参数" class="headerlink" title="2.3 改变布局参数"></a>2.3 改变布局参数</h3><p>通过获取并修改控件的 <code>LayoutParams</code>，我们一样可以达到修改控件的位置的目的。毕竟，本身这个对象就代表着控件的布局：</p>
+<pre><code>FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getBinding().v.getLayoutParams();
+lp.leftMargin = getBinding().v.getLeft() + offsetX;
+lp.topMargin = getBinding().v.getTop() + offsetY;
+getBinding().v.setLayoutParams(lp);
+</code></pre><h3 id="2-4-动画"><a href="#2-4-动画" class="headerlink" title="2.4 动画"></a>2.4 动画</h3><p>使用动画我们也可以实现控件移动的效果，这里所谓的动画主要是操作 View 的 <code>transitionX</code> 和 <code>transitionY</code> 属性：</p>
+<pre><code>getBinding().v.animate().translationX(5f);
+getBinding().v.animate().translationY(5f);
+</code></pre><p>关于动画的内容，我们会在后面详细介绍。</p>
+<h3 id="2-5-scrollTo-和-scrollBy"><a href="#2-5-scrollTo-和-scrollBy" class="headerlink" title="2.5 scrollTo() 和 scrollBy()"></a>2.5 scrollTo() 和 scrollBy()</h3><p><code>scrollBy()</code> 方法内部调用了 <code>scrollTo()</code>，以下是这部分的源码。<code>scrollBy()</code> 表示在当前的位置上面进行平移，而 <code>scrollTo()</code> 表示平移到指定的位置：</p>
+<pre><code>public void scrollBy(int x, int y) {
+    scrollTo(mScrollX + x, mScrollY + y);
+}
+</code></pre><p>同样对上述代码进行修改，我们也可以实现之前的效果：</p>
+<pre><code>((View) getBinding().v.getParent()).scrollBy(-offsetX, -offsetY);
+</code></pre><p>或者</p>
+<pre><code>View parent = ((View) getBinding().v.getParent());
+parent.scrollTo(parent.getScrollX()-offsetX, parent.getScrollY()-offsetY);
+</code></pre><p>此外，还有一个需要注意的地方是：与上面的 <code>offsetLeftAndRight()</code> 和 <code>offsetTopAndBottom()</code> 不同的是，这里我们用了平移的值的相反数。原因很简单，因为我们要使用这两个方法的时候需要对指定的控件所在的父容器进行调用（正如上面是先获取父控件）。当我们希望控件相对于之前的位置向右下方向移动，就应该让父容器相对于之前的位置向左上方向移动。因为实际上该控件相对于父控件的位置没有发生变化，变化的是父控件的位置。（参考的坐标系不同）</p>
+<h3 id="2-6-Scroller"><a href="#2-6-Scroller" class="headerlink" title="2.6 Scroller"></a>2.6 Scroller</h3><p>上面，我们的测试代码是让指定的控件随着手指移动，但是假如我们希望控件从一个位置移动到另一个位置呢？当然，它们也可以实现，但是这几乎就是在瞬间完成了整个操作，实际的UI效果肯定不会好。所以，为了让滑动的过程看起来更加流畅，我们可以借助 <code>Scroller</code> 来实现。</p>
+<p>在使用 <code>Scroller</code> 之前，我们需要先实例化一个 <code>Scroller</code> ：</p>
+<pre><code>private Scroller scroller = new Scroller(getContext());
+</code></pre><p>然后，我们需要覆写自定义控件的 <code>computeScroll()</code> 方法，这个方法会在绘制 View 的时候被调用。所以，这里的含义就是，当 View 重绘的时候会调用 <code>computeScroll()</code> 方法，而 <code>computeScroll()</code> 方法会判断是否需要继续滚动，如果需要继续滚动的时候就调用 <code>invalidate()</code> 方法，该方法会导致 View 进一步重绘。所以，也就是靠着这种不断进行重绘的方式实现了滚动的效果。</p>
+<p>滑动效果最终结束的判断是通过 <code>Scroller</code> 的 <code>computeScrollOffset()</code> 方法实现的，当滚动停止的时候，该方法就会返回 <code>false</code>，这样不会继续调用 <code>invalidate()</code> 方法，因而也就不会继续绘制了。下面是该方法典型的覆写方式：</p>
+<pre><code>@Override
+public void computeScroll() {
+    super.computeScroll();
+    if (scroller.computeScrollOffset()) {
+        ((View) getParent()).scrollTo(scroller.getCurrX(), scroller.getCurrY());
+        invalidate();
+    }
+}
+</code></pre><p>然后，我们再加入一个滚动到指定位置的方法，在该方法内部我们使用了 2000ms 来指定完成整个滑动所需要的时间：</p>
+<pre><code>public void smoothScrollTo(int descX, int descY) {
+    scroller.startScroll(getScrollX(), getScrollY(), descX - getScrollX(), descY - getScrollY(), 2000);
+    invalidate();
+}
+</code></pre><p>这样定义了之后，我们只需要在需要滚动的时候调用自定义 View 的 <code>smoothScrollTo()</code> 方法即可。</p>
+<h2 id="3、手势"><a href="#3、手势" class="headerlink" title="3、手势"></a>3、手势</h2><h3 id="3-1-ViewConfiguration"><a href="#3-1-ViewConfiguration" class="headerlink" title="3.1 ViewConfiguration"></a>3.1 ViewConfiguration</h3><p>在类 <code>ViewConfiguration</code> 中定义了一些列的常量用来标志指定的行为，比如，<code>TouchSlop</code> 就是滑动的最小的距离。你可以通过 <code>ViewConfiguration.get(context)</code> 来获取 <code>ViewConfiguration</code> 实例，然后通过它的 getter 方法来获取这些常量的定义。</p>
+<h3 id="3-2-VelocityTracker"><a href="#3-2-VelocityTracker" class="headerlink" title="3.2 VelocityTracker"></a>3.2 VelocityTracker</h3><p><code>VelocityTracker</code> 用来检测手指滑动的速率，它的使用非常简单。在使用之前，我们先使用它的静态方法 <code>obtain()</code> 获取一个实例，然后在 <code>onTouch()</code> 方法中调用它的 <code>addMovement(MotionEvent)</code> 方法：</p>
+<pre><code>velocityTracker = VelocityTracker.obtain();
+</code></pre><p>随后，当我们想要获得速率的时候，先调用 <code>computeCurrentVelocity(int)</code> 传入一个时间片段，单位是毫秒，然后调用 <code>getXVelocity()</code> 和 <code>getYVelocity()</code> 分别获得在水平和竖直方向上的速率即可：</p>
+<pre><code>velocityTracker.computeCurrentVelocity((int) duration);
+getBinding().tvVelocity.setText(&quot;X:&quot; + velocityTracker.getXVelocity() + &quot;\n&quot;
+        + &quot;Y:&quot; + velocityTracker.getYVelocity());
+</code></pre><p>本质上，计算速率的时候是用指定时间的长度变化除以我们传入的时间片。当我们使用完了 <code>VelocityTracker</code> 之后，需要回收资源：</p>
+<pre><code>velocityTracker.clear();
+velocityTracker.recycle();
+</code></pre><h3 id="3-3-GestureDectector"><a href="#3-3-GestureDectector" class="headerlink" title="3.3 GestureDectector"></a>3.3 GestureDectector</h3><p><code>GestureDectector</code> 用来检测手指的手势。在使用它之前我们需要先获取一个 <code>GestureDetector</code> 的实例：</p>
+<pre><code>mGestureDetector = new GestureDetector(getContext(), new MyOnGestureListener());
+</code></pre><p>这里我们用了 <code>GestureDetector</code> 的构造方法，需要传入一个 <code>OnGestureListener</code> 对象。这里我们用了 <code>MyOnGestureListener</code> 实例。 <code>MyOnGestureListener</code> 是一个自定义的类，实现了 <code>OnGestureListener</code> 接口：</p>
+<pre><code>private class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        ToastUtils.makeToast(&quot;Click detected&quot;);
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        LogUtils.d(&quot;Long press detected&quot;);
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        LogUtils.d(&quot;Double tab detected&quot;);
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        LogUtils.d(&quot;Fling detected&quot;);
+        return true;
+    }
+}
+</code></pre><p>在 <code>MyOnGestureListener</code> 中，我们覆写了它的一些方法。比如，单击、双击和长按等等，当检测到相应的手势的时候这些方法就会被调用。</p>
+<p>然后，我们可以这样使用 <code>GestureDetector</code>，只要在控件的触摸事件回调中调用即可：</p>
+<pre><code>getBinding().vg.setOnTouchListener((v, event) -&gt; {
+    mGestureDetector.onTouchEvent(event);
+    return true;
+});
+</code></pre><h2 id="4、事件分发机制"><a href="#4、事件分发机制" class="headerlink" title="4、事件分发机制"></a>4、事件分发机制</h2><h3 id="4-1-事件传递的过程"><a href="#4-1-事件传递的过程" class="headerlink" title="4.1 事件传递的过程"></a>4.1 事件传递的过程</h3><p>当讨论事件分发机制的时候，我们首先要了解 Android 中 <code>View</code> 的组成结构。在 Android 中，一个 Activity 包含一个 <code>PhoneWindow</code>，当我们在 Activity 中调用 <code>setContentView()</code> 方法的时候，会调用该 <code>PhoneWindow</code> 的 <code>setContentView()</code> 方法，并在这个方法中生成一个 <code>DecorView</code> 作为 Activity 的跟 <code>View</code>。</p>
+<p>根据上面的分析，当一个点击事件被触发的时候，首先接收到该事件的是 <code>Activity</code>。因为，<code>Activity</code> 覆盖了整个屏幕，我们需要先让它接收事件，然后它把事件传递给根 <code>View</code> 之后，再由根 <code>View</code> 向下继续传递。这样不断缩小搜索的范围，直到最顶层的 <code>View</code>。当然，任何的父容器都可以决定这个事件是不是要继续向下传递，因此，我们可以大致得到下面这个事件传递的图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/8/16653eed99af2732?w=1041&amp;h=489&amp;f=png&amp;s=10028" alt="事件传递图"></p>
+<p>左边的图是一个 Activity 内部的 <code>View</code> 和 <code>Window</code> 的组织结构。右面的图可以看作它的切面图，其中的黑色箭头表示事件的传递过程。这里事件传递的过程是先从下到上，然后再从上到下。也就是从大到小，不断定位到触摸的控件，其中每个父容器可以决定是否将事件传递下去。（需要注意的地方是，如果一个父容器有多个子元素的话，那么在这些子元素中进行遍历的时候，顺序是从上往下的，也就是按照展示的顺序）。</p>
+<p>上面我们分析了 Android 事件传递的过程，相信你有了一个大致的了解。但是，想要了解整个事件传递过程具体涉及了哪些方法、如何作用等，还需要我们对源码进行分析。</p>
+<h3 id="4-2-事件传递的原理"><a href="#4-2-事件传递的原理" class="headerlink" title="4.2 事件传递的原理"></a>4.2 事件传递的原理</h3><p>当触摸事件发生的时候，首先会被 Activity 接收到，然后该 Activity 会通过其内部的 <code>dispatchTouchEvent(MotionEvent)</code> 将事件传递给内部的 <code>PhoneWindow</code>；接着 <code>PhoneWindow</code> 会把事件交给 <code>DecorView</code>，再由 <code>DecorView</code> 交给根 <code>ViewGroup</code>。剩下的事件传递就只在 <code>ViewGroup</code> 和 <code>View</code> 之间进行。我们可以通过覆写 Activity 的 <code>dispatchTouchEvent(MotionEvent)</code> 来阻止把事件传递给 <code>PhoneWindow</code>。实际上，在我们开发的时候不会对 <code>Window</code> 的事件传递方法进行重写，一般是对 <code>ViewGroup</code> 或者 <code>View</code>。所以，下面我们的分析只在这两种控件之间进行。</p>
+<p>当讨论 View 的事件分发机制的时候，无外乎下面三个方法：</p>
+<ol>
+<li><code>boolean onInterceptTouchEvent(MotionEvent ev)</code>：用来对事件进行拦截，该方法只存在于 ViewGroup 中。一般我们会通过覆写该方法来拦截触摸事件，使其不再继续传递给子 View。</li>
+<li><code>boolean dispatchTouchEvent(MotionEvent event)</code>：用来分发触摸事件，一般我们不覆写该方法，返回 <code>true</code> 则表示事件被处理了。在 View 中，它负责根据手势的类型和控件的状态对事件进行处理，会回调我们的 <code>OnTouchListener</code> 或者 <code>OnClickListener</code>；在 ViewGroup 中，该方法被覆写，它的责任是对事件进行分发，会对所有的子 View 进行遍历，决定是否将事件分发给指定的 View。</li>
+<li><code>boolean onTouchEvent(MotionEvent event)</code>：用于处理触摸事件，返回 <code>true</code> 表示触摸事件被处理了。ViewGroup 没有覆写该方法，故在 ViewGroup 中与 View 中的功能是一样的。需要注意的是，如果我们为控件设置了 <code>OnTouchListener</code> 并且在或者中返回了 <code>true</code>，那么这个方法不会被调用，也就是 <code>OnTouchListener</code> 比该方法的优先级较高。对我们开发来说，就是 <code>OnTouchListener</code> 比 <code>OnClickListener</code> 和 <code>OnLongClickListener</code> 的优先级要高。</li>
+</ol>
+<p>于是，我们可以得到如下的伪代码。这段代码是存在于 ViewGroup 中的，也就是事件分发机制的核心代码：</p>
+<pre><code>boolean dispatchTouchEvent(MotionEvent e) {
+    boolean result;
+    if (onInterceptTouchEvent(e)) {
+        result = super.dispatchTouchEvent(e);
+    } else {
+        result = child.dispatchTouchEvent(e);
+    }
+    return result;
+}
+</code></pre><p>按照上述分析，触摸事件经过 Activity 传递给根 ViewGroup 之后：</p>
+<p>如果 ViewGourp 覆写了 <code>onInterceptTouchEvent()</code> 并且返回了 <code>true</code> 就表示希望拦截该方法，于是就把触摸事件交给当前 ViewGroup 进行处理（触发  <code>OnTouchListener</code> 或者  <code>OnClickListener</code> 等）；否则，会交给子元素的继续分发。如果该子元素是 ViewGroup 的话，就会在该子 View 中执行一遍上述逻辑，否则会在当前的子元素中对事件进行处理（触发  <code>OnTouchListener</code> 或者  <code>OnClickListener</code> 等）……就这样一层层地遍历下去，本质上是一个深度优先的搜索算法。</p>
+<p>这里我们对整个事件分发机制的整体做了一个素描，在接下来的文章中我们会对各个方法的细节进行源码分析，为了防止您在接下来的行文中迷路，我们先把这个整体逻辑按下图进行描述：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/9/16658e46bb7e228a?w=1446&amp;h=807&amp;f=png&amp;s=134084" alt="事件分发机制原理"></p>
+<h3 id="4-3-事件传递的源码分析"><a href="#4-3-事件传递的源码分析" class="headerlink" title="4.3 事件传递的源码分析"></a>4.3 事件传递的源码分析</h3><p>上述我们分析了事件分发机制的原理，下面我们通过源代码来更具体地了解这块是如何设计的。同样，我们的焦点也只在那三个需要重点关注的方法。</p>
+<h4 id="4-3-1-决定是否拦截事件"><a href="#4-3-1-决定是否拦截事件" class="headerlink" title="4.3.1 决定是否拦截事件"></a>4.3.1 决定是否拦截事件</h4><p>首先，我们来看 ViewGroup 中的 <code>dispatchTouchEvent(MotionEvent)</code> 方法，我们节选了其一部分：</p>
+<pre><code>@Override
+public boolean dispatchTouchEvent(MotionEvent ev) {
+    // ...
+    boolean handled = false;
+    if (onFilterTouchEventForSecurity(ev)) {
+        final int action = ev.getAction();
+        final int actionMasked = action &amp; MotionEvent.ACTION_MASK;
+        if (actionMasked == MotionEvent.ACTION_DOWN) { // 1
+            // 这里表示如果是一个新的触摸事件就要重置所有的状态，其中包括将 mFirstTouchTarget 置为 null
+            cancelAndClearTouchTargets(ev);
+            resetTouchState();
+        }
+        // 在这里检查是否拦截了事件，mFirstTouchTarget 是之前处理触摸事件的 View 的封装
+        final boolean intercepted;
+        if (actionMasked == MotionEvent.ACTION_DOWN || mFirstTouchTarget != null) {
+            // 这里判断该 ViewGroup 是否禁用了拦截，由 requestDisallowInterceptTouchEvent 设置
+            final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;
+            if (!disallowIntercept) {
+                intercepted = onInterceptTouchEvent(ev);
+                ev.setAction(action);
+            } else {
+                intercepted = false;
+            }
+        } else {
+            // 非按下事件并且 mFirstTouchTarget 为 null，说明判断过拦截的逻辑并且启用了拦截
+            intercepted = true;
+        }
+        // ...           
+    }
+    // ...
+    return handled;
+}
+</code></pre><p>上面代码是我们节选的 ViewGroup 拦截事件的部分代码，这里的逻辑显然比伪代码复杂的多。不过，尽管如此，这些代码确实必不可少的。因为，当我们要去判断是否拦截一个触摸事件的时候，此时触摸的事件仍然在继续，这意味着这个方法会被持续调用；抬起的时候再按下，又是另一次调用。考虑到这个连续性，我们需要多做一些逻辑。</p>
+<p>这里我们首先在 1 处通过行为是否是“按下”的来判断是否是一次新的触摸事件，如果是的话我们需要重置当前的触摸状态。其次，我们需要根据事件的类型来决定是否应该调用 <code>onInterceptTouchEvent()</code>，因为对一次触摸事件，我们只需要在“按下”的时候判断一次就够了。所以，显然我们需要将 <code>MotionEvent.ACTION_DOWN</code> 作为一个判断条件。然后，我们使用 <code>mFirstTouchTarget</code> 这个全局的变量来记录上次拦截的结果——如果之前的事件交给过子元素处理，那么它就不为空。</p>
+<p>除了 <code>mFirstTouchTarget</code>，我们还需要用 <code>mGroupFlags</code> 的 <code>FLAG_DISALLOW_INTERCEPT</code> 标志位来判断该 ViewGroup 是否禁用了拦截。这个标志位可以通过 ViewGroup 的 <code>requestDisallowInterceptTouchEvent(boolean)</code> 来设置。只有没有禁用拦截事件的时候我们才需要调用 <code>onInterceptTouchEvent()</code> 判断是否开启了拦截。</p>
+<h4 id="4-3-2-分发事件给子元素"><a href="#4-3-2-分发事件给子元素" class="headerlink" title="4.3.2 分发事件给子元素"></a>4.3.2 分发事件给子元素</h4><p>如果在上面的操作中事件没有被拦截并且没有被取消，那么就会进入下面的逻辑。这部分代码处在 <code>dispatchTouchEvent()</code> 中。在下面的逻辑中会根据子元素的状态将事件传递给子元素：</p>
+<pre><code>// 对子元素进行倒序遍历，即从上到下进行遍历
+final View[] children = mChildren;
+for (int i = childrenCount - 1; i &gt;= 0; i--) {
+    final int childIndex = getAndVerifyPreorderedIndex(childrenCount, i, customOrder);
+    final View child = getAndVerifyPreorderedView(preorderedList, children, childIndex);
+    // ...
+    // 判断子元素是否能接收触摸事件：能接收事件并且不是正在进行动画的状态
+    if (!canViewReceivePointerEvents(child) || !isTransformedTouchPointInView(x, y, child, null)) {
+        ev.setTargetAccessibilityFocus(false);
+        continue;
+    }
+    // ...
+    // 在这里调用了 dispatchTransformedTouchEvent() 方法将事件传递给子元素
+    if (dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)) {
+        // ... 记录一些状态信息
+        // 在这里完成对 mFirstTouchTarget 的赋值，表示触摸事件被子元素处理
+        newTouchTarget = addTouchTarget(child, idBitsToAssign);
+        alreadyDispatchedToNewTouchTarget = true;
+        // 结束循环，完成子元素的遍历
+        break;
+    }
+    // 显然，如果到了这一步，那么子元素的遍历仍将继续
+}
+</code></pre><p>当判断了指定的 View 可以接收触摸事件之后会调用 <code>dispatchTransformedTouchEvent()</code> 方法分发事件。其定义的节选如下：</p>
+<pre><code>private boolean dispatchTransformedTouchEvent(MotionEvent event, boolean cancel, View child, int desiredPointerIdBits) {
+    final boolean handled;
+    // ...
+    if (child == null) {
+        // 本质上逻辑与 View 的 dispatchTouchEvent() 一致
+        handled = super.dispatchTouchEvent(transformedEvent);
+    } else {
+        // ...
+        // 交给子元素继续分发事件
+        handled = child.dispatchTouchEvent(transformedEvent);
+    }
+    return handled;
+}
+</code></pre><p><code>dispatchTransformedTouchEvent()</code> 会根据传入的 <code>child</code> 是否为 <code>null</code> 分成两种调用的情形：事件没有被拦截的时候，让子元素继续分发事件；另一种是当事件被拦截的时候，调用当前的 ViewGroup 的 <code>super.dispatchTouchEvent(transformedEvent)</code> 处理事件。</p>
+<h4 id="4-3-3-View-中的-dispatchTouchEvent"><a href="#4-3-3-View-中的-dispatchTouchEvent" class="headerlink" title="4.3.3 View 中的 dispatchTouchEvent"></a>4.3.3 View 中的 dispatchTouchEvent</h4><p>上面我们分析的 <code>dispatchTouchEvent(MotionEvent)</code> 是 ViewGroup 中重写之后的方法。但是，正如我们上面的分析，重写之前的方法总是会被调用，只是对象不同。这里我们就来分析以下这个方法的作用。</p>
+<pre><code>public boolean dispatchTouchEvent(MotionEvent event) {
+    // ...
+    boolean result = false;
+    // ....
+    if (onFilterTouchEventForSecurity(event)) {
+        if ((mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp; handleScrollBarDragging(event)) {
+            result = true;
+        }
+        // 这里回调了 setOnTouchListener() 方法传入的 OnTouchListener
+        ListenerInfo li = mListenerInfo;
+        if (li != null &amp;&amp; li.mOnTouchListener != null
+                &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED
+                &amp;&amp; li.mOnTouchListener.onTouch(this, event)) {
+            result = true;
+        }
+        // 如果 OnTouchListener 没有被回调过或者返回了 false，就会调用 onTouchEvent() 进行处理
+        if (!result &amp;&amp; onTouchEvent(event)) {
+            result = true;
+        }
+    }
+    // ...
+    return result;
+}
+</code></pre><p>根据上面的源码分析，我们知道，如果当前的 View 设置过 <code>OnTouchListener</code>, 并且在 <code>onTouch()</code> 回调方法中返回了 <code>true</code>，那么 <code>onTouchEvent(MotionEvent)</code> 将不会得到调用。那么，我们再来看一下 <code>onTouchEvent()</code> 方法： </p>
+<pre><code>public boolean onTouchEvent(MotionEvent event) {
+    // ...
+    // 判断当前控件是否是可以点击的：实现了点击、长按或者设置了可点击属性
+    final boolean clickable = ((viewFlags &amp; CLICKABLE) == CLICKABLE
+            || (viewFlags &amp; LONG_CLICKABLE) == LONG_CLICKABLE)
+            || (viewFlags &amp; CONTEXT_CLICKABLE) == CONTEXT_CLICKABLE;
+    // ...
+    if (clickable || (viewFlags &amp; TOOLTIP) == TOOLTIP) {
+        switch (action) {
+            case MotionEvent.ACTION_UP:
+                // ...
+                if (!focusTaken) {
+                    if (mPerformClick == null) {
+                        mPerformClick = new PerformClick();
+                    }
+                    if (!post(mPerformClick)) {
+                        performClick();
+                    }
+                }
+                // ...
+                break;
+            case MotionEvent.ACTION_DOWN:
+                // ...
+                if (!clickable) {
+                    checkForLongClick(0, x, y);
+                    break;
+                }
+                // ...
+                break;
+            // ...
+        }
+        return true;
+    }
+    return false;
+}
+</code></pre><p>这里先判断指定的控件是否是可点击的，即是否设置过点击或者长按的事件。然后会在手势抬起的时候调用 <code>performClick()</code> 方法，并会在这个方法中尝试从 <code>ListenerInfo</code> 取 <code>OnClickListener</code> 进行回调；会在长按的时候进行监听以调用相应长按事件；其他的事件与之类似，可以自行分析。所以，我们可以得出结论：当为控件的触摸事件进行了赋值并且在其中返回了 <code>true</code> 就代表该事件被消费了，即使设置过单击和长按事件也不会被回调，触摸事件的优先级比后面两者要高。</p>
+<p>经过上述分析，我们可以知道 View 中的 <code>dispatchTouchEvent(MotionEvent)</code> 方法就是用来对手势进行处理的，所以回到 <code>4.3.2</code>，那里的意思就是：如果 ViewGroup 拦截了触摸事件，那么它就自己来对事件进行处理；否则就把触摸事件传递给子元素，让它来进行处理。</p>
+<h4 id="4-4-4-总结"><a href="#4-4-4-总结" class="headerlink" title="4.4.4 总结"></a>4.4.4 总结</h4><p>以上就是我们对 Android 中事件分发机制的详解，你可以通过图片和代码结合来更透彻得了解这方面的内容。虽然这部分代码比较多、比较长，但是每个地方的设计都是合情合理的。</p>
+<h2 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h2><p>你可以在Github获取以上程序的源代码： <a href="https://github.com/Shouheng88/Android-references" target="_blank" rel="noopener">Android-references</a>。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wx.png" alt="WngShhng wechat" style="width: 200px; max-width: 100%;"/>
+    <div>关注作者的微信公众号获取更多的学习内容</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>支持作者</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/mm_pay.png" alt="WngShhng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/ali_pay.jpg" alt="WngShhng 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/控件体系/" rel="tag"># 控件体系</a>
+          
+            <a href="/tags/源码阅读/" rel="tag"># 源码阅读</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/14/View 体系详解：View 的工作流程/" rel="next" title="View 体系详解：View 的工作流程">
+                <i class="fa fa-chevron-left"></i> View 体系详解：View 的工作流程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="WngShhng" />
+            
+              <p class="site-author-name" itemprop="name">WngShhng</p>
+              <p class="site-description motion-element" itemprop="description">生命就是一种表达</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Shouheng88" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shouheng2015@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/u/0/102173602321685428586" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/5527475/shouheng-wang" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/user/585555e11b69e6006c907a2a" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、位置"><span class="nav-number">1.</span> <span class="nav-text">1、位置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-坐标系"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 坐标系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-MotionEvent"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 MotionEvent</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、滑动"><span class="nav-number">2.</span> <span class="nav-text">2、滑动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-layout-方法"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 layout() 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-offsetLeftAndRight-和-offsetTopAndBottom"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 offsetLeftAndRight() 和 offsetTopAndBottom()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-改变布局参数"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 改变布局参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-动画"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-scrollTo-和-scrollBy"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 scrollTo() 和 scrollBy()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-Scroller"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 Scroller</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、手势"><span class="nav-number">3.</span> <span class="nav-text">3、手势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-ViewConfiguration"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 ViewConfiguration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-VelocityTracker"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 VelocityTracker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-GestureDectector"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 GestureDectector</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、事件分发机制"><span class="nav-number">4.</span> <span class="nav-text">4、事件分发机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-事件传递的过程"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 事件传递的过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-事件传递的原理"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 事件传递的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-事件传递的源码分析"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 事件传递的源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-1-决定是否拦截事件"><span class="nav-number">4.3.1.</span> <span class="nav-text">4.3.1 决定是否拦截事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-2-分发事件给子元素"><span class="nav-number">4.3.2.</span> <span class="nav-text">4.3.2 分发事件给子元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-3-View-中的-dispatchTouchEvent"><span class="nav-number">4.3.3.</span> <span class="nav-text">4.3.3 View 中的 dispatchTouchEvent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-4-总结"><span class="nav-number">4.3.4.</span> <span class="nav-text">4.4.4 总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源代码"><span class="nav-number">5.</span> <span class="nav-text">源代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WngShhng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
