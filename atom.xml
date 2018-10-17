@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-10-14T10:07:56.076Z</updated>
+  <updated>2018-10-17T12:23:50.119Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Andriod 网络框架 OkHttp 源码解析</title>
+    <link href="http://yoursite.com/2018/10/17/Andriod%20%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%20OkHttp%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    <id>http://yoursite.com/2018/10/17/Andriod 网络框架 OkHttp 源码解析/</id>
+    <published>2018-10-17T12:20:23.000Z</published>
+    <updated>2018-10-17T12:23:50.119Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;1、OkHttp-的基本使用&quot;&gt;&lt;a href=&quot;#1、OkHttp-的基本使用&quot; class=&quot;headerlink&quot; title=&quot;1、OkHttp 的基本使用&quot;&gt;&lt;/a&gt;1、OkHttp 的基本使用&lt;/h2&gt;&lt;p&gt;OkHttp 是 Square 的一款应用于
+        
+      
+    
+    </summary>
+    
+      <category term="Android网络访问" scheme="http://yoursite.com/categories/Android%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE/"/>
+    
+    
+      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
+    
+      <category term="计算机网络" scheme="http://yoursite.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    
+      <category term="OkHttp" scheme="http://yoursite.com/tags/OkHttp/"/>
+    
+      <category term="源码阅读" scheme="http://yoursite.com/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>View 体系详解：坐标系、滑动事件和分发机制</title>
