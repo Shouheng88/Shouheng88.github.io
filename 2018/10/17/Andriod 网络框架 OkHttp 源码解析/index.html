@@ -89,14 +89,14 @@
 <meta property="og:site_name" content="WngShhng 的博客">
 <meta property="og:description" content="1、OkHttp 的基本使用OkHttp 是 Square 的一款应用于 Android 和 Java 的 Http 和 Http/2 客户端。使用的时候只需要在 Gradle 里面加入下面一行依赖即可引入： implementation &amp;apos;com.squareup.okhttp3:okhttp:3.11.0&amp;apos; 我们知道，Http 请求有多种类型，常用的分为 Get 和 Pos">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/10/17/Andriod%20网络框架%20OkHttp%20源码解析/OkHttp请求时序图.png">
-<meta property="og:image" content="http://yoursite.com/2018/10/17/Andriod%20网络框架%20OkHttp%20源码解析/OkHttp异步请求.png">
-<meta property="og:image" content="http://yoursite.com/2018/10/17/Andriod%20网络框架%20OkHttp%20源码解析/责任链执行过程.png">
-<meta property="og:updated_time" content="2018-10-19T12:49:25.613Z">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/19/1668c58f05078818">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/19/1668c5c04f04eab2?w=1099&h=506&f=png&s=26593">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/19/1668c5c6363ea20f?w=853&h=875&f=png&s=84443">
+<meta property="og:updated_time" content="2018-10-19T12:55:57.186Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Andriod 网络框架 OkHttp 源码解析">
 <meta name="twitter:description" content="1、OkHttp 的基本使用OkHttp 是 Square 的一款应用于 Android 和 Java 的 Http 和 Http/2 客户端。使用的时候只需要在 Gradle 里面加入下面一行依赖即可引入： implementation &amp;apos;com.squareup.okhttp3:okhttp:3.11.0&amp;apos; 我们知道，Http 请求有多种类型，常用的分为 Get 和 Pos">
-<meta name="twitter:image" content="http://yoursite.com/2018/10/17/Andriod%20网络框架%20OkHttp%20源码解析/OkHttp请求时序图.png">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2018/10/19/1668c58f05078818">
 
 
 
@@ -475,7 +475,7 @@ String retJson = response.body().string();
 }
 </code></pre><p>这里，我们创建了一个列表对象之后把 <code>client</code> 中的拦截器、重连拦截器、桥拦截器、缓存拦截器、网络连接拦截器和服务器请求拦截器等<strong>依次</strong>加入到列表中。然后，我们用这个列表创建了一个拦截器链。这里使用了责任链设计模式，每当一个拦截器执行完毕之后会调用下一个拦截器或者不调用并返回结果。显然，我们最终拿到的响应就是这个链条执行之后返回的结果。当我们自定义一个拦截器的时候，也会被加入到这个拦截器链条里。</p>
 <p>这里我们遇到了很多的新类，比如 <code>RealCall</code>、<code>Dispatcher</code> 以及责任链等。下文中，我们会对这些类之间的关系以及责任链中的环节做一个分析，而这里我们先对整个请求的流程做一个大致的梳理。下面是这个过程大致的时序图：</p>
-<p><img src="OkHttp请求时序图.png" alt="OkHttp请求时序图"></p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/19/1668c58f05078818" alt="OkHttp请求时序图"></p>
 <h3 id="2-2-分发器-Dispatcher"><a href="#2-2-分发器-Dispatcher" class="headerlink" title="2.2 分发器 Dispatcher"></a>2.2 分发器 Dispatcher</h3><p>上面我们提到了 <code>Dispatcher</code> 这个类，它的作用是对请求进行分发。以最开始的示例代码为例，在使用 OkHttp 的时候，我们会创建一个 <code>RealCall</code> 并将其加入到双端队列中。但是请注意这里的双端队列的名称是 <code>runningSyncCalls</code>，也就是说这种请求是同步请求，会在当前的线程中立即被执行。所以，下面的 <code>getResponseWithInterceptorChain()</code> 就是这个同步的执行过程。而当我们执行完毕的时候，又会调用 <code>Dispatcher</code> 的 <code>finished(RealCall)</code> 方法把该请求从队列中移除。所以，这种同步的请求无法体现分发器的“分发”功能。</p>
 <p>除了同步的请求，还有异步类型的请求：当我们拿到了 <code>RealCall</code> 的时候，调用它的 <code>enqueue(Callback responseCallback)</code> 方法并设置一个回调即可。该方法会执行下面这行代码：</p>
 <pre><code>client.dispatcher().enqueue(new AsyncCall(responseCallback));
@@ -498,7 +498,7 @@ String retJson = response.body().string();
     return executorService;
 }
 </code></pre><p>显然，当线程池不存在的时候会去创建一个线程池。除了上面的这种方式，我们还可以在构建 <code>OkHttpClient</code> 的时候，自定义一个 <code>Dispacher</code>，并在其构造方法中为其指定一个线程池。下面我们类比 OkHttp 的同步请求绘制了一个异步请求的时序图。你可以通过将两个图对比来了解两种实现方式的不同：</p>
-<p><img src="OkHttp异步请求.png" alt="OkHttp异步请求"></p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/19/1668c5c04f04eab2?w=1099&amp;h=506&amp;f=png&amp;s=26593" alt="OkHttp异步请求"></p>
 <p>以上就是分发器 <code>Dispacher</code> 的逻辑，看上去并没有那么复杂。并且从上面的分析中，我们可以看出实际请求的执行过程并不是在这里完成的，这里只能决定在哪个线程当中执行请求并把请求用双端队列缓存下来，而实际的请求执行过程是在责任链中完成的。下面我们就来分析一下 OkHttp 里的责任链的执行过程。</p>
 <h3 id="2-3-责任链的执行过程"><a href="#2-3-责任链的执行过程" class="headerlink" title="2.3 责任链的执行过程"></a>2.3 责任链的执行过程</h3><p>在典型的责任链设计模式里，很多对象由每一个对象对其下级的引用而连接起来形成一条链。请求在这个链上传递，直到链上的某一个对象决定处理此请求。发出这个请求的客户端并不知道链上的哪一个对象最终处理这个请求，这使得系统可以在不影响客户端的情况下动态地重新组织和分配责任。责任链在现实生活中的一种场景就是面试，当某轮面试官觉得你没有资格进入下一轮的时候可以否定你，不然会让下一轮的面试官继续面试。</p>
 <p>在 OkHttp 里面，责任链的执行模式与之稍有不同。这里我们主要来分析一下在 OkHttp 里面，责任链是如何执行的，至于每个链条里面的具体逻辑，我们会在随后一一说明。</p>
@@ -528,7 +528,7 @@ String retJson = response.body().string();
 </code></pre><p>注意到这里使用责任链进行处理的时候，会新建下一个责任链并把 <code>index+!</code> 作为下一个责任链的 <code>index</code>。然后，我们使用 <code>index</code> 从拦截器列表中取出一个拦截器，调用它的 <code>intercept()</code> 方法，并把下一个执行链作为参数传递进去。</p>
 <p>这样，当下一个拦截器希望自己的下一级继续处理这个请求的时候，可以调用传入的责任链的 <code>proceed()</code> 方法；如果自己处理完毕之后，下一级不需要继续处理，那么就直接返回一个 <code>Response</code> 实例即可。因为，每次都是在当前的 <code>index</code> 基础上面加 1，所以能在调用  <code>proceed()</code> 的时候准确地从拦截器列表中取出下一个拦截器进行处理。</p>
 <p>我们还要注意的地方是之前提到过重试拦截器，这种拦截器会在内部启动一个 <code>while</code> 循环，并在循环体中调用执行链的 <code>proceed()</code> 方法来实现请求的不断重试。这是因为在它那里的拦截器链的 <code>index</code> 是固定的，所以能够每次调用 <code>proceed()</code> 的时候，都能够从自己的下一级执行一遍链条。下面就是这个责任链的执行过程：</p>
-<p><img src="责任链执行过程.png" alt="责任链执行过程"></p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/19/1668c5c6363ea20f?w=853&amp;h=875&amp;f=png&amp;s=84443" alt="责任链执行过程"></p>
 <p>清楚了 OkHttp 的拦截器链的执行过程之后，我们来看一下各个拦截器做了什么逻辑。</p>
 <h3 id="2-3-重试和重定向：RetryAndFollowUpInterceptor"><a href="#2-3-重试和重定向：RetryAndFollowUpInterceptor" class="headerlink" title="2.3 重试和重定向：RetryAndFollowUpInterceptor"></a>2.3 重试和重定向：RetryAndFollowUpInterceptor</h3><p><code>RetryAndFollowUpInterceptor</code> 主要用来当请求失败的时候进行重试，以及在需要的情况下进行重定向。我们上面说，责任链会在进行处理的时候调用第一个拦截器的 <code>intercept()</code> 方法。如果我们在创建 OkHttp 客户端的时候没有加入自定义拦截器，那么<br><code>RetryAndFollowUpInterceptor</code> 就是我们的责任链中最先被调用的拦截器。</p>
 <pre><code>@Override public Response intercept(Chain chain) throws IOException {
