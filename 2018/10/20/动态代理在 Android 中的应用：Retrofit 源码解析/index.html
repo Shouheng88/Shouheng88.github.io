@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,计算机网络,OkHttp,源码阅读,Java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WngShhng 的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="在之前的文章 《Andriod 网络框架 OkHttp 源码解析》 中我们分析了 OkHttp 的源代码。现在我们就来分析一下 OkHttp 的兄弟框架 Retrofit。关于 Retrofit 的注解的使用，可以参考其官方文档：https://square.github.io/retrofit/。 Retrofit 也是 Square 发布的一个开源的库，它是一个类型安全的 Http 客户端，适">
+<meta name="keywords" content="Android,计算机网络,OkHttp,源码阅读,Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态代理在 Android 中的应用：Retrofit 源码解析">
+<meta property="og:url" content="http://yoursite.com/2018/10/20/动态代理在 Android 中的应用：Retrofit 源码解析/index.html">
+<meta property="og:site_name" content="WngShhng 的博客">
+<meta property="og:description" content="在之前的文章 《Andriod 网络框架 OkHttp 源码解析》 中我们分析了 OkHttp 的源代码。现在我们就来分析一下 OkHttp 的兄弟框架 Retrofit。关于 Retrofit 的注解的使用，可以参考其官方文档：https://square.github.io/retrofit/。 Retrofit 也是 Square 发布的一个开源的库，它是一个类型安全的 Http 客户端，适">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/20/1669137d82462ec1?w=888&h=530&f=png&s=24731">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/10/20/1669137d857c4084?w=1567&h=831&f=png&s=114379">
+<meta property="og:updated_time" content="2018-10-20T11:24:36.083Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="动态代理在 Android 中的应用：Retrofit 源码解析">
+<meta name="twitter:description" content="在之前的文章 《Andriod 网络框架 OkHttp 源码解析》 中我们分析了 OkHttp 的源代码。现在我们就来分析一下 OkHttp 的兄弟框架 Retrofit。关于 Retrofit 的注解的使用，可以参考其官方文档：https://square.github.io/retrofit/。 Retrofit 也是 Square 发布的一个开源的库，它是一个类型安全的 Http 客户端，适">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2018/10/20/1669137d82462ec1?w=888&h=530&f=png&s=24731">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/20/动态代理在 Android 中的应用：Retrofit 源码解析/"/>
+
+
+
+
+
+  <title>动态代理在 Android 中的应用：Retrofit 源码解析 | WngShhng 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WngShhng 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Focus on Java, Android & life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/20/动态代理在 Android 中的应用：Retrofit 源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WngShhng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WngShhng 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">动态代理在 Android 中的应用：Retrofit 源码解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-20T19:19:40+08:00">
+                2018-10-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android网络访问/" itemprop="url" rel="index">
+                    <span itemprop="name">Android网络访问</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在之前的文章 <a href="https://shouheng88.github.io/2018/10/17/Andriod%20%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%20OkHttp%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/#more" target="_blank" rel="noopener">《Andriod 网络框架 OkHttp 源码解析》</a> 中我们分析了 OkHttp 的源代码。现在我们就来分析一下 OkHttp 的兄弟框架 Retrofit。关于 Retrofit 的注解的使用，可以参考其官方文档：<a href="https://square.github.io/retrofit/" target="_blank" rel="noopener">https://square.github.io/retrofit/</a>。</p>
+<p>Retrofit 也是 Square 发布的一个开源的库，它是一个类型安全的 Http 客户端，适用于 Android 和 Java。本质上，Retrofit 使用了 Java 的动态代理，内部使用 OkHttp 来进行网络访问，并且可以通过指定 “请求适配器” 和 “类型转换器” 来完成方法参数到 OkHttp 的请求的转换，以及 OkHttp 响应到用户指定的实体类型的转换。</p>
+<h2 id="1、基本使用"><a href="#1、基本使用" class="headerlink" title="1、基本使用"></a>1、基本使用</h2><p>Retrofit 设计的一个好的地方就是它把我们上面提到的 “请求适配器” 和 “类型转换器” 使用策略模式解耦出来。用户可以根据自己的需求通过实现指定的接口来自定义自己的类型转换器。所以，当我们使用 Gson 和 RxJava2 转换器的时候，就需要指定下面三个依赖：</p>
+<pre><code>api &apos;com.squareup.retrofit2:retrofit:2.4.0&apos;
+api &apos;com.squareup.retrofit2:converter-gson:2.4.0&apos;
+api &apos;com.squareup.retrofit2:adapter-rxjava2:2.4.0&apos;
+</code></pre><p>然后，我们需要根据自己的 API 接口的信息，在代码里用一个接口来对该 API 接口进行声明：</p>
+<pre><code>public interface WXInfoService {
+    @GET(&quot;/sns/userinfo&quot;)
+    Observable&lt;WXUserInfo&gt; getWXUserInfo(
+        @Query(&quot;access_token&quot;) String accessToken, @Query(&quot;openid&quot;) String openId);
+}
+</code></pre><p>这里的 WXUserInfo 是由该 API 接口返回的 Json 生成的 Java 对象。然后，我们可以像下面这样获取一个该接口的代理对象：</p>
+<pre><code>WXInfoService wXInfoService = new Retrofit.Builder()
+    .baseUrl(&quot;https://api.weixin.qq.com/&quot;)
+    .addConverterFactory(GsonConverterFactory.create())
+    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+    .client(okHttpClient)
+    .build().create(WXInfoService.class);
+</code></pre><p>然后，我们就可以使用该对象并调用其方法来获取接口返回的信息了：</p>
+<pre><code>Disposable disposable = wxInfoService.getWXUserInfo(accessToken, openId)
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(wxUserInfo -&gt; { /*...拿到结果之后进行处理...*/ });
+</code></pre><p>上面我们只是使用了 Retrofit 的最基础的 <code>GET</code> 接口。当然，Retrofit 本身的功能远比这要丰富得多，关于其更多的使用，可以参考其官方的文档。</p>
+<h2 id="2、动态代理：魔力发生的地方"><a href="#2、动态代理：魔力发生的地方" class="headerlink" title="2、动态代理：魔力发生的地方"></a>2、动态代理：魔力发生的地方</h2><p>上面我们使用 Retrofit 进行网络请求，实际其内部使用 OkHttp 来完成网络请求的，然后，使用我们传入的 “类型转换器” 把响应转换成我们指定的类型。定义了一个接口并调用了该接口的方法，然后就拿到了请求的结果，这看上去非常简洁，而这其中的最功不可没的就是动态代理。</p>
+<p>当我们使用 <code>Retrofit.Builder</code> 的 <code>create()</code> 方法获取一个 <code>WXInfoService</code> 实例的时候，实际返回的是经过代理之后的对象。该方法内部会调用 <code>Proxy</code> 的静态方法 <code>newProxyInstance()</code> 来得到一个代理之后的实例。为了说明这个方法的作用，我们写了一个例子：</p>
+<pre><code>public static void main(String...args) {
+    Service service = getProxy(Service.class);
+    String aJson = service.getAInfo();
+    System.out.println(aJson);
+    String bJson = service.getBInfo();
+    System.out.println(bJson);
+}
+
+private static &lt;T&gt; T getProxy(final Class&lt;T&gt; service) {
+    InvocationHandler h = (proxy, method, args) -&gt; {
+        String json = &quot;{}&quot;;
+        if (method.getName().equals(&quot;getAInfo&quot;)) {
+            json = &quot;{A请求的结果}&quot;;
+        } else if (method.getName().equals(&quot;getBInfo&quot;)) {
+            json = &quot;{B请求的结果}&quot;;
+        }
+        return json;
+    };
+    return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[]{service}, h);
+}
+</code></pre><p>该程序的输出结果是：</p>
+<pre><code>{A请求的结果}
+{B请求的结果}
+</code></pre><p>在上面的这个例子中，我们先使用 <code>getProxy()</code> 获取一个代理之后的实例，然后依次调用它的 <code>getAInfo()</code> 和 <code>getBInfo()</code> 方法，来模拟调用 A 接口和 B 接口的情形，并依次得到了 A 请求的结果和 B 请求的结果。上面的效果近似于我们使用 Retrofit 访问接口的过程。为了说明这个过程中发生了什么，我们需要先了解一下这里的 <code>newProxyInstance()</code> 方法：</p>
+<pre><code>public static Object newProxyInstance(ClassLoader loader, Class&lt;?&gt;[] interfaces, InvocationHandler h) {
+    // ...
+}
+</code></pre><p>该方法接收三个参数：第一个是类加载器；第二个是接口的 Class 类型；第三个是一个处理器，你可以将其看作一个用于回调的接口。当我们的代理实例触发了某个方法的时候，会调用该回调接口的方法进行处理。<code>InvocationHandler</code> 是一个接口，它内部定义了一个方法如下：</p>
+<pre><code>public Object invoke(Object proxy, Method method, Object[] args) throws Throwable;
+</code></pre><p>该方法也接收三个参数：第一个是触发该方法的代理实例；第二个是代理类触发的方法；第三个是触发的方法的参数。<code>invoke()</code> 方法的返回结果会作为代理类的方法执行的结果。</p>
+<p>所以，当了解了 <code>newProxyInstance()</code> 方法的定义之后，我们可以做如下总结：当我们使用 <code>newProxyInstance()</code> 方法获取了一个代理实例 <code>service</code> 并调用其 <code>getAInfo()</code> 方法之后，该方法的信息和参数信息会分别通过 <code>method</code> 和 <code>args</code> 传入到 <code>h</code> 的 <code>invoke()</code> 中。所以，最终的效果就是，当我们调用 <code>service</code> 的 <code>getAInfo()</code> 时候会触发 <code>h</code> 的 <code>invoke()</code>。然后，在该方法中我们根据 <code>method</code> 得知触发的方法是 <code>getAInfo</code>。于是，我们把它对应的请求从 <code>invoke()</code> 方法中返回，并作为 <code>service.getAInfo()</code> 的返回结果。</p>
+<p>所以，我们可以总结 Retrofit 的大致工作流程：当我们获取了接口的代理实例，并调用它的 <code>getWXUserInfo()</code> 方法之后，该 API 的请求参数会传递到代理类的 <code>InvocationHandler.invoke()</code> 方法中。然后在该方法中，我们将其转换成 OkHttp 的 <code>Request</code>，然后使用 OkHttp 进行访问。当拿到结果之后，我们使用传入的 “转换器” 将响应转换成接口指定的 Java 类型。</p>
+<p>上面是 Retrofit 请求处理的基本流程，下面我们看一下 Retrofit 的代理方法内部究竟发生了什么。</p>
+<h2 id="3、Retrofit-的源码解析"><a href="#3、Retrofit-的源码解析" class="headerlink" title="3、Retrofit 的源码解析"></a>3、Retrofit 的源码解析</h2><h3 id="3-1-创建-Retrofit"><a href="#3-1-创建-Retrofit" class="headerlink" title="3.1 创建 Retrofit"></a>3.1 创建 Retrofit</h3><p>根据上面的例子，当使用 Retrofit 的时候，首先我们需要使用 Retrofit 的构建者来创建 Retrofit 的实例。这里有几个重要的方法需要提及一下：</p>
+<h4 id="3-1-1-addConverterFactory-方法"><a href="#3-1-1-addConverterFactory-方法" class="headerlink" title="3.1.1 addConverterFactory 方法"></a>3.1.1 addConverterFactory 方法</h4><p>该方法用来向 Retrofit 中添加一个 <code>Converter.Factory</code>。<code>Converter.Factory</code>，顾名思义是一种工厂模式，它是一个接口需要实现两个重要的方法。每个方法需要返回一个转换器：一个是某种数据类型到请求体的转换器，另一个是响应体到我们需要的数据类型的转换器。当我们使用 Gson 来完成这个转换，那么我们就需要使用 <code>GsonConverterFactory.create()</code> 来得到一个适用于 Gson 的 <code>Converter.Factory</code>。</p>
+<pre><code>public Builder addConverterFactory(Converter.Factory factory) {
+  converterFactories.add(checkNotNull(factory, &quot;factory == null&quot;));
+  return this;
+}
+</code></pre><h4 id="3-1-2-addCallAdapterFactory-方法"><a href="#3-1-2-addCallAdapterFactory-方法" class="headerlink" title="3.1.2 addCallAdapterFactory 方法"></a>3.1.2 addCallAdapterFactory 方法</h4><p><code>CallAdapter.Factory</code> 用于获取 <code>CallAdapter</code> 对象， <code>CallAdapter</code> 对象用于把原生的 OkHttp 的 <code>Call</code> 转换成我们指定的请求类型。比如，转换成 RxJava2 的 Observable 类型。下面是该方法的定义：</p>
+<pre><code>public Builder addCallAdapterFactory(CallAdapter.Factory factory) {
+  callAdapterFactories.add(checkNotNull(factory, &quot;factory == null&quot;));
+  return this;
+}
+</code></pre><h4 id="3-1-3-build-方法"><a href="#3-1-3-build-方法" class="headerlink" title="3.1.3 build 方法"></a>3.1.3 build 方法</h4><p>当根据用户的自定义设置完了参数之后，就可以调用 <code>build()</code> 方法，来获取一个 Retrofit 的实例。在该方法中会将上述的工厂实例添加到一个列表中，然后根据请求、响应的类型来获取工厂实例，然后分别获取一个转换器或者适配器。</p>
+<h4 id="3-1-4-小结"><a href="#3-1-4-小结" class="headerlink" title="3.1.4 小结"></a>3.1.4 小结</h4><p>为了说明适配器 <code>CallAdapter</code> 和转换器 <code>Converter</code> 的作用，我们绘制了下图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/20/1669137d82462ec1?w=888&amp;h=530&amp;f=png&amp;s=24731" alt="Retrofit类图"></p>
+<p>从上面我们看出，<code>CallAdapter</code> 主要用来将某个请求转换成我们指定的类型。比如，在我们最开始的例子中，要将请求转换成 <code>Observable&lt;WXUserInfo&gt;</code>。如果转换之后的请求是 <code>Observable</code> 类型的，那么当我们对转换后的请求进行订阅的时候，就启动了 OkHttp 的网络请求过程。</p>
+<p>在进行网络请求之前会先使用 <code>Converter</code> 将请求的参数转换成一个 <code>RequestBody</code>。这里将其作为一个接口的好处是便于解耦。比如，上面我们用 Gson 来完成转换过程，你也可以通过自定义转换器来使用其他的框架，比如 Moshi 等。当拿到了响应之后，我们又会再次使用 <code>Converter</code> 来将响应体 <code>ResponseBody</code> 转换成我们要求的类型。比如，上面的例子中应该转换为 <code>WXUserInfo</code>。</p>
+<p>最后，OkHttp 那里得到的响应会在 <code>CallAdapter</code> 方法内部被包装成 <code>Observable&lt;WXUserInfo&gt;</code> 并返回给观察者。这样，我们就拿到了这个请求的结果。</p>
+<p>从上面我们看出，Retrofit 设计的非常妙的地方就在于上面的两个过程的解耦（策略模式+工厂模式）。一次是将请求转换成 <code>Observable</code> 的过程，一次是将请求体和响应体转换成 OkHttp 要求的 <code>RequestBody</code> 和 <code>ResponseBody</code> 的过程。对于前者，不论我们使用的是 RxJava 1 还是 RxJava 2，只要传入一个 <code>CallAdapter</code> 即可。对于后者，不论我们使用哪种 Json 转换框架，只要实现了 <code>Converter</code> 接口皆可。</p>
+<h3 id="3-2-获取代理实例"><a href="#3-2-获取代理实例" class="headerlink" title="3.2 获取代理实例"></a>3.2 获取代理实例</h3><h4 id="3-2-1-划分平台：Platform"><a href="#3-2-1-划分平台：Platform" class="headerlink" title="3.2.1 划分平台：Platform"></a>3.2.1 划分平台：Platform</h4><p>创建了 Retrofit 的实例之后，我们就可以使用它的 <code>create()</code> 方法来获取代理之后的服务实例。下面是这个方法的定义。在这里，我们会先根据 <code>validateEagerly</code> 变量来判断是否立即对传入的服务接口的方法进行解析。然后，我们使用 <code>Proxy</code> 的静态方法获取一个代理实例。</p>
+<pre><code>public &lt;T&gt; T create(final Class&lt;T&gt; service) {
+    Utils.validateServiceInterface(service);
+    // 这里的 validateEagerly 在 Retrofit 构建的时候设置
+    if (validateEagerly) {
+        // 是否立即对 Service 方法的内容进行解析
+        eagerlyValidateMethods(service);
+    }
+    // 获取代理实例
+    return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[] { service },
+            new InvocationHandler() {
+                private final Platform platform = Platform.get();
+                @Override public Object invoke(Object proxy, Method method, @Nullable Object[] args)
+                        throws Throwable {
+                    // 该方法是 Object 的方法，直接触发该方法
+                    if (method.getDeclaringClass() == Object.class) {
+                        return method.invoke(this, args);
+                    }
+                    // 如果是 default 方法，那么使用该 Java8 平台的方法执行
+                    if (platform.isDefaultMethod(method)) {
+                        return platform.invokeDefaultMethod(method, service, proxy, args);
+                    }
+                    // 获取服务方法的信息，并将其包装成 ServiceMethod
+                    ServiceMethod&lt;Object, Object&gt; serviceMethod =
+                            (ServiceMethod&lt;Object, Object&gt;) loadServiceMethod(method);
+                    OkHttpCall&lt;Object&gt; okHttpCall = new OkHttpCall&lt;&gt;(serviceMethod, args);
+                    return serviceMethod.adapt(okHttpCall);
+                }
+            });
+}
+</code></pre><p>这里的 <code>eagerlyValidateMethods()</code> 方法定义如下：</p>
+<pre><code>private void eagerlyValidateMethods(Class&lt;?&gt; service) {
+    // 获取程序当前运行的平台
+    Platform platform = Platform.get();
+    for (Method method : service.getDeclaredMethods()) {
+        // 判断该方法是否是 default 方法
+        if (!platform.isDefaultMethod(method)) {
+            loadServiceMethod(method);
+        }
+    }
+}
+</code></pre><p>它的作用是立即对服务接口的方法进行解析，并将解析之后的结果放进一个缓存中。这样，当这个服务方法被触发的时候，直接从缓存当中获取解析之后的 <code>ServiceMethod</code> 来使用即可。该方法会先会根据当前程序运行的平台来决定是否应该加载服务的方法。因为，Java 8 之后，我们可以为接口增加 <code>default</code> 类型的方法，所以，如果是 <code>default</code> 类型的话，我们不会调用 <code>loadServiceMethod()</code> 进行解析，而是调用 Java8 平台的 <code>invokeDefaultMethod()</code> 来处理。在 <code>invokeDefaultMethod()</code> 中，会根据传入的信息创建一个实例并使用反射触发它的方法。此时，就间接地触发了该 <code>default</code> 方法。</p>
+<p>判断平台的时候，使用了如下这段代码：</p>
+<pre><code>platform.isDefaultMethod(Method)
+</code></pre><p>这里的 platform 是调用 <code>Platform.get()</code> 的时候得到的。它会在 <code>get()</code> 方法中尝试使用反射去获取一个只有 Java8 平台才具有的类，以此来判断是否是 Java8 的环境。在 Retrofit 中，提供了 <code>Java8</code> 和 <code>Android</code> 两个类来区分所在的平台，并会根据运行环境来决定返回哪个实例。</p>
+<p>从上面我们看出，Platform 算是一种策略的设计模式，以根据平台的不同做不同的处理。但在当前的版本中，它的主要作用是对 <code>default</code> 类型的方法进行处理。</p>
+<h4 id="3-2-2-解析服务方法：ServiceMethod"><a href="#3-2-2-解析服务方法：ServiceMethod" class="headerlink" title="3.2.2 解析服务方法：ServiceMethod"></a>3.2.2 解析服务方法：ServiceMethod</h4><p>上面我们提到过 <code>loadServiceMethod()</code> 方法，它的主要作用：首先会尝试从缓存当中获取该方法对应的 <code>ServiceMethod</code> 实例，如果取到的话，就将其返回；否则，就使用构建者模式创建一个并放进缓存中，然后将其返回。</p>
+<pre><code>ServiceMethod&lt;?, ?&gt; loadServiceMethod(Method method) {
+    // 从缓存中进行获取
+    ServiceMethod&lt;?, ?&gt; result = serviceMethodCache.get(method);
+    if (result != null) return result;
+    synchronized (serviceMethodCache) {
+        result = serviceMethodCache.get(method);
+        if (result == null) {
+            // 创建ServiceMethod实例
+            result = new ServiceMethod.Builder&lt;&gt;(this, method).build();
+            serviceMethodCache.put(method, result);
+        }
+    }
+    return result;
+}
+</code></pre><p><code>ServiceMethod</code> 的构建过程比较简单，只需要把当前的 <code>Retrofit</code> 实例和服务方法 <code>method</code> 传入进去，然后调用它的 <code>build()</code> 方法就完成了整个创建过程。在 <code>build()</code> 方法中，会完成对 <code>method</code> 的解析，比如根据注解判断是什么类型的请求，根据方法的参数来解析请求的请求体等等。<code>ServiceMethod</code> 内部的变量主要是与请求的相关的信息，同时它也提供了一些方法，用于获取 OkHttp 的请求和响应。</p>
+<p>所以，<code>ServiceMethod</code> 的作用是缓存服务方法对应的请求信息，这样下次我们就不需要再次解析了。同时，它提供了以下几个方法，它们的主要作用是用来从 <code>ServiceMethod</code> 中获取请求相关的信息。</p>
+<p><code>toCall()</code> 用来获取用于 OkHttp 请求的 <code>Call</code> 对象：</p>
+<pre><code>okhttp3.Call toCall(@Nullable Object... args) throws IOException {
+    RequestBuilder requestBuilder = new RequestBuilder(httpMethod, baseUrl, relativeUrl, headers,
+            contentType, hasBody, isFormEncoded, isMultipart);
+    // ...
+    return callFactory.newCall(requestBuilder.build());
+}
+</code></pre><p><code>toResponse(ResponseBody)</code> 用来把 OkHttp 得到的响应体转换成 Java 对象等（在示例中是<code>WXUserInfo</code>）：</p>
+<pre><code>R toResponse(ResponseBody body) throws IOException {
+    return responseConverter.convert(body);
+}
+</code></pre><p><code>adapt(Call&lt;R&gt;)</code> 用来将 OkHttp 的请求转换成我们的服务方法的返回类型（在示例中是<code>Observable&lt;WXUserInfo&gt;</code>）：</p>
+<pre><code>T adapt(Call&lt;R&gt; call) {
+    return callAdapter.adapt(call);
+}
+</code></pre><h4 id="3-2-3-请求封装：OkHttpCall"><a href="#3-2-3-请求封装：OkHttpCall" class="headerlink" title="3.2.3 请求封装：OkHttpCall"></a>3.2.3 请求封装：OkHttpCall</h4><p>解析完毕服务方法之后，我们得到了 <code>ServiceMethod</code> 实例。然后，我们使用它来创建 <code>OkHttpCall</code> 实例。这里的 <code>OkHttpCall</code> 实现了 Retrofit 中定义的 <code>Call</code> 接口，会在方法内调用 <code>ServiceMethod</code> 的 <code>toCall()</code> 方法来获取 OkHttp 中的 <code>Call</code> 对象，然后使用它进行网络访问。当拿到了请求的结果之后又使用 <code>ServiceMethod</code> 的 <code>toResponse()</code> 把响应转换成我们指定的类型。下面是该类中的几个比较重要的方法：</p>
+<ol>
+<li><code>execute()</code> 方法，用来同步执行网络请求：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Response&lt;T&gt; execute() throws IOException &#123;</span><br><span class="line">    okhttp3.Call call;</span><br><span class="line">    synchronized (this) &#123;</span><br><span class="line">        // ...</span><br><span class="line">        call = rawCall;</span><br><span class="line">        if (call == null) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                // 创建 OkHttp 的 Call 实例</span><br><span class="line">                call = rawCall = createRawCall();</span><br><span class="line">            &#125; catch (IOException | RuntimeException | Error e) &#123;</span><br><span class="line">                throwIfFatal(e);</span><br><span class="line">                creationFailure = e;</span><br><span class="line">                throw e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (canceled) &#123;</span><br><span class="line">        call.cancel();</span><br><span class="line">    &#125;</span><br><span class="line">    // 同步执行请求，并解析结果</span><br><span class="line">    return parseResponse(call.execute());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><code>createRawCall()</code> 用来创建 OkHttp 的 <code>Call</code> 实例：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 使用 serviceMethod 的 toCall 方法获取 OkHttp 的 Call 实例</span><br><span class="line">private okhttp3.Call createRawCall() throws IOException &#123;</span><br><span class="line">    okhttp3.Call call = serviceMethod.toCall(args);</span><br><span class="line">    if (call == null) &#123;</span><br><span class="line">        throw new NullPointerException(&quot;Call.Factory returned null.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return call;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><code>parseResponse()</code> 用来将 OkHttp 的响应转换成我们接口中定义的类型。比如，在我们的例子中，返回的是 <code>Observable&lt;WXUserInfo&gt;</code>:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 使用 serviceMethod 的 toResponse 方法获取 OkHttp 的 Response 实例</span><br><span class="line">Response&lt;T&gt; parseResponse(okhttp3.Response rawResponse) throws IOException &#123;</span><br><span class="line">    ResponseBody rawBody = rawResponse.body();</span><br><span class="line">    rawResponse = rawResponse.newBuilder()</span><br><span class="line">            .body(new NoContentResponseBody(rawBody.contentType(), rawBody.contentLength()))</span><br><span class="line">            .build();</span><br><span class="line">    // ...</span><br><span class="line">    ExceptionCatchingRequestBody catchingBody = new ExceptionCatchingRequestBody(rawBody);</span><br><span class="line">    try &#123;</span><br><span class="line">        // 使用 serviceMethod 的 toResponse 方法获取 OkHttp 的 Response 实例</span><br><span class="line">        T body = serviceMethod.toResponse(catchingBody);</span><br><span class="line">        return Response.success(body, rawResponse);</span><br><span class="line">    &#125; catch (RuntimeException e) &#123;</span><br><span class="line">        catchingBody.throwIfCaught();</span><br><span class="line">        throw e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-Retrofit-的工作过程"><a href="#3-3-Retrofit-的工作过程" class="headerlink" title="3.3 Retrofit 的工作过程"></a>3.3 Retrofit 的工作过程</h3><p>上面是 Retrofit 框架设计中几个关键的部分的功能的解析。下面，我们再来具体看一下，从触发代理类的方法到拿到响应的结果，这一整个过程中，都有哪些类的哪些方法参与，以及它们在什么时候，扮演什么样的角色。这里我们仍然使用最初的示例：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/10/20/1669137d857c4084?w=1567&amp;h=831&amp;f=png&amp;s=114379" alt="Retrofit的执行过程"></p>
+<p>上图中，我们将 Retrofit 的请求的过程分成三个过程来进行说明：</p>
+<ol>
+<li><strong>创建代理实例的过程</strong>：在这个过程中主要是调用 <code>Proxy.newProxyInstance()</code> 来获取一个代理实例。相关的主要参数是 <code>validateEagerly</code>，我们会使用它来决定是否立即对传入的接口的方法进行解析。不论我们什么时候进行解析，都会把解析的结果缓存起来。</li>
+<li><strong>触发代理方法的过程</strong>：触发代理方法是整个请求的第二过程，这个时候，我们调用了 <code>WXInfoService</code> 代理实例的 <code>getWXUserInfo()</code> 方法。此时，会触发 <code>InvocationHandler</code> 的 <code>invoke()</code> 方法。在该方法内部会调用 <code>ServiceMethod</code> 的构建者模式来创建 <code>ServiceMethod</code> 实例。当调用构建者模式的 <code>build()</code> 方法的时候，会对方法 <code>getWXUserInfo()</code> 的信息进行解析。然后，使用 <code>ServiceMethod</code> 实例创建 <code>OkHttpCall</code>。最后，使用 <code>ServiceMethod</code> 实例的 <code>adapt()</code> 方法将 <code>OkHttpCall</code> 实例转换成 <code>Observable&lt;WXUserInfo&gt;</code>。此时，会使用 <code>CallAdapter</code> 的 <code>adapt()</code> 方法来完成适配过程。</li>
+<li><strong>执行网络请求的过程</strong>：拿到了 <code>Observable&lt;WXUserInfo&gt;</code> 之后，需要对其进行订阅才能触发网络请求。相关的逻辑在 <code>CallAdapter</code> 中完成。首先，它会根据你使用同步还是异步的来决定使用哪个执行器。这里存在两个执行器，它们的区别是一个会在内部调用 <code>OkHttpCall</code> 的 <code>enqueue()</code>，另一个会在执行器中调用 <code>OkHttpCall</code> 的 <code>execute()</code> 方法。不论调用 <code>enqueue()</code> 还是 <code>execute()</code>，都会先使用 <code>OkHttpCall</code> 的 <code>toCall()</code> 方法获取一个 <code>Call</code> 请求。获取请求的过程中会使用 <code>Converter</code> 来将某个实例转换成请求体。拿到了请求之后，使用该请求来进行网络访问。当从网络中拿到了响应之后，会使用 <code>Converter</code> 来将响应体转换成对象。这样，拿到了实际的结果之后，就会调用 <code>Observer</code> 的 <code>onNext()</code> 方法把结果通知给观察者。</li>
+</ol>
+<h2 id="4、总结"><a href="#4、总结" class="headerlink" title="4、总结"></a>4、总结</h2><p>在这篇文章中，我们先简单介绍了 Retrofit 的使用，然后，因为 Retrofit 内部使用动态代理来实现的，所以，我们对动态代理相关内容进行了介绍。最后，我们对 Retrofit 的源码进行了分析，先从设计思路，后从各个环节的执行过程进行了说明。最后的最后，我们将两者结合起来用一个时序图做了说明。</p>
+<p>从上文中可以看出来，Retrofit 设计的几个值得我们借鉴的地方：</p>
+<ol>
+<li>使用运行时注解和反射简化请求描述，但是考虑到反射的效率比较低，所以将一次反射之后的结果缓存起来，以便于下次使用。</li>
+<li>动态代理：使用接口描述请求的好处是它简洁，而且 “描述” 本来就是它的责任。但是，一般我们需要去实现接口才能使用。而这里告诉我们，使用动态代理一样可以使用接。</li>
+<li>解耦：从我们上面的图中也可以看出来，Retrofit 的设计的思路是比较清晰的。它将一个请求的几个过程解耦出来。首先是我们 <code>Observable</code> 到请求的转换，这里使用适配器来完成；然后是请求体和响应体的转换，基本就是 Json 的转换，使用转换器来完成。这样，不论你使用 RxJava 1 还是 RxJava 2，不论是 Gson 还是 FastXml 都可以和 Retrifut 配合使用。</li>
+</ol>
+<p>以上就是我们对 Retrofit 的源码的分析。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wx.png" alt="WngShhng wechat" style="width: 200px; max-width: 100%;"/>
+    <div>关注作者的微信公众号获取更多的学习内容</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>支持作者</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/mm_pay.png" alt="WngShhng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/ali_pay.jpg" alt="WngShhng 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/计算机网络/" rel="tag"># 计算机网络</a>
+          
+            <a href="/tags/OkHttp/" rel="tag"># OkHttp</a>
+          
+            <a href="/tags/源码阅读/" rel="tag"># 源码阅读</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/17/Andriod 网络框架 OkHttp 源码解析/" rel="next" title="Andriod 网络框架 OkHttp 源码解析">
+                <i class="fa fa-chevron-left"></i> Andriod 网络框架 OkHttp 源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="WngShhng" />
+            
+              <p class="site-author-name" itemprop="name">WngShhng</p>
+              <p class="site-description motion-element" itemprop="description">生命就是一种表达</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Shouheng88" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shouheng2015@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/u/0/102173602321685428586" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/5527475/shouheng-wang" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/user/585555e11b69e6006c907a2a" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、基本使用"><span class="nav-number">1.</span> <span class="nav-text">1、基本使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、动态代理：魔力发生的地方"><span class="nav-number">2.</span> <span class="nav-text">2、动态代理：魔力发生的地方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、Retrofit-的源码解析"><span class="nav-number">3.</span> <span class="nav-text">3、Retrofit 的源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-创建-Retrofit"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 创建 Retrofit</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-addConverterFactory-方法"><span class="nav-number">3.1.1.</span> <span class="nav-text">3.1.1 addConverterFactory 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-addCallAdapterFactory-方法"><span class="nav-number">3.1.2.</span> <span class="nav-text">3.1.2 addCallAdapterFactory 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-3-build-方法"><span class="nav-number">3.1.3.</span> <span class="nav-text">3.1.3 build 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-4-小结"><span class="nav-number">3.1.4.</span> <span class="nav-text">3.1.4 小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-获取代理实例"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 获取代理实例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-划分平台：Platform"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1 划分平台：Platform</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-解析服务方法：ServiceMethod"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2 解析服务方法：ServiceMethod</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-请求封装：OkHttpCall"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.3 请求封装：OkHttpCall</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Retrofit-的工作过程"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 Retrofit 的工作过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、总结"><span class="nav-number">4.</span> <span class="nav-text">4、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WngShhng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-10-19T12:55:57.186Z</updated>
+  <updated>2018-10-20T11:24:36.083Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>动态代理在 Android 中的应用：Retrofit 源码解析</title>
+    <link href="http://yoursite.com/2018/10/20/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%9C%A8%20Android%20%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8%EF%BC%9ARetrofit%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    <id>http://yoursite.com/2018/10/20/动态代理在 Android 中的应用：Retrofit 源码解析/</id>
+    <published>2018-10-20T11:19:40.000Z</published>
+    <updated>2018-10-20T11:24:36.083Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;在之前的文章 &lt;a href=&quot;https://shouheng88.github.io/2018/10/17/Andriod%20%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%20OkHttp%20%E6%BA%90%E7%A0%81%E8%A
+        
+      
+    
+    </summary>
+    
+      <category term="Android网络访问" scheme="http://yoursite.com/categories/Android%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE/"/>
+    
+    
+      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
+    
+      <category term="计算机网络" scheme="http://yoursite.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    
+      <category term="OkHttp" scheme="http://yoursite.com/tags/OkHttp/"/>
+    
+      <category term="源码阅读" scheme="http://yoursite.com/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>Andriod 网络框架 OkHttp 源码解析</title>
@@ -74,9 +108,9 @@
     
       <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
     
-      <category term="控件体系" scheme="http://yoursite.com/tags/%E6%8E%A7%E4%BB%B6%E4%BD%93%E7%B3%BB/"/>
-    
       <category term="源码阅读" scheme="http://yoursite.com/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+    
+      <category term="控件体系" scheme="http://yoursite.com/tags/%E6%8E%A7%E4%BB%B6%E4%BD%93%E7%B3%BB/"/>
     
   </entry>
   
@@ -104,9 +138,9 @@
     
       <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
     
-      <category term="控件体系" scheme="http://yoursite.com/tags/%E6%8E%A7%E4%BB%B6%E4%BD%93%E7%B3%BB/"/>
-    
       <category term="源码阅读" scheme="http://yoursite.com/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+    
+      <category term="控件体系" scheme="http://yoursite.com/tags/%E6%8E%A7%E4%BB%B6%E4%BD%93%E7%B3%BB/"/>
     
   </entry>
   
