@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-10-20T11:24:36.083Z</updated>
+  <updated>2018-11-04T10:47:39.678Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android 消息机制：Handler、MessageQueue 和 Looper</title>
+    <link href="http://yoursite.com/2018/11/04/Android-%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6%EF%BC%9AHandler%E3%80%81MessageQueue-%E5%92%8C-Looper/"/>
+    <id>http://yoursite.com/2018/11/04/Android-消息机制：Handler、MessageQueue-和-Looper/</id>
+    <published>2018-11-04T10:46:06.000Z</published>
+    <updated>2018-11-04T10:47:39.678Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;在这篇文章中，我们将会讨论 Android 的消息机制。提到 Handler，有过一些 Android 开发经验的都应该很清楚它的作用，通常我们使用它来通知主线程更新 UI。但是 Handler 需要底层的 MessageQueue 和 Looper 来支持才能运作。这篇文
+        
+      
+    
+    </summary>
+    
+      <category term="Android消息机制" scheme="http://yoursite.com/categories/Android%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6/"/>
+    
+    
+      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
+    
+      <category term="源码阅读" scheme="http://yoursite.com/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+    
+      <category term="Framework" scheme="http://yoursite.com/tags/Framework/"/>
+    
+      <category term="Handler" scheme="http://yoursite.com/tags/Handler/"/>
+    
+      <category term="Looper" scheme="http://yoursite.com/tags/Looper/"/>
+    
+  </entry>
   
   <entry>
     <title>动态代理在 Android 中的应用：Retrofit 源码解析</title>
