@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="生命就是一种表达">
+<meta name="description" content="1、概览Java8的改进比历史上任何一次改变都比较深远。Java不断改进也是编程语言生态变化的使然——诸如大数据需要在多核上面运行，而Java此前是不支持这种操作的。 在Java8之前，如果想要利用多个计算机的内核，你要使用线程，并且要处理复杂的同步逻辑。但是在Java8中，你可以很容易地使用流让自己的代码在多个内核上面执行。 此外，它还借鉴了其他语言和开源库的内容，比如Scala、Guava等。">
 <meta name="keywords" content="Java,Java8,编程语言">
 <meta property="og:type" content="article">
 <meta property="og:title" content="五分钟学习 Java 8 行为参数化">
 <meta property="og:url" content="http://yoursite.com/2018/11/11/五分钟学习-Java-8-行为参数化/index.html">
 <meta property="og:site_name" content="WngShhng 的博客">
-<meta property="og:description" content="生命就是一种表达">
+<meta property="og:description" content="1、概览Java8的改进比历史上任何一次改变都比较深远。Java不断改进也是编程语言生态变化的使然——诸如大数据需要在多核上面运行，而Java此前是不支持这种操作的。 在Java8之前，如果想要利用多个计算机的内核，你要使用线程，并且要处理复杂的同步逻辑。但是在Java8中，你可以很容易地使用流让自己的代码在多个内核上面执行。 此外，它还借鉴了其他语言和开源库的内容，比如Scala、Guava等。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-11T12:47:23.571Z">
+<meta property="og:updated_time" content="2018-11-11T13:29:26.379Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="五分钟学习 Java 8 行为参数化">
-<meta name="twitter:description" content="生命就是一种表达">
+<meta name="twitter:description" content="1、概览Java8的改进比历史上任何一次改变都比较深远。Java不断改进也是编程语言生态变化的使然——诸如大数据需要在多核上面运行，而Java此前是不支持这种操作的。 在Java8之前，如果想要利用多个计算机的内核，你要使用线程，并且要处理复杂的同步逻辑。但是在Java8中，你可以很容易地使用流让自己的代码在多个内核上面执行。 此外，它还借鉴了其他语言和开源库的内容，比如Scala、Guava等。">
 
 
 
@@ -388,7 +388,145 @@
       
 
       
-        
+        <h2 id="1、概览"><a href="#1、概览" class="headerlink" title="1、概览"></a>1、概览</h2><p>Java8的改进比历史上任何一次改变都比较深远。Java不断改进也是编程语言生态变化的使然——诸如大数据需要在多核上面运行，而Java此前是不支持这种操作的。</p>
+<p>在Java8之前，如果想要利用多个计算机的内核，你要使用线程，并且要处理复杂的同步逻辑。但是在Java8中，你可以很容易地使用流让自己的代码在多个内核上面执行。</p>
+<p>此外，它还借鉴了其他语言和开源库的内容，比如Scala、Guava等。我们总结一下Java8的主要几个特征或者改进：</p>
+<ol>
+<li>函数式编程和Lambda表达式；</li>
+<li>流(Stream)编程；</li>
+<li>时间API的改进；</li>
+<li>默认方法</li>
+</ol>
+<h2 id="2、行为参数化"><a href="#2、行为参数化" class="headerlink" title="2、行为参数化"></a>2、行为参数化</h2><p>“行为”就是指方法，“行为参数化”就是指将方法作为参数传入，说白了就是指<strong>策略模式</strong>。而Java8只是使用了Lambda表达式简化了匿名类的代码，使匿名类看起来更加简洁。在这块内容上，你所需要掌握的东西并不多。</p>
+<h3 id="2-1-Lambda表达式基本语法"><a href="#2-1-Lambda表达式基本语法" class="headerlink" title="2.1 Lambda表达式基本语法"></a>2.1 Lambda表达式基本语法</h3><pre><code>(parameters) -&gt; expression     // 表达式
+(parameters) -&gt; {statements;}  // 语句，语句尾带分号且要用花括号括起来
+</code></pre><p>上面是Lambda的基本语法，第一行中是Lambda中使用表达式的情况，第二行中式Lambda中使用语句的情况。</p>
+<p>下面是一些使用Lambda表达式的示例：</p>
+<pre><code>public static void main(String...args) {
+    // 创建对象
+    ICreateObject createObject = Employee::new;
+    IExpression expression = employees -&gt; employees.get(0);
+    // 可以进一步简化为 IExpression expression2 = List::isEmpty;
+    IExpression expression2 = employees -&gt; employees.isEmpty(); 
+    IConsumeObject consumeObject = employee -&gt; System.out.println(employee.name);
+    IAdd add = (a, b) -&gt; a + b;
+    IAdd add1 = Java8LambdaExample::cal;
+    // 会报出不是Function接口异常
+    //        Object object = Employee::new;
+}
+</code></pre><p>从上面的示例代码，我们可以总结出一些结论：</p>
+<ol>
+<li>所谓的函数接口就是指只包含一个非默认方法的接口，可以用<code>@FunctionalInterface</code>注解标明指定的接口是函数接口；</li>
+<li>如果Lambda中的<code>-&gt;</code>后面的是语句，并且当该语句只有一行的时候，我们可以将花括号去掉；</li>
+<li>想要将Lambda表达式赋值给一个对象的时候，如果这个对象不是<code>函数接口</code>，那么IDEA会给提示；</li>
+<li>还要注意函数式接口是不允许抛出受检异常的。</li>
+</ol>
+<p>下面我们总结一些常见的方法引用的示例：</p>
+<p>上面代码中的<code>Employee::new</code>就是所谓的方法引用，下面是常见的方法引用的例子：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">编号</th>
+<th style="text-align:center">Lambda</th>
+<th style="text-align:center">等效的方法引用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center"><code>(Employee e)-&gt;e.getName()</code></td>
+<td style="text-align:center"><code>Employee::getName</code></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center"><code>(String s) -&gt; System.out.println(s)</code></td>
+<td style="text-align:center"><code>System.out::println</code></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center"><code>(str, i) -&gt; str.substring(i)</code></td>
+<td style="text-align:center"><code>String::substring</code></td>
+</tr>
+</tbody>
+</table>
+<p>所以，我们总结下来的三种方法引用的情形：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">编号</th>
+<th style="text-align:center">Lambda</th>
+<th style="text-align:center">等效的方法引用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center"><code>(参数) -&gt; 类名.静态方法(参数)</code></td>
+<td style="text-align:center"><code>类名::静态方法</code></td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center"><code>(参数1, 其他参数) -&gt; 参数1.实例方法(其他参数)</code></td>
+<td style="text-align:center"><code>类名::实例方法</code></td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center"><code>(参数) -&gt; 表达式.实例方法(参数)</code></td>
+<td style="text-align:center"><code>表达式::实例方法</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-2-Java-API-中的函数式接口"><a href="#2-2-Java-API-中的函数式接口" class="headerlink" title="2.2 Java API 中的函数式接口"></a>2.2 Java API 中的函数式接口</h3><p>Java8的API中为我们提供了几个函数式接口，这些接口有必要了解一下。因为自从Java8开始接口可以定义默认方法了，所以这些接口里面又提供了一些有意思的默认方法。这可能对我们编程比较有帮助。</p>
+<pre><code>public interface Predicate&lt;T&gt; {
+    boolean test(T t);
+}
+
+public interface Consumer&lt;T&gt; {
+    void accept(T t);
+}
+
+public interface Function&lt;T, R&gt; {
+    R apply(T t);
+}
+</code></pre><p>上面就是这三个接口的定义。它们的应用场景的不同就体现再返回的参数上面：</p>
+<ol>
+<li>第一个用来判断的，大致用来实现过滤的效果；</li>
+<li>第二是没有返回类型，只能用来对传入的参数进行处理；</li>
+<li>第三个是用来映射的，也就是说，当你想要实现的行为的参数和返回是不同的类型的时候可以用它（当然，如果是相同类型的话也是可以的）。</li>
+</ol>
+<p>因为对于数值类型，Java需要做额外的装箱和拆箱的操作，这是需要成本的。所以，对于上面的三个接口（其他的接口也是），Java8中提供了不需要装箱的版本，也就是从泛型变成了数值类型而已。以IntPredicate为例：</p>
+<pre><code>public interface IntPredicate {
+    boolean test(int value);
+}
+</code></pre><h3 id="2-3-复合Lambda表达式"><a href="#2-3-复合Lambda表达式" class="headerlink" title="2.3 复合Lambda表达式"></a>2.3 复合Lambda表达式</h3><p>Java8中提供的一些接口还是可以复合操作的。使用复合操作可以实现更复杂的逻辑。这些复合操作是以默认方法的形式定义的，每个函数式接口略有不同。所以，我们这里只列举出部分用于复合的方法。在实际的开发过程中，你可以直接进入到指定的函数式接口中查看这些方法的定义。</p>
+<h4 id="2-3-1-比较器Comparator"><a href="#2-3-1-比较器Comparator" class="headerlink" title="2.3.1 比较器Comparator"></a>2.3.1 比较器Comparator<t></t></h4><p>假设有一个数据列表employees，其中的对象是Employee，它有getName()和getAge()两个方法。</p>
+<pre><code>employees.sort(Comparator.comparing(Employee::getName));
+employees.sort(Comparator.comparing(Employee::getName).reversed().thenComparing(Employee::getAge));
+</code></pre><p>上面的两行代码中，第一行实现对employees按照getName()的结果进行排序。第二行代码对employees，先按照getName()的结果进行排序，然后将返回的结果逆序，再按照getAge()的结果进行排序。</p>
+<h4 id="2-3-2-谓词复合-negate-、or-和and"><a href="#2-3-2-谓词复合-negate-、or-和and" class="headerlink" title="2.3.2 谓词复合 negate()、or()和and()"></a>2.3.2 谓词复合 negate()、or()和and()</h4><pre><code>Predicate&lt;Employee&gt; employeePredicate = (employee -&gt; employee.getAge() &gt; 13)
+employeePredicate.negate()
+employeePredicate.and(employee -&gt; employee.getAge() &lt;= 15).or(employee -&gt; &quot;LiHua&quot;.equals(employee.getName()))
+</code></pre><p>这里首先定义了employeePredicate，它可以用来过滤“年龄大于13的雇员”。对其调用了negate()方法将返回一个Predicate，可以用来过滤“年纪小于等于13的雇员”。最后的复合操作则表示“年龄大于13并且小于15的雇员或者名字为LiHua的雇员”。</p>
+<p>注意，这里的and和or操作的顺序是从左向右的，也就是<code>a.or(b).and(c)</code>将被看作<code>(a || b) and c</code>。</p>
+<h4 id="2-3-3-函数Function复合"><a href="#2-3-3-函数Function复合" class="headerlink" title="2.3.3 函数Function复合"></a>2.3.3 函数Function<t>复合</t></h4><p>Function有andThen和compose两个默认方法，它们都会返回一个Function实例。</p>
+<pre><code>Function&lt;Integer, Integer&gt; f = x -&gt; x + 1;
+Function&lt;Integer, Integer&gt; g = x -&gt; x * 2;
+Function&lt;Integer, Integer&gt; h1 = f.andThen(g); // h1(x) = g(f(x)) = (x + 1) * 2
+Function&lt;Integer, Integer&gt; h2 = f.compose(g); // h2(x) = f(g(x)) = (x * 2) + 1
+System.out.println(h1.apply(1));
+System.out.println(h2.apply(1));
+</code></pre><p>上面是Function的复合操作的示例，其实它的效果就相当于数学中的复合函数。不过，应当注意一下两个方法的实际的复合效果是不同的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是Java8改进的第一部分，总结一下：行为参数化其实就是策略模式，使用Lambda可以简化函数接口的形式；Java API中提供了一些有用的函数式接口，这些接口又可以使用复合方法实现更加强大的功能。</p>
+<hr>
+<p><strong>我是 WngShhng. 如果您喜欢我的文章，可以在以下平台关注我：</strong></p>
+<ul>
+<li>个人主页：<a href="https://shouheng88.github.io/" target="_blank" rel="noopener">https://shouheng88.github.io/</a></li>
+<li>掘金：<a href="https://juejin.im/user/585555e11b69e6006c907a2a" target="_blank" rel="noopener">https://juejin.im/user/585555e11b69e6006c907a2a</a></li>
+<li>Github：<a href="https://github.com/Shouheng88" target="_blank" rel="noopener">https://github.com/Shouheng88</a></li>
+<li>CSDN：<a href="https://blog.csdn.net/github_35186068" target="_blank" rel="noopener">https://blog.csdn.net/github_35186068</a></li>
+<li>微博：<a href="https://weibo.com/u/5401152113" target="_blank" rel="noopener">https://weibo.com/u/5401152113</a></li>
+</ul>
+
       
     </div>
     
@@ -523,8 +661,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -641,6 +788,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、概览"><span class="nav-number">1.</span> <span class="nav-text">1、概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、行为参数化"><span class="nav-number">2.</span> <span class="nav-text">2、行为参数化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Lambda表达式基本语法"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Lambda表达式基本语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Java-API-中的函数式接口"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Java API 中的函数式接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-复合Lambda表达式"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 复合Lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-比较器Comparator"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1 比较器Comparator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-谓词复合-negate-、or-和and"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2 谓词复合 negate()、or()和and()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-3-函数Function复合"><span class="nav-number">2.3.3.</span> <span class="nav-text">2.3.3 函数Function复合</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
