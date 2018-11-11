@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-11-04T10:47:39.678Z</updated>
+  <updated>2018-11-11T12:37:56.651Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,64 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android 多线程编程：IntentService &amp; HandlerThread</title>
+    <link href="http://yoursite.com/2018/11/11/Android-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B%EF%BC%9AIntentService-HandlerThread/"/>
+    <id>http://yoursite.com/2018/11/11/Android-多线程编程：IntentService-HandlerThread/</id>
+    <published>2018-11-11T12:36:50.000Z</published>
+    <updated>2018-11-11T12:37:56.651Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;因为 Android 是使用 Java 开发的，所以当我们谈及 Android 中的多线程，必然绕不过 Java 中的多线程编程。但在这篇文章中，我们不会过多地分析 Java 中的多线程编程的知识。我们会在以后分析 Java 并发编程的时候分析 Java 中的多线程、线程池
+        
+      
+    
+    </summary>
+    
+      <category term="Android高阶编程" scheme="http://yoursite.com/categories/Android%E9%AB%98%E9%98%B6%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>迁移到 AndroidX 过程中遇到的各种问题</title>
+    <link href="http://yoursite.com/2018/11/11/%E8%BF%81%E7%A7%BB%E5%88%B0-AndroidX-%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E5%90%84%E7%A7%8D%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2018/11/11/迁移到-AndroidX-过程中遇到的各种问题/</id>
+    <published>2018-11-11T12:32:28.000Z</published>
+    <updated>2018-11-11T12:34:21.306Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;该博文用来整理开源项目 &lt;a href=&quot;https://github.com/Shouheng88/Android-references&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Android-References&lt;/a&gt; 迁移到 AndroidX
+        
+      
+    
+    </summary>
+    
+      <category term="Android高阶编程" scheme="http://yoursite.com/categories/Android%E9%AB%98%E9%98%B6%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
+    
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
+      <category term="AndroidX" scheme="http://yoursite.com/tags/AndroidX/"/>
+    
+  </entry>
   
   <entry>
     <title>Android 消息机制：Handler、MessageQueue 和 Looper</title>
@@ -74,13 +132,13 @@
     
       <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
     
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
       <category term="计算机网络" scheme="http://yoursite.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
     
       <category term="OkHttp" scheme="http://yoursite.com/tags/OkHttp/"/>
     
       <category term="源码阅读" scheme="http://yoursite.com/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
-    
-      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
     
   </entry>
   
@@ -108,13 +166,13 @@
     
       <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
     
+      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
+    
       <category term="计算机网络" scheme="http://yoursite.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
     
       <category term="OkHttp" scheme="http://yoursite.com/tags/OkHttp/"/>
     
       <category term="源码阅读" scheme="http://yoursite.com/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
-    
-      <category term="Java" scheme="http://yoursite.com/tags/Java/"/>
     
   </entry>
   

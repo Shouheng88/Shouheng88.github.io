@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Java,AndroidX," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WngShhng 的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="该博文用来整理开源项目 Android-References 迁移到 AndroidX 过程中遇到的各种问题。  👏 Android-References 是一个 Android 示例程序项目：包含了 MVP, MVVM, 组件化, ARouter, RxJava, EventBus, ButterKnife, 视频播放, 视频直播, 网络访问, 布局和控件整理等，感性却可以到 Gihub：ht">
+<meta name="keywords" content="Android,Java,AndroidX">
+<meta property="og:type" content="article">
+<meta property="og:title" content="迁移到 AndroidX 过程中遇到的各种问题">
+<meta property="og:url" content="http://yoursite.com/2018/11/11/迁移到-AndroidX-过程中遇到的各种问题/index.html">
+<meta property="og:site_name" content="WngShhng 的博客">
+<meta property="og:description" content="该博文用来整理开源项目 Android-References 迁移到 AndroidX 过程中遇到的各种问题。  👏 Android-References 是一个 Android 示例程序项目：包含了 MVP, MVVM, 组件化, ARouter, RxJava, EventBus, ButterKnife, 视频播放, 视频直播, 网络访问, 布局和控件整理等，感性却可以到 Gihub：ht">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20181110140655672.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20181110140827617.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20181110153602227.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20181110153918230.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2018-11-11T12:34:21.306Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="迁移到 AndroidX 过程中遇到的各种问题">
+<meta name="twitter:description" content="该博文用来整理开源项目 Android-References 迁移到 AndroidX 过程中遇到的各种问题。  👏 Android-References 是一个 Android 示例程序项目：包含了 MVP, MVVM, 组件化, ARouter, RxJava, EventBus, ButterKnife, 视频播放, 视频直播, 网络访问, 布局和控件整理等，感性却可以到 Gihub：ht">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20181110140655672.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/11/迁移到-AndroidX-过程中遇到的各种问题/"/>
+
+
+
+
+
+  <title>迁移到 AndroidX 过程中遇到的各种问题 | WngShhng 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WngShhng 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Focus on Java, Android & life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/11/迁移到-AndroidX-过程中遇到的各种问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WngShhng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WngShhng 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">迁移到 AndroidX 过程中遇到的各种问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-11T20:32:28+08:00">
+                2018-11-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android高阶编程/" itemprop="url" rel="index">
+                    <span itemprop="name">Android高阶编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>该博文用来整理开源项目 <a href="https://github.com/Shouheng88/Android-references" target="_blank" rel="noopener">Android-References</a> 迁移到 AndroidX 过程中遇到的各种问题。</p>
+<blockquote>
+<p>👏 Android-References 是一个 Android 示例程序项目：包含了 MVP, MVVM, 组件化, ARouter, RxJava, EventBus, ButterKnife, 视频播放, 视频直播, 网络访问, 布局和控件整理等，感性却可以到 Gihub：<a href="https://github.com/Shouheng88/Android-references" target="_blank" rel="noopener">https://github.com/Shouheng88/Android-references</a> 参考源码。</p>
+</blockquote>
+<p>因为该项目包含了各种 support 包控件，并且各种组件化、架构模式和各种常见的功能一应俱全，因此，比较具有代表性。这里我们使用它来作为一个示例来将我们的项目迁移到 AndroidX。</p>
+<h2 id="1、关于-AndroidX"><a href="#1、关于-AndroidX" class="headerlink" title="1、关于 AndroidX"></a>1、关于 AndroidX</h2><p>关于 AndroidX，可以参考: <a href="https://android-developers.googleblog.com/2018/05/hello-world-androidx.html" target="_blank" rel="noopener">Hello world AndroidX</a></p>
+<p>AndroidX 用来统一  Android 中的 support 包，之前我们通过引入 support 包的各个版本来使用支持包，现在我们可以通过使用 AndroidX 来使用支持包。从长远来看这当然是大有好处的，可以避免使用支持包中遇到的版本冲突、升级带来的各种问题。</p>
+<p>不过，如果项目完全迁移到 AndroidX 风险还是太大。如果项目紧急的话，引入 AndroidX 成本都有些高，主要是因为一些三方库的原因。虽然一些使用特别多的三方库，比如 Glide 等都已经开始支持 AndroidX。当然，还有一些潜在的问题，比如使用字符串来获取类的 Behavior 等，迁移的时候可能就不会被照顾到。</p>
+<p>为了迁移到 AndroidX，Google 给开发者提供了一个工具：在 AS 的 Refactor 中提供了一项 Migrate to AndroidX 的选项。但选择了迁移之后，出现一些问题还需要开发者自己手动解决。</p>
+<h2 id="2、着手迁移"><a href="#2、着手迁移" class="headerlink" title="2、着手迁移"></a>2、着手迁移</h2><h3 id="2-1-第一个问题：Execution-failed-for-task-‘-app-transformClassesWithMultidexlistForAlphaDebug’"><a href="#2-1-第一个问题：Execution-failed-for-task-‘-app-transformClassesWithMultidexlistForAlphaDebug’" class="headerlink" title="2.1 第一个问题：Execution failed for task ‘:app:transformClassesWithMultidexlistForAlphaDebug’"></a>2.1 第一个问题：Execution failed for task ‘:app:transformClassesWithMultidexlistForAlphaDebug’</h3><p>这里我们迁移之后在 build 的时候出现了标题的问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* What went wrong:</span><br><span class="line">Execution failed for task &apos;:app:transformClassesWithMultidexlistForAlphaDebug&apos;.</span><br><span class="line">&gt; com.android.build.api.transform.TransformException: Error while generating the main dex list.</span><br></pre></td></tr></table></figure>
+<p>显然是将 class 转换成 dex 的过程中出现了一些问题，不过只是上面的这行日志我们无法定位问题。所以，我们需要让 gradle 输出更多的错误信息，于是我们执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradlew build --stacktrace</span><br></pre></td></tr></table></figure>
+<p>来让 Gradle 输出错误栈信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caused by: com.android.builder.multidex.D8MainDexList$MainDexListException: com.android.tools.r8.errors.CompilationError: Program type already present: com.a</span><br><span class="line">libaba.android.arouter.routes.ARouter$$Group$$library</span><br><span class="line">        at com.android.builder.multidex.D8MainDexList.generate(D8MainDexList.java:87)</span><br><span class="line">        at com.android.build.gradle.internal.transforms.D8MainDexListTransform.transform(D8MainDexListTransform.kt:131)</span><br><span class="line">        ... 54 more</span><br></pre></td></tr></table></figure>
+<p>显然是 <code>ARouter$$Group$$library</code> 类的问题，我们使用 <code>Ctrl+N</code> 来搜索这个类，发现出现了两个同样的类。这个类是使用阿里的 ARouter 的时候在编译期间生成的：</p>
+<p><img src="https://img-blog.csdnimg.cn/20181110140655672.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>按照上面的错误提示，该类同时出现在了我们的两个模块 <code>libraries</code> 和 <code>layout</code> 下面，因而类冲突了。所以，接下来的问题就是要发现为什么会出现类冲突。</p>
+<p>经过一层层排查发现是一个地方写错了：</p>
+<p><img src="https://img-blog.csdnimg.cn/20181110140827617.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>这个是 <code>layout</code> 模块下面的冲突的类，我们发现它的路由地址是 <code>/library/swipe_back</code>，所以因为路由的地址是 <code>library</code> 的原因它在 <code>layout</code> 的模块下面生成了 <code>ARouter$$Group$$Library</code>。按照正确的写法它应该是出现在 <code>layout</code> 模块下面，并且路由的地址是 <code>/layout/swipe_back</code>，那样就应该被生成到 <code>ARouter$$Group$$Layout</code> 下面，就不会多出一个类 <code>ARouter$$Group$$Library</code> 了。</p>
+<p>虽然，最终问题的原因很简单，但是我们看到，发现问题的过程中需要自己有思路的去排查，而不是除了问题立刻 Google 或者 SOF。</p>
+<h3 id="2-2-android-view-InflateException-Binary-XML-file-line-14-Error-inflating-class"><a href="#2-2-android-view-InflateException-Binary-XML-file-line-14-Error-inflating-class" class="headerlink" title="2.2 android.view.InflateException: Binary XML file line #14: Error inflating class"></a>2.2 android.view.InflateException: Binary XML file line #14: Error inflating class</h3><p>修改了上面的问题之后，我们的程序可以编译并且安装了。</p>
+<p>然后，我们又遇到下面的问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android.view.InflateException: Binary XML file line #14: Error inflating class</span><br></pre></td></tr></table></figure>
+<p>这种问题比较常见，是 XML 的某个地方写错了，经过排查发现有一行代码，当我们为控件添加 Behavior 的时候使用了字符串形式的类名。在迁移的时候没有被照顾到：</p>
+<p><img src="https://img-blog.csdnimg.cn/20181110153602227.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>事实上在 Google 的新的 material 包下面的 values.xml 文件中定义了一些 Behavior，新的包中这些字符串的值已经被替换过。但是像我们上面的这种情况，因为使用的是字符串而不是引用的资源，所以就没有被替换过去。因此，引用非自定义的 Behavior 的时候需要注意使用字符串资源进行引用而不是使用字符串：</p>
+<p><img src="https://img-blog.csdnimg.cn/20181110153918230.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNTE4NjA2OA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="2-3-android-view-InflateException-Binary-XML-file-line-12-Binary-XML-file-line-12-Error-inflating-class-com-google-android-material-button-MaterialButton"><a href="#2-3-android-view-InflateException-Binary-XML-file-line-12-Binary-XML-file-line-12-Error-inflating-class-com-google-android-material-button-MaterialButton" class="headerlink" title="2.3 android.view.InflateException: Binary XML file line #12: Binary XML file line #12: Error inflating class com.google.android.material.button.MaterialButton"></a>2.3 android.view.InflateException: Binary XML file line #12: Binary XML file line #12: Error inflating class com.google.android.material.button.MaterialButton</h3><p>这里的类 <code>Support28Activity</code> 用来整理原来的 support-28 包里面的一些控件，迁移之后页面打开的时候立即崩溃。然后留下了一地鸡毛（异常）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.RuntimeException: Unable to start activity ComponentInfo&#123;me.shouheng.references/me.shouheng.layout.view.support28.Support28Activity&#125;: android.view.InflateException: Binary XML file line #12: Binary XML file line #12: Error inflating class com.google.android.material.button.MaterialButton</span><br></pre></td></tr></table></figure>
+<p>我们尝试在程序中寻找 <code>MaterialButton</code>，发现确实能够找到这个类，但这里加载失败是什么原因呢？</p>
+<p>于是我们继续查看输出的错误日志，从这里我们获取到了更多的信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">    Process: me.shouheng.references, PID: 22961</span><br><span class="line">    java.lang.RuntimeException: Unable to start activity ComponentInfo&#123;me.shouheng.references/me.shouheng.layout.view.support28.Support28Activity&#125;: android.view.InflateException: Binary XML file line #12: Binary XML file line #12: Error inflating class com.google.android.material.button.MaterialButton</span><br><span class="line">        at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3037)</span><br><span class="line">        at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3172)</span><br><span class="line">        at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:78)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:108)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:68)</span><br><span class="line">        at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1906)</span><br><span class="line">        at android.os.Handler.dispatchMessage(Handler.java:106)</span><br><span class="line">        at android.os.Looper.loop(Looper.java:193)</span><br><span class="line">        at android.app.ActivityThread.main(ActivityThread.java:6863)</span><br><span class="line">        at java.lang.reflect.Method.invoke(Native Method)</span><br><span class="line">        at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:537)</span><br><span class="line">        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:858)</span><br><span class="line">     Caused by: android.view.InflateException: Binary XML file line #12: Binary XML file line #12: Error inflating class com.google.android.material.button.MaterialButton</span><br><span class="line">     Caused by: android.view.InflateException: Binary XML file line #12: Error inflating class com.google.android.material.button.MaterialButton</span><br><span class="line">     Caused by: java.lang.reflect.InvocationTargetException</span><br><span class="line">        at java.lang.reflect.Constructor.newInstance0(Native Method)</span><br><span class="line">        at java.lang.reflect.Constructor.newInstance(Constructor.java:343)</span><br><span class="line">        at android.view.LayoutInflater.createView(LayoutInflater.java:647)</span><br><span class="line">        at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:790)</span><br><span class="line">        at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:730)</span><br><span class="line">        at android.view.LayoutInflater.rInflate(LayoutInflater.java:863)</span><br><span class="line">        at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:824)</span><br><span class="line">        at android.view.LayoutInflater.inflate(LayoutInflater.java:515)</span><br><span class="line">        at android.view.LayoutInflater.inflate(LayoutInflater.java:423)</span><br><span class="line">        at androidx.databinding.DataBindingUtil.inflate(DataBindingUtil.java:126)</span><br><span class="line">        at androidx.databinding.DataBindingUtil.inflate(DataBindingUtil.java:95)</span><br><span class="line">        at me.shouheng.commons.view.activity.CommonActivity.onCreate(CommonActivity.java:41)</span><br><span class="line">        at android.app.Activity.performCreate(Activity.java:7149)</span><br><span class="line">        at android.app.Activity.performCreate(Activity.java:7140)</span><br><span class="line">        at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1288)</span><br><span class="line">        at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3017)</span><br><span class="line">        at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3172)</span><br><span class="line">        at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:78)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:108)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:68)</span><br><span class="line">        at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1906)</span><br><span class="line">        at android.os.Handler.dispatchMessage(Handler.java:106)</span><br><span class="line">        at android.os.Looper.loop(Looper.java:193)</span><br><span class="line">        at android.app.ActivityThread.main(ActivityThread.java:6863)</span><br><span class="line">        at java.lang.reflect.Method.invoke(Native Method)</span><br><span class="line">        at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:537)</span><br><span class="line">        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:858)</span><br><span class="line">     Caused by: java.lang.IllegalArgumentException: The style on this component requires your app theme to be Theme.MaterialComponents (or a descendant).</span><br><span class="line">        at com.google.android.material.internal.ThemeEnforcement.checkTheme(ThemeEnforcement.java:240)</span><br><span class="line">        at com.google.android.material.internal.ThemeEnforcement.checkMaterialTheme(ThemeEnforcement.java:215)</span><br><span class="line">        at com.google.android.material.internal.ThemeEnforcement.checkCompatibleTheme(ThemeEnforcement.java:143)</span><br><span class="line">2018-11-10 15:21:55.948 22961-22961/me.shouheng.references E/AndroidRuntime:     at com.google.android.material.internal.ThemeEnforcement.obtainStyledAttributes(ThemeEnforcement.java:78)</span><br><span class="line">        at com.google.android.material.button.MaterialButton.&lt;init&gt;(MaterialButton.java:140)</span><br><span class="line">        at com.google.android.material.button.MaterialButton.&lt;init&gt;(MaterialButton.java:133)</span><br><span class="line">        	... 27 more</span><br></pre></td></tr></table></figure>
+<p>按照后面几行的意思：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.lang.IllegalArgumentException: The style on this component requires your app theme to be Theme.MaterialComponents (or a descendant).</span><br></pre></td></tr></table></figure>
+<p>这个错误是因为我们设置的主题照成的。按照上面的意思，我们需要更新自己的控件的主题到 <code>Theme.MaterialComponents</code>。除了切换控件的主题，我们可以更新应用的主题，我们可以让自己的应用主题继承 <code>Material Components Bridge</code> 主题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;style name=&quot;Theme.MyApp&quot; parent=&quot;Theme.MaterialComponents.Light.Bridge&quot;&gt;</span><br><span class="line">    &lt;!-- ... --&gt;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>可以根据自己的需要选择继承下面的几种主题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Theme.MaterialComponents.Bridge</span><br><span class="line">Theme.MaterialComponents.Light.Bridge</span><br><span class="line">Theme.MaterialComponents.NoActionBar.Bridge</span><br><span class="line">Theme.MaterialComponents.Light.NoActionBar.Bridge</span><br><span class="line">Theme.MaterialComponents.Light.DarkActionBar.Bridge</span><br></pre></td></tr></table></figure>
+<p>或者在你之前的 <code>AppCompact</code> 主题之上增加一些新的属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;style name=&quot;Theme.MyApp&quot; parent=&quot;Theme.AppCompat&quot;&gt;</span><br><span class="line"></span><br><span class="line">  &lt;!-- Original AppCompat attributes. --&gt;</span><br><span class="line">  &lt;item name=&quot;colorPrimary&quot;&gt;@color/my_app_primary_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorSecondary&quot;&gt;@color/my_app_secondary_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;android:colorBackground&quot;&gt;@color/my_app_background_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorError&quot;&gt;@color/my_app_error_color&lt;/item&gt;</span><br><span class="line"></span><br><span class="line">  &lt;!-- New MaterialComponents attributes. --&gt;</span><br><span class="line">  &lt;item name=&quot;colorPrimaryVariant&quot;&gt;@color/my_app_primary_variant_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorSecondaryVariant&quot;&gt;@color/my_app_secondary_variant_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorSurface&quot;&gt;@color/my_app_surface_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorOnPrimary&quot;&gt;@color/my_app_color_on_primary&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorOnSecondary&quot;&gt;@color/my_app_color_on_secondary&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorOnBackground&quot;&gt;@color/my_app_color_on_background&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorOnError&quot;&gt;@color/my_app_color_on_error&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;colorOnSurface&quot;&gt;@color/my_app_color_on_surface&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;scrimBackground&quot;&gt;@color/mtrl_scrim_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceHeadline1&quot;&gt;@style/TextAppearance.MaterialComponents.Headline1&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceHeadline2&quot;&gt;@style/TextAppearance.MaterialComponents.Headline2&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceHeadline3&quot;&gt;@style/TextAppearance.MaterialComponents.Headline3&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceHeadline4&quot;&gt;@style/TextAppearance.MaterialComponents.Headline4&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceHeadline5&quot;&gt;@style/TextAppearance.MaterialComponents.Headline5&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceHeadline6&quot;&gt;@style/TextAppearance.MaterialComponents.Headline6&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceSubtitle1&quot;&gt;@style/TextAppearance.MaterialComponents.Subtitle1&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceSubtitle2&quot;&gt;@style/TextAppearance.MaterialComponents.Subtitle2&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceBody1&quot;&gt;@style/TextAppearance.MaterialComponents.Body1&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceBody2&quot;&gt;@style/TextAppearance.MaterialComponents.Body2&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceCaption&quot;&gt;@style/TextAppearance.MaterialComponents.Caption&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceButton&quot;&gt;@style/TextAppearance.MaterialComponents.Button&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;textAppearanceOverline&quot;&gt;@style/TextAppearance.MaterialComponents.Overline&lt;/item&gt;</span><br><span class="line"></span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>显然，这里是要求你为了使自己的应用符合 Material 规范，需要预先定义一些属性值，然后会被应用到程序的控件中。</p>
+<p>这里我们将主题稍做修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;--&gt;</span><br><span class="line">&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.MaterialComponents.Light.NoActionBar.Bridge&quot;&gt;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>按照上面的方式，我们成功地打开了该页面。</p>
+<h3 id="2-4-java-lang-IllegalArgumentException-Invalid-Region-Op-only-INTERSECT-and-DIFFERENCE-are-allowed"><a href="#2-4-java-lang-IllegalArgumentException-Invalid-Region-Op-only-INTERSECT-and-DIFFERENCE-are-allowed" class="headerlink" title="2.4  java.lang.IllegalArgumentException: Invalid Region.Op - only INTERSECT and DIFFERENCE are allowed"></a>2.4  java.lang.IllegalArgumentException: Invalid Region.Op - only INTERSECT and DIFFERENCE are allowed</h3><p>然而打开了页面不久就又发现了问题，这个问题出现在 <code>MaterialButton</code> 的点击的时候：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">Process: me.shouheng.references, PID: 5730</span><br><span class="line">java.lang.IllegalArgumentException: Invalid Region.Op - only INTERSECT and DIFFERENCE are allowed</span><br><span class="line">    at android.graphics.Canvas.checkValidClipOp(Canvas.java:779)</span><br><span class="line">    at android.graphics.Canvas.clipRect(Canvas.java:826)</span><br><span class="line">    at com.google.android.material.shape.MaterialShapeDrawable.prepareCanvasForShadow(MaterialShapeDrawable.java:850)</span><br><span class="line">    at com.google.android.material.shape.MaterialShapeDrawable.draw(MaterialShapeDrawable.java:746)</span><br><span class="line">    at android.view.View.getDrawableRenderNode(View.java:20622)</span><br><span class="line">    at android.view.View.drawBackground(View.java:20558)</span><br><span class="line">    at android.view.View.draw(View.java:20357)</span><br><span class="line">    at android.view.View.updateDisplayListIfDirty(View.java:19241)</span><br><span class="line">    at android.view.View.draw(View.java:20094)</span><br><span class="line">    at android.view.ViewGroup.drawChild(ViewGroup.java:4337)</span><br><span class="line">    at androidx.coordinatorlayout.widget.CoordinatorLayout.drawChild(CoordinatorLayout.java:1246)</span><br><span class="line">    at android.view.ViewGroup.dispatchDraw(ViewGroup.java:4116)</span><br><span class="line">    at android.view.View.updateDisplayListIfDirty(View.java:19232)</span><br><span class="line">    at android.view.View.draw(View.java:20094)</span><br><span class="line">    at android.view.ViewGroup.drawChild(ViewGroup.java:4337)</span><br><span class="line">    at android.view.ViewGroup.dispatchDraw(ViewGroup.java:4116)</span><br><span class="line">    at android.view.View.updateDisplayListIfDirty(View.java:19232)</span><br><span class="line">    at android.view.View.draw(View.java:20094)</span><br><span class="line">    at android.view.ViewGroup.drawChild(ViewGroup.java:4337)</span><br><span class="line">    at android.view.ViewGroup.dispatchDraw(ViewGroup.java:4116)</span><br><span class="line">    at android.view.View.updateDisplayListIfDirty(View.java:19232)</span><br><span class="line">    at android.view.View.draw(View.java:20094)</span><br><span class="line">    at android.view.ViewGroup.drawChild(ViewGroup.java:4337)</span><br><span class="line">    at android.view.ViewGroup.dispatchDraw(ViewGroup.java:4116)</span><br><span class="line">    at android.view.View.updateDisplayListIfDirty(View.java:19232)</span><br><span class="line">    at android.view.View.draw(View.java:20094)</span><br><span class="line">    at android.view.ViewGroup.drawChild(ViewGroup.java:4337)</span><br><span class="line">    at android.view.ViewGroup.dispatchDraw(ViewGroup.java:4116)</span><br><span class="line">    at android.view.View.updateDisplayListIfDirty(View.java:19232)</span><br><span class="line">    at android.view.View.draw(View.java:20094)</span><br><span class="line">    at android.view.ViewGroup.drawChild(ViewGroup.java:4337)</span><br><span class="line">    at android.view.ViewGroup.dispatchDraw(ViewGroup.java:4116)</span><br><span class="line">    at android.view.View.draw(View.java:20369)</span><br><span class="line">    at com.android.internal.policy.DecorView.draw(DecorView.java:781)</span><br><span class="line">    at android.view.View.updateDisplayListIfDirty(View.java:19241)</span><br><span class="line">    at android.view.ThreadedRenderer.updateViewTreeDisplayList(ThreadedRenderer.java:690)</span><br><span class="line">    at android.view.ThreadedRenderer.updateRootDisplayList(ThreadedRenderer.java:696)</span><br><span class="line">    at android.view.ThreadedRenderer.draw(ThreadedRenderer.java:805)</span><br><span class="line">    at android.view.ViewRootImpl.draw(ViewRootImpl.java:3515)</span><br><span class="line">    at android.view.ViewRootImpl.performDraw(ViewRootImpl.java:3312)</span><br><span class="line">    at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:2681)</span><br><span class="line">    at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:1633)</span><br><span class="line">    at android.view.ViewRootImpl$TraversalRunnable.run(ViewRootImpl.java:7786)</span><br><span class="line">    at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1004)</span><br><span class="line">    at android.view.Choreographer.doCallbacks(Choreographer.java:816)</span><br><span class="line">    at android.view.Choreographer.doFrame(Choreographer.java:751)</span><br><span class="line">    at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:990)</span><br><span class="line">    at android.os.Handler.handleCallback(Handler.java:873)</span><br><span class="line">    at android.os.Handler.dispatchMessage(Handler.java:99)</span><br><span class="line">    at android.os.Looper.loop(Looper.java:193)</span><br><span class="line">    at android.app.ActivityThread.main(ActivityThread.java:6863)</span><br><span class="line">    at java.lang.reflect.Method.invoke(Native Method)</span><br><span class="line">    at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:537)</span><br><span class="line">    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:858)</span><br></pre></td></tr></table></figure>
+<p>经过排查发现，在 <code>com.google.android.material.shape.MaterialShapeDrawable</code> 中的 <code>prepareCanvasForShadow()</code> 方法中使用了 <code>Region.Op.REPLACE</code>，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">private void prepareCanvasForShadow(Canvas canvas) &#123;</span><br><span class="line">  // ... 无关代码</span><br><span class="line">  canvas.clipRect(canvasClipBounds, Region.Op.REPLACE);</span><br><span class="line">  // ... 无关代码</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而在 support-28 中增加了下面的校验（这个校验在 support-27 上面是不存在的），显然是因为我们使用了 <code>Region.Op.REPLACE</code> 属性的原因：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">private static void checkValidClipOp(@NonNull Region.Op op) &#123;</span><br><span class="line">    if (sCompatiblityVersion &gt;= Build.VERSION_CODES.P</span><br><span class="line">            &amp;&amp; op != Region.Op.INTERSECT &amp;&amp; op != Region.Op.DIFFERENCE) &#123;</span><br><span class="line">        throw new IllegalArgumentException(</span><br><span class="line">                &quot;Invalid Region.Op - only INTERSECT and DIFFERENCE are allowed&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在该方法上面有真么几行注释：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Region.Op values other than Region.Op.INTERSECT and Region.Op.DIFFERENCE have the ability to expand the clip. The canvas clipping APIs are intended to only expand the clip as a result of a restore operation. This enables a view parent to clip a canvas to clearly define the maximal drawing area of its children. The recommended alternative calls are clipRect(Rect) and clipOutRect(Rect)</span><br></pre></td></tr></table></figure>
+<p>大体意思是：Region.Op.INTERSECT和Region.Op.DIFFERENCE以外的Region.Op值可以展开 Clip。画布剪辑API仅用于在还原操作后展开Clip。这使视图父级能够剪切画布以清楚地定义其子画面的最大绘制区域。推荐调用clipRect（Rect）和clipOutRect（Rect）.</p>
+<p>虽然我们找到了问题的原因，但是这个类究竟是在哪里用到的我们还无法定位到，因此，我们还需要进一步进行排查。</p>
+<p>经过排查，我们发现出现问题的原因是 material 包中的 <code>BottomAppBar</code> 控件。其实从上面的栈中我们也可以看出这一点：明显是在绘制 View 树的子 View 的时候出现的异常，而且是绘制 <code>CoordinatorLayout</code>。在 <code>BottomAppBar</code> 中使用了 <code>materialShapeDrawable</code>，该变量是 <code>MaterialShapeDrawable</code>。正是出现问题的罪魁祸首。</p>
+<p>这个类<code>MaterialShapeDrawable</code>是用来实现 BottomBar 的阴影效果的，虽然它是 BottomBar 的内部类，但是如果不希望它调用上面的那个方法也是可以的。</p>
+<p>首先，我发现它要先判断是否具有阴影再调用绘制阴影的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> if (hasCompatShadow()) &#123;</span><br><span class="line">   // Save the canvas before changing the clip bounds.</span><br><span class="line">   canvas.save();</span><br><span class="line"></span><br><span class="line">   prepareCanvasForShadow(canvas);</span><br><span class="line">// ...无关代码</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>而这里的判断是否具有阴影的方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">private boolean hasCompatShadow() &#123;</span><br><span class="line">  return shadowCompatMode != SHADOW_COMPAT_MODE_NEVER</span><br><span class="line">      &amp;&amp; shadowCompatRadius &gt; 0</span><br><span class="line">      &amp;&amp; (shadowCompatMode == SHADOW_COMPAT_MODE_ALWAYS || requiresCompatShadow());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以通过为 BottomBar 设置移除阴影效果来避免这个类调用绘制阴影的方法。于是，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.google.android.material.bottomappbar.BottomAppBar</span><br><span class="line">    android:id=&quot;@+id/bottom_app_bar&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;50dp&quot;</span><br><span class="line">    android:layout_gravity=&quot;bottom&quot;</span><br><span class="line">    app:backgroundTint=&quot;@color/colorAccent&quot;</span><br><span class="line">    app:fabAlignmentMode=&quot;center&quot;</span><br><span class="line">    app:elevation=&quot;0dp&quot;</span><br><span class="line">    app:layout_behavior=&quot;@string/hide_bottom_view_on_scroll_behavior&quot;/&gt;</span><br></pre></td></tr></table></figure>
+<p>虽然效果不好看，但是阴影解决了。</p>
+<h2 id="2-5-android-view-InflateException-Binary-XML-file-line-24-Binary-XML-file-line-24-Error-inflating-class-com-google-android-material-floatingactionbutton-FloatingActionButton"><a href="#2-5-android-view-InflateException-Binary-XML-file-line-24-Binary-XML-file-line-24-Error-inflating-class-com-google-android-material-floatingactionbutton-FloatingActionButton" class="headerlink" title="2.5 android.view.InflateException: Binary XML file line #24: Binary XML file line #24: Error inflating class com.google.android.material.floatingactionbutton.FloatingActionButton"></a>2.5 android.view.InflateException: Binary XML file line #24: Binary XML file line #24: Error inflating class com.google.android.material.floatingactionbutton.FloatingActionButton</h2><p>在排查上面问题的过程中，我们同样发现了 FAB 的一个问题。这个 Material 包中的 FAB 与 Support-28 包中的相比做了一些调整。且看下面的异常信息。这里问题显然是类无法记载造成的。那么具体是因为什么呢？我们往下看到错误栈的最后几行，发现是有一个属性没有找到。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">2018-11-10 16:56:48.408 27581-27581/me.shouheng.references E/AndroidRuntime: FATAL EXCEPTION: main</span><br><span class="line">    Process: me.shouheng.references, PID: 27581</span><br><span class="line">    java.lang.RuntimeException: Unable to start activity ComponentInfo&#123;me.shouheng.references/me.shouheng.layout.view.support28.BottomAppBarActivity&#125;: android.view.InflateException: Binary XML file line #24: Binary XML file line #24: Error inflating class com.google.android.material.floatingactionbutton.FloatingActionButton</span><br><span class="line">        at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3037)</span><br><span class="line">        at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3172)</span><br><span class="line">        at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:78)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:108)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:68)</span><br><span class="line">        at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1906)</span><br><span class="line">        at android.os.Handler.dispatchMessage(Handler.java:106)</span><br><span class="line">        at android.os.Looper.loop(Looper.java:193)</span><br><span class="line">        at android.app.ActivityThread.main(ActivityThread.java:6863)</span><br><span class="line">        at java.lang.reflect.Method.invoke(Native Method)</span><br><span class="line">        at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:537)</span><br><span class="line">        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:858)</span><br><span class="line">     Caused by: android.view.InflateException: Binary XML file line #24: Binary XML file line #24: Error inflating class com.google.android.material.floatingactionbutton.FloatingActionButton</span><br><span class="line">     Caused by: android.view.InflateException: Binary XML file line #24: Error inflating class com.google.android.material.floatingactionbutton.FloatingActionButton</span><br><span class="line">     Caused by: java.lang.reflect.InvocationTargetException</span><br><span class="line">        at java.lang.reflect.Constructor.newInstance0(Native Method)</span><br><span class="line">        at java.lang.reflect.Constructor.newInstance(Constructor.java:343)</span><br><span class="line">        at android.view.LayoutInflater.createView(LayoutInflater.java:647)</span><br><span class="line">        at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:790)</span><br><span class="line">        at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:730)</span><br><span class="line">        at android.view.LayoutInflater.rInflate(LayoutInflater.java:863)</span><br><span class="line">        at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:824)</span><br><span class="line">        at android.view.LayoutInflater.inflate(LayoutInflater.java:515)</span><br><span class="line">        at android.view.LayoutInflater.inflate(LayoutInflater.java:423)</span><br><span class="line">        at androidx.databinding.DataBindingUtil.inflate(DataBindingUtil.java:126)</span><br><span class="line">        at androidx.databinding.DataBindingUtil.inflate(DataBindingUtil.java:95)</span><br><span class="line">        at me.shouheng.commons.view.activity.CommonActivity.onCreate(CommonActivity.java:41)</span><br><span class="line">        at android.app.Activity.performCreate(Activity.java:7149)</span><br><span class="line">        at android.app.Activity.performCreate(Activity.java:7140)</span><br><span class="line">        at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1288)</span><br><span class="line">        at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3017)</span><br><span class="line">        at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3172)</span><br><span class="line">        at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:78)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:108)</span><br><span class="line">        at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:68)</span><br><span class="line">        at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1906)</span><br><span class="line">        at android.os.Handler.dispatchMessage(Handler.java:106)</span><br><span class="line">        at android.os.Looper.loop(Looper.java:193)</span><br><span class="line">        at android.app.ActivityThread.main(ActivityThread.java:6863)</span><br><span class="line">        at java.lang.reflect.Method.invoke(Native Method)</span><br><span class="line">        at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:537)</span><br><span class="line">        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:858)</span><br><span class="line">     Caused by: java.lang.UnsupportedOperationException: Failed to resolve attribute at index 0: TypedValue&#123;t=0x2/d=0x7f0300b3 a=3&#125;</span><br><span class="line">        at android.content.res.TypedArray.getColorStateList(TypedArray.java:565)</span><br><span class="line">        at com.google.android.material.resources.MaterialResources.getColorStateList(MaterialResources.java:65)</span><br><span class="line">        at com.google.android.material.floatingactionbutton.FloatingActionButton.&lt;init&gt;(FloatingActionButton.java:204)</span><br><span class="line">2018-11-10 16:56:48.408 27581-27581/me.shouheng.references E/AndroidRuntime:     at com.google.android.material.floatingactionbutton.FloatingActionButton.&lt;init&gt;(FloatingActionButton.java:190)</span><br><span class="line">        	... 27 more</span><br></pre></td></tr></table></figure>
+<p>根据错误的栈信息，我们到指定的方法下面去查看问题的原因，发现是设置背景着色的时候出现的问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">backgroundTint =</span><br><span class="line">    MaterialResources.getColorStateList(</span><br><span class="line">        context, a, R.styleable.FloatingActionButton_backgroundTint);</span><br></pre></td></tr></table></figure>
+<p>但我们并没有为 FAB 添加该属性，那么又是哪里出现的问题呢？原来是因为我们为 FAB 添加了一个 style：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">style=&quot;@style/Widget.MaterialComponents.FloatingActionButton&quot;</span><br></pre></td></tr></table></figure>
+<p>而该 <code>style</code> 的定义是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;/style&gt;</span><br><span class="line">  &lt;style name=&quot;Widget.MaterialComponents.FloatingActionButton&quot; parent=&quot;Widget.Design.FloatingActionButton&quot;&gt;</span><br><span class="line">  &lt;item name=&quot;enforceMaterialTheme&quot;&gt;true&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;elevation&quot;&gt;@dimen/mtrl_fab_elevation&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;backgroundTint&quot;&gt;?attr/colorSecondary&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;tint&quot;&gt;?attr/colorOnSecondary&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;hoveredFocusedTranslationZ&quot;&gt;@dimen/mtrl_fab_translation_z_hovered_focused&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;pressedTranslationZ&quot;&gt;@dimen/mtrl_fab_translation_z_pressed&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;rippleColor&quot;&gt;@color/mtrl_fab_ripple_color&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;showMotionSpec&quot;&gt;@animator/mtrl_fab_show_motion_spec&lt;/item&gt;</span><br><span class="line">  &lt;item name=&quot;hideMotionSpec&quot;&gt;@animator/mtrl_fab_hide_motion_spec&lt;/item&gt;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>这样刚好与我们的问题吻合，所以解决的方案就是移除这个属性。</p>
+<h3 id="2-6-java-net-UnknownServiceException-CLEARTEXT-communication-to-baobab-kaiyanapp-com-not-permitted-by-network-security-policy"><a href="#2-6-java-net-UnknownServiceException-CLEARTEXT-communication-to-baobab-kaiyanapp-com-not-permitted-by-network-security-policy" class="headerlink" title="2.6 java.net.UnknownServiceException: CLEARTEXT communication to baobab.kaiyanapp.com not permitted by network security policy"></a>2.6 java.net.UnknownServiceException: CLEARTEXT communication to baobab.kaiyanapp.com not permitted by network security policy</h3><p>按照上面的方式对我们的项目做了调整之后，我们发现项目已经可以运行了。接下来出现的问题是网络访问过程中出现的。当我们访问网络的时候会遇到下面的这个异常：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.net.UnknownServiceException: CLEARTEXT communication to baobab.kaiyanapp.com not permitted by network security policy</span><br></pre></td></tr></table></figure>
+<p>这个是因为 Android P 中新引入了网络安全规则，以上内容会对使用 <code>http</code> 的 URL 出现，默认会禁止访问 http 类型的地址。</p>
+<p>当然，通常我们发布的时候会使用 Https 类型的网络协议，而当开发和调试的时候可能就没有那么严格了。所以，为了解决这个问题， Android 新引入了下面的解决方案：</p>
+<p>首先，创建配置文件 <code>res/xml/network_security_config.xml</code>，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;network-security-config&gt;</span><br><span class="line">    &lt;domain-config cleartextTrafficPermitted=&quot;true&quot;&gt;</span><br><span class="line">        &lt;domain includeSubdomains=&quot;true&quot;&gt;localhost&lt;/domain&gt;</span><br><span class="line">    &lt;/domain-config&gt;</span><br><span class="line">&lt;/network-security-config&gt;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code></code>localhost<code>是 host 的地址，比如我上面的出错的地址应该是</code>kaiyanapp.com`。</p>
+<p>然后，我们将其配置到 <code>manifest.xml</code> 中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;application</span><br><span class="line">        android:networkSecurityConfig=&quot;@xml/network_security_config&quot;</span><br><span class="line">        android:label=&quot;@string/app_name&quot;</span><br><span class="line">        android:theme=&quot;@style/AppTheme&quot;&gt;</span><br><span class="line">        &lt;activity android:name=&quot; (...)</span><br><span class="line">    &lt;/application&gt;</span><br></pre></td></tr></table></figure>
+<p>在我们的项目中使用了三个不同的地址，并且都是 http 的，所以就需要在该地址下面配置三个域名，然后再次访问网络，问题就解决了。</p>
+<p>关于 Android 网络和安全的内容，建议参考官方文档：<a href="https://developer.android.com/training/articles/security-config#TrustingDebugCa" target="_blank" rel="noopener">网络安全性配置 | Android Developers</a>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>显然迁移到 AndroidX 的过程中还是会出现许多问题的，大多数是与 Android 的支持包有关的。按照我们上面遇到的问题，主要包括以下几点内容：</p>
+<ol>
+<li>主题</li>
+<li>支持库的控件（控件属性，实现方式好像变了一些）</li>
+<li>三方库，许多库并没有迁移，所以会导致程序内标红，但是编译和运行没有问题</li>
+<li>网络安全，网络安全部分做了一些调整</li>
+</ol>
+<p>好了，这篇文章大致到这里。也希望通过这篇文章来让你了解下迁移到 AndroidX 过程中可能会出现什么问题，并以此来考虑迁移的成本。</p>
+<p><a href="https://material.io/develop/android/docs/getting-started/" target="_blank" rel="noopener">1.Getting started with Material Components for Android</a><br><a href="https://developer.android.com/training/articles/security-config#TrustingDebugCa" target="_blank" rel="noopener">2.网络安全性配置 | Android Developers</a></p>
+<hr>
+<p><strong>如果您喜欢我的文章，可以在以下平台关注我：</strong></p>
+<ul>
+<li>个人主页：<a href="https://shouheng88.github.io/" target="_blank" rel="noopener">https://shouheng88.github.io/</a></li>
+<li>掘金：<a href="https://juejin.im/user/585555e11b69e6006c907a2a" target="_blank" rel="noopener">https://juejin.im/user/585555e11b69e6006c907a2a</a></li>
+<li>Github：<a href="https://github.com/Shouheng88" target="_blank" rel="noopener">https://github.com/Shouheng88</a></li>
+<li>CSDN：<a href="https://blog.csdn.net/github_35186068" target="_blank" rel="noopener">https://blog.csdn.net/github_35186068</a></li>
+<li>微博：<a href="https://weibo.com/u/5401152113" target="_blank" rel="noopener">https://weibo.com/u/5401152113</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wx.png" alt="WngShhng wechat" style="width: 200px; max-width: 100%;"/>
+    <div>关注作者的微信公众号获取更多的学习内容</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>支持作者</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/mm_pay.png" alt="WngShhng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/ali_pay.jpg" alt="WngShhng 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/AndroidX/" rel="tag"># AndroidX</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/04/Android-消息机制：Handler、MessageQueue-和-Looper/" rel="next" title="Android 消息机制：Handler、MessageQueue 和 Looper">
+                <i class="fa fa-chevron-left"></i> Android 消息机制：Handler、MessageQueue 和 Looper
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/11/Android-多线程编程：IntentService-HandlerThread/" rel="prev" title="Android 多线程编程：IntentService & HandlerThread">
+                Android 多线程编程：IntentService & HandlerThread <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="WngShhng" />
+            
+              <p class="site-author-name" itemprop="name">WngShhng</p>
+              <p class="site-description motion-element" itemprop="description">生命就是一种表达</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Shouheng88" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shouheng2015@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/u/0/102173602321685428586" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/5527475/shouheng-wang" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/user/585555e11b69e6006c907a2a" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、关于-AndroidX"><span class="nav-number">1.</span> <span class="nav-text">1、关于 AndroidX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、着手迁移"><span class="nav-number">2.</span> <span class="nav-text">2、着手迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-第一个问题：Execution-failed-for-task-‘-app-transformClassesWithMultidexlistForAlphaDebug’"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 第一个问题：Execution failed for task ‘:app:transformClassesWithMultidexlistForAlphaDebug’</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-android-view-InflateException-Binary-XML-file-line-14-Error-inflating-class"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 android.view.InflateException: Binary XML file line #14: Error inflating class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-android-view-InflateException-Binary-XML-file-line-12-Binary-XML-file-line-12-Error-inflating-class-com-google-android-material-button-MaterialButton"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 android.view.InflateException: Binary XML file line #12: Binary XML file line #12: Error inflating class com.google.android.material.button.MaterialButton</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-java-lang-IllegalArgumentException-Invalid-Region-Op-only-INTERSECT-and-DIFFERENCE-are-allowed"><span class="nav-number">2.4.</span> <span class="nav-text">2.4  java.lang.IllegalArgumentException: Invalid Region.Op - only INTERSECT and DIFFERENCE are allowed</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-android-view-InflateException-Binary-XML-file-line-24-Binary-XML-file-line-24-Error-inflating-class-com-google-android-material-floatingactionbutton-FloatingActionButton"><span class="nav-number">3.</span> <span class="nav-text">2.5 android.view.InflateException: Binary XML file line #24: Binary XML file line #24: Error inflating class com.google.android.material.floatingactionbutton.FloatingActionButton</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-java-net-UnknownServiceException-CLEARTEXT-communication-to-baobab-kaiyanapp-com-not-permitted-by-network-security-policy"><span class="nav-number">3.1.</span> <span class="nav-text">2.6 java.net.UnknownServiceException: CLEARTEXT communication to baobab.kaiyanapp.com not permitted by network security policy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WngShhng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
