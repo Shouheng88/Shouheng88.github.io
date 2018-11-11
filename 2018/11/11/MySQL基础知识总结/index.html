@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL,数据库," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="WngShhng 的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="1、概述目前属于Oracle，分成社区版和企业版，关系型数据库。 1.1 目录结构 bin：存储可执行文件 data：存储数据文件 doc：文档 include：存储包含头文件 lib：存储库文件 share：错误消息和字符集  配置文件：my.ini 1.2 启动和停止在win cmd中使用net start/stop mysql来启动和停止mysql服务 1.3 登入和登出1.3.1 登入my">
+<meta name="keywords" content="MySQL,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL基础知识总结">
+<meta property="og:url" content="http://yoursite.com/2018/11/11/MySQL基础知识总结/index.html">
+<meta property="og:site_name" content="WngShhng 的博客">
+<meta property="og:description" content="1、概述目前属于Oracle，分成社区版和企业版，关系型数据库。 1.1 目录结构 bin：存储可执行文件 data：存储数据文件 doc：文档 include：存储包含头文件 lib：存储库文件 share：错误消息和字符集  配置文件：my.ini 1.2 启动和停止在win cmd中使用net start/stop mysql来启动和停止mysql服务 1.3 登入和登出1.3.1 登入my">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-11T12:45:28.817Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL基础知识总结">
+<meta name="twitter:description" content="1、概述目前属于Oracle，分成社区版和企业版，关系型数据库。 1.1 目录结构 bin：存储可执行文件 data：存储数据文件 doc：文档 include：存储包含头文件 lib：存储库文件 share：错误消息和字符集  配置文件：my.ini 1.2 启动和停止在win cmd中使用net start/stop mysql来启动和停止mysql服务 1.3 登入和登出1.3.1 登入my">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/11/MySQL基础知识总结/"/>
+
+
+
+
+
+  <title>MySQL基础知识总结 | WngShhng 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WngShhng 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Focus on Java, Android & life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/11/MySQL基础知识总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WngShhng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WngShhng 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL基础知识总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-11T20:44:40+08:00">
+                2018-11-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h2><p>目前属于Oracle，分成<code>社区版和企业版</code>，<code>关系型数据库</code>。</p>
+<h3 id="1-1-目录结构"><a href="#1-1-目录结构" class="headerlink" title="1.1 目录结构"></a>1.1 目录结构</h3><ol>
+<li>bin：存储可执行文件</li>
+<li>data：存储数据文件</li>
+<li>doc：文档</li>
+<li>include：存储包含头文件</li>
+<li>lib：存储库文件</li>
+<li>share：错误消息和字符集</li>
+</ol>
+<p>配置文件：<code>my.ini</code></p>
+<h3 id="1-2-启动和停止"><a href="#1-2-启动和停止" class="headerlink" title="1.2 启动和停止"></a>1.2 启动和停止</h3><p>在win cmd中使用<code>net start/stop mysql</code>来启动和停止mysql服务</p>
+<h3 id="1-3-登入和登出"><a href="#1-3-登入和登出" class="headerlink" title="1.3 登入和登出"></a>1.3 登入和登出</h3><h4 id="1-3-1-登入"><a href="#1-3-1-登入" class="headerlink" title="1.3.1 登入"></a>1.3.1 登入</h4><pre><code>mysql -uuer_name -ppassword -Pport -hhost
+</code></pre><p>可以只使用<code>mysql -uuser_name -ppasswrod</code>来开启，后面的可以使用默认的值。<code>-P</code>是指端口号，默认3306。<code>-h</code>是指地址，默认127.0.0.1。</p>
+<h4 id="1-3-2-登出"><a href="#1-3-2-登出" class="headerlink" title="1.3.2 登出"></a>1.3.2 登出</h4><p>在MySQL命令窗口输入：<code>exit</code>, <code>quit</code>和<code>\q</code>之中任意一个即可。</p>
+<h3 id="1-4-修改输入提示符"><a href="#1-4-修改输入提示符" class="headerlink" title="1.4 修改输入提示符"></a>1.4 修改输入提示符</h3><p>在登入时，通过<code>-prompt</code>来指定提示符，或者在处于命令行时使用<code>prompt</code>来指定。</p>
+<p>在指定提示符的时候可以使用<code>\D</code>, <code>\d</code>, <code>\h</code>和<code>\u</code>来指示提示符显示当前的日期、数据库、服务器和用户。</p>
+<h3 id="1-5-查询数据库信息"><a href="#1-5-查询数据库信息" class="headerlink" title="1.5 查询数据库信息"></a>1.5 查询数据库信息</h3><p>使用<code>SELECT VERSION()</code>, <code>SELECT NOW()</code>, <code>SELECT USER()</code>, <code>SELECT DATABASE()</code>可以分别用来显示当前的数据库版本、时间、操作用户和数据库。</p>
+<h3 id="1-6-注释"><a href="#1-6-注释" class="headerlink" title="1.6 注释"></a>1.6 注释</h3><ol>
+<li>行注释：<code>--</code></li>
+<li>多行注释：<code>/**/</code></li>
+</ol>
+<h3 id="1-7-约定"><a href="#1-7-约定" class="headerlink" title="1.7 约定"></a>1.7 约定</h3><p>数据库操作指令大写；数据库相关的名称小写，且单词之间用下划线分开。</p>
+<h3 id="1-8-关于字符编码"><a href="#1-8-关于字符编码" class="headerlink" title="1.8 关于字符编码"></a>1.8 关于字符编码</h3><p>查看mysql中当前编码</p>
+<pre><code>show variables like &apos;char%
+</code></pre><p>查看数据表的编码格式</p>
+<pre><code>mysql&gt; show create table &lt;表名&gt;;
+</code></pre><p>创建数据库时指定数据库的字符集</p>
+<pre><code>mysql&gt;create database &lt;数据库名&gt; character set utf8;
+</code></pre><p>创建数据表时指定数据表的编码格式</p>
+<pre><code>create table tb_books (
+    name varchar(45) not null,
+    price double not null,
+    bookCount int not null,
+    author varchar(45) not null ) default charset = utf8;
+</code></pre><p>修改数据库的编码格式</p>
+<pre><code>mysql&gt;alter database &lt;数据库名&gt; character set utf8;
+</code></pre><p>修改数据表格编码格式</p>
+<pre><code>mysql&gt;alter table &lt;表名&gt; character set utf8;
+</code></pre><p>修改字段编码格式</p>
+<pre><code>mysql&gt;alter table &lt;表名&gt; change &lt;字段名&gt; &lt;字段名&gt; &lt;类型&gt; character set utf8;
+</code></pre><p>window命令行中中文乱码问题，连接之后使用</p>
+<pre><code>set names gbk;
+</code></pre><h2 id="2、数据库操作"><a href="#2、数据库操作" class="headerlink" title="2、数据库操作"></a>2、数据库操作</h2><h3 id="2-1-创建"><a href="#2-1-创建" class="headerlink" title="2.1 创建"></a>2.1 创建</h3><pre><code>CREATE {DATABASE | SCHEMA} [IF NOT EXISTS] db_name 
+[DEFAULT] CHARACTER SET [=] character_name
+</code></pre><ol>
+<li>DEFAULT用来说明使用默认编码方式。默认编码方式通过配置文件<code>my.ini</code><br>中的<code>default-character-set</code>中指定。</li>
+<li><code>CHARACTER SET [=] character_name</code>用来指定数据库的字符编码方式。</li>
+<li>有了<code>IF NOT EXISTS</code>当指定数据库已经存在的时候，就不会报错了，否则会报错，但是报的错还是可以查找到的。</li>
+</ol>
+<p>建立表的时候使用备注：</p>
+<pre><code>CREATE TABLE test_table (
+    test_grade int DEFAULT 1 COMMENT &apos;等级&apos;
+) COMMENT = &apos;测试表&apos;;
+</code></pre><h3 id="2-2-显示创建数据库的SQL语句"><a href="#2-2-显示创建数据库的SQL语句" class="headerlink" title="2.2 显示创建数据库的SQL语句"></a>2.2 显示创建数据库的SQL语句</h3><pre><code>SHOW CREATE DATABASE db_name;
+</code></pre><p>类似的，还有显示表的创建的SQL语句：<code>SHOW CREATE TABLE tbl_name;</code></p>
+<h3 id="2-3-修改"><a href="#2-3-修改" class="headerlink" title="2.3 修改"></a>2.3 修改</h3><p>修改数据库的字符编码方式的语句：</p>
+<pre><code>ALTER {DATABASE|SCHEMA} [DEFAULT] CHARACTER SET [=] charset_name;
+</code></pre><h3 id="2-4-删除"><a href="#2-4-删除" class="headerlink" title="2.4 删除"></a>2.4 删除</h3><pre><code>DROP {DATABASE|SCHEMA} [IF EXISTS] db_name
+</code></pre><h3 id="2-5-显示当前所有数据库"><a href="#2-5-显示当前所有数据库" class="headerlink" title="2.5 显示当前所有数据库"></a>2.5 显示当前所有数据库</h3><pre><code>SHOW DATABASES;
+</code></pre><p>类似的，有<code>SHOW TABLES [FROM db_name]</code>用于显示当前数据库（或指定数据库）下面的所有表。</p>
+<h2 id="3、数据类型"><a href="#3、数据类型" class="headerlink" title="3、数据类型"></a>3、数据类型</h2><h3 id="3-1-整型"><a href="#3-1-整型" class="headerlink" title="3.1 整型"></a>3.1 整型</h3><p>整数分为有符号和无符号的，通过<code>UNSIGNED</code>指定。（取值范围和C语言中的类型范围一样）</p>
+<ol>
+<li>TiNYINT：1字节</li>
+<li>SMALLINT：2字节</li>
+<li>MEDIUMINT：3字节</li>
+<li>INT：4字节</li>
+<li>BIGINT：8字节</li>
+</ol>
+<h3 id="3-2-浮点型"><a href="#3-2-浮点型" class="headerlink" title="3.2 浮点型"></a>3.2 浮点型</h3><p>浮点数也分为有符号的和无符号的。如下所示，前面的m指定了总的位数，后面的n指定了小数的位数，所以整数位数为m-n. 和C语言中的float和double范围一样。</p>
+<ol>
+<li>FLOAT[(m,n)]：</li>
+<li>DOUBLE[(m,n)]：</li>
+<li>DECIMAL[(m,n)]：适用于高精度要求的场景</li>
+</ol>
+<h3 id="3-3-时间类型"><a href="#3-3-时间类型" class="headerlink" title="3.3 时间类型"></a>3.3 时间类型</h3><ol>
+<li>YEAR：1字节，格式YYYY，范围1901-2155，零值0000</li>
+<li>TIME：3字节，格式HH:MM:SS，范围-838:59:59-838:59:59，零值00:00:00</li>
+<li>DATE：4字节，格式YYYY-MM-DD，范围1000-01-01-9999-12-31，零值0000-00-00</li>
+<li>DATETIME：8字节，格式YYYY-MM-DD HH:MM:SS，范围1000-01-01 00:00:00-9999-12-31 23:59:59，零值0000-00-00 00:00:00</li>
+<li>TIMESTAMP：4字节，格式YYYY-MM-DD HH:MM:SS，范围19700101080001-2038年的某个时刻，零值00000000000000</li>
+</ol>
+<p>或者使用时间戳，用BIGINT保存指定时间的毫秒值。</p>
+<h3 id="3-4-字符型"><a href="#3-4-字符型" class="headerlink" title="3.4 字符型"></a>3.4 字符型</h3><ol>
+<li>CHAR(m)：m字节，0&lt;=m&lt;=255</li>
+<li>VARCHAR(m)：L+1字节，L&lt;=m&lt;=65535</li>
+<li>TINYTEXT：L+1字节，L&lt;2<sup>8</sup></li>
+<li>TEXT：L+2字节，L&lt;2<sup>16</sup></li>
+<li>MEDIUMEXT：L+3字节，L&lt;2<sup>24</sup></li>
+<li>LONGTEXT：L+4字节，L&lt;2<sup>32</sup></li>
+<li>ENUM(‘val1’, ‘val2’, …)：枚举类型，取决于枚举个数，最多65535</li>
+<li>SET(‘val1’, ‘val2’, …)：主要用于对枚举进行组合选择</li>
+</ol>
+<h2 id="4、数据表的操作"><a href="#4、数据表的操作" class="headerlink" title="4、数据表的操作"></a>4、数据表的操作</h2><h3 id="4-1-创建数据表"><a href="#4-1-创建数据表" class="headerlink" title="4.1 创建数据表"></a>4.1 创建数据表</h3><pre><code>CREATE TABLE [IF NOT EXISTS] table_name (
+    column_name data_type, 
+    ...
+);
+</code></pre><h3 id="4-2-查看数据库的表"><a href="#4-2-查看数据库的表" class="headerlink" title="4.2 查看数据库的表"></a>4.2 查看数据库的表</h3><p>查看指定数据库的所有的表</p>
+<pre><code>SHOW TABLES [FROM db_name][LIKE &apos;pattern&apos;|WHERE expr];
+</code></pre><h3 id="4-3-查看列定义"><a href="#4-3-查看列定义" class="headerlink" title="4.3 查看列定义"></a>4.3 查看列定义</h3><p>显示指定表的各个列的定义：</p>
+<pre><code>SHOW COLUMNS FROM tbl_name;
+</code></pre><h3 id="4-4-约束"><a href="#4-4-约束" class="headerlink" title="4.4 约束"></a>4.4 约束</h3><h4 id="4-4-1-表的空和非空"><a href="#4-4-1-表的空和非空" class="headerlink" title="4.4.1 表的空和非空"></a>4.4.1 表的空和非空</h4><p>在创建表的时候，在定义列的后面加上<code>NOT NULL</code>来指定指定的列不可为空。这样的列在插入记录的时候必须对其进行赋值。</p>
+<h4 id="4-4-2-自增"><a href="#4-4-2-自增" class="headerlink" title="4.4.2 自增"></a>4.4.2 自增</h4><p>自动编号，必须与主键组合使用。通过在创建表的时候在列定义后加入<code>AUTO_INCREMENT</code>来实现。此外，可以通过<code>ALTER TABLE users AUTO_INCREMENT = 10000;</code>来指定自增的开始值。</p>
+<h4 id="4-4-3-主键"><a href="#4-4-3-主键" class="headerlink" title="4.4.3 主键"></a>4.4.3 主键</h4><p>必须保证唯一性，一个表只能有一个，非NULL。创建表的时候使用<code>PRIMARY KEY</code>来指定列是主键。</p>
+<h4 id="4-4-4-唯一约束"><a href="#4-4-4-唯一约束" class="headerlink" title="4.4.4 唯一约束"></a>4.4.4 唯一约束</h4><p>必须保证唯一性，一个表可以有多个，可以是NULL的。创建表的时候使用<code>UNIQUE KEY</code>来指定列是唯一的。</p>
+<h4 id="4-4-5-默认约束"><a href="#4-4-5-默认约束" class="headerlink" title="4.4.5 默认约束"></a>4.4.5 默认约束</h4><p>当指定的列没有指定值的时候就使用默认的值，在创建表的时候，通过使用<code>DEFAULT</code>关键字来指定列的默认值。</p>
+<h4 id="4-4-6-外键约束"><a href="#4-4-6-外键约束" class="headerlink" title="4.4.6 外键约束"></a>4.4.6 外键约束</h4><p>在实际开发过程中更多地使用逻辑外键而不是物理外键，就是只要保证表之间的关联关系就好，而不为表设置外键。因为外键要求创建表的时候，父表和子表都必须使用INNODB引擎。</p>
+<h3 id="4-5-修改表"><a href="#4-5-修改表" class="headerlink" title="4.5 修改表"></a>4.5 修改表</h3><h4 id="4-5-1-添加单列"><a href="#4-5-1-添加单列" class="headerlink" title="4.5.1 添加单列"></a>4.5.1 添加单列</h4><pre><code>ALTER TABLE tbl_name ADD [COLUMN] col_name col_def [FIRST|AFTER col_name]
+</code></pre><p>向指定的表中加入一列。通过<code>FIRST</code>指定新加入的列处于所有列的最前方，通过<code>AFTER col_name</code>指定新加入的列相对于某个列的位置。</p>
+<h4 id="4-5-2-添加多个列"><a href="#4-5-2-添加多个列" class="headerlink" title="4.5.2 添加多个列"></a>4.5.2 添加多个列</h4><pre><code>ALTER TABLE tbl_name ADD [COLUMN] (col_name col_def[, col_name col_def, ...])
+</code></pre><p>当向表中添加多个列的时候，只能将新加入列放在表的最后面的位置。</p>
+<h4 id="4-5-3-删除列"><a href="#4-5-3-删除列" class="headerlink" title="4.5.3 删除列"></a>4.5.3 删除列</h4><pre><code>ALTER TABLE tbl_name DROP [COLUMN] col_name[, col_name, ...]
+</code></pre><p>可以指定并删除多个列。</p>
+<h4 id="4-5-4-添加约束"><a href="#4-5-4-添加约束" class="headerlink" title="4.5.4 添加约束"></a>4.5.4 添加约束</h4><pre><code>ALTER TABLE tbl_name ADD [CONSTRAINT[symbol]] PRIMARY KEY [index_type](index_col_name)
+
+ALTER TABLE tbl_name ADD [CONSTRAINT[symbol]] UNIQUE [index_type](index_col_name)
+</code></pre><p>上面的两条语句分别用来向指定的表中的列加入主键和唯一性约束。示例<code>ALTER TABLE temp ADD UNIQUE(name)</code>（列名上要加括号）。加入了主键和唯一性约束的同时会为指定的列加上索引，所以可以使用<code>index_type</code>来指定索引的类型。要为MySQL设置默认的索引，到<code>my.ini</code>中的<code>default-storage-engine</code>中进行设置即可。另外，可以使用<code>SHOW INDEXES FROM tbl_name</code>查看指定表中存在的索引。</p>
+<h4 id="4-5-5-删除约束"><a href="#4-5-5-删除约束" class="headerlink" title="4.5.5 删除约束"></a>4.5.5 删除约束</h4><pre><code>ALTER TABLE tbl_name DROP PRIMARY KEY;
+
+ALTER TABLE DROP {INDEX|KEY} col_name;
+</code></pre><h4 id="4-5-6-修改表定义"><a href="#4-5-6-修改表定义" class="headerlink" title="4.5.6 修改表定义"></a>4.5.6 修改表定义</h4><pre><code>ALTER TABLE tbl_name MODIFY [COLUMN] col_name col_def [FIRST|AFTER col_name]
+</code></pre><p>上面这种方式可以修改列的定义语句，它适用的范围比较广——可以通过在col_def中指定约束和数据类型来对列进行更多的修改。</p>
+<pre><code>ALTER TABLE tbl_name CHANGE [COLUMN] old_col_name new_col_name col_def [FIRST|AFTER col_name]
+</code></pre><p>上面的修改语句的适用范围更广，它可以修改的范围包括：列的数据类型、约束、位置和名称。</p>
+<h4 id="4-5-7-修改表名"><a href="#4-5-7-修改表名" class="headerlink" title="4.5.7 修改表名"></a>4.5.7 修改表名</h4><pre><code>ALTER TABLE tbl_name RENAME [TO|AS] new_tbl_name 
+
+RENAME TABLE tbl_anem TO new_tbl_name [, tbl_name TO new_tbl_name...]
+</code></pre><h4 id="4-5-8-增加索引"><a href="#4-5-8-增加索引" class="headerlink" title="4.5.8 增加索引"></a>4.5.8 增加索引</h4><ol>
+<li>主键索引, 添加PRIMARY KEY：<code>ALTER TABLE tbl_name ADD PRIMARY KEY (col_name)</code></li>
+<li>唯一索引, 添加UNIQUE：<code>ALTER TABLE tbl_name ADD UNIQUE (col_name)</code></li>
+<li>普通索引, 添加INDEX：<br> <code>ALTER TABLE ADD key(col_name)</code>以及<code>ALTER TABLE tbl_name ADD INDEX index_name (col_name)</code></li>
+<li>全文索引, 添加FULLTEXT: <code>ALTER TABLE tbl_name ADD FULLTEXT (col_name)</code></li>
+<li>多列索引: <code>ALTER TABLE tbl_name ADD INDEX index_name (col_name1, col_name2, ..)</code></li>
+</ol>
+<h2 id="5、插入操作"><a href="#5、插入操作" class="headerlink" title="5、插入操作"></a>5、插入操作</h2><p>向表中插入记录</p>
+<pre><code>INSERT [INTO] tbl_name [(col_name, ...)] {VALUES|VALUE} ({expr|DEFAULT}, ...), (...), ...
+</code></pre><p>以上用来向指定数据库的指定列中插入数据，如果不指定了列的名称，就必须对表的所有的列进行赋值。可以为指定的列指定值，可以使用表达式，也可以使用默认值。</p>
+<pre><code>INSERT [INTO] tbl_name SET col_name = {expr|DEFAULT} [, col_name = {expr|DEFAULT}]
+
+INSERT [INTO] tbl_name [(col_name, ...)] SELECT ...
+</code></pre><p>将查询结果插入到指定的表中。比如<code>INSERT INTO temp (name) SELECT name FROM assignment</code></p>
+<h2 id="6、更新操作"><a href="#6、更新操作" class="headerlink" title="6、更新操作"></a>6、更新操作</h2><pre><code>UPDATE [LOW_PRIORITY] [IGNORE] table_reference 
+SET col_name1 = {expr|DEFAULT} [, col_name2 = {expr|DEFAULT}] ... 
+[WHERE where_condition]
+</code></pre><p>没有指定WHERE语句，就对整个表的全部记录进行更新。</p>
+<h2 id="7、删除操作"><a href="#7、删除操作" class="headerlink" title="7、删除操作"></a>7、删除操作</h2><pre><code>DELETE FROM tbl_name [WHERE where_condition]
+</code></pre><h2 id="8、查找"><a href="#8、查找" class="headerlink" title="8、查找"></a>8、查找</h2><pre><code>SELECT select_expr [, select_expr ...] 
+[
+    FROM table_references
+    [WHERE where_condition]
+    [GROUP BY {col_name|position} [ASC|DESC], ... ]
+    [HAVING having_condition]
+    [ORDER BY {col_name|expr|position} [ASC|DESC], ...]
+    [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+]
+</code></pre><h3 id="8-1-查找不同值"><a href="#8-1-查找不同值" class="headerlink" title="8.1 查找不同值"></a>8.1 查找不同值</h3><p>将<code>DISTINCT</code>关键字放在指定的列前面，用于检索指定的列的不同的值。比如，<code>select count(distinct cust_id) from orders;</code>。</p>
+<p><code>DISTINCT</code>作用于所有的列，而不是其后的那一列。比如，<code>select count(distinct cust_id, order_num) from orders;</code>将搜索出cust_id不同并且order_num不同的列。</p>
+<h3 id="8-2-限制结果集、分页"><a href="#8-2-限制结果集、分页" class="headerlink" title="8.2 限制结果集、分页"></a>8.2 限制结果集、分页</h3><pre><code>select * from orders limit 2 offerset 2;  
+select * from orders limit 2 , 2;
+</code></pre><p>类似于上面这样，前面的数字2表示查询的数目条数，后面的2表示从哪个位置开始。所以，上面的效果是查询第2条和第3条数据。但是，要注意的是数据库中条的编号的起始位置是0。如果不指定第二个2将查出所有数据中前两个记录。</p>
+<h3 id="8-3-排序结果集"><a href="#8-3-排序结果集" class="headerlink" title="8.3 排序结果集"></a>8.3 排序结果集</h3><p>使用<code>ORDER BY</code>语句。可以指定多个列进行排序，可以为要排序的列指定排序的方向，使用<code>ASC</code>表示增序排列，使用<code>DESC</code>表示降序排列。默认，升序排列。除了使用列名来指定要排序的列，害可以使用列的在查询的所有列中的位置来指定排序的列。</p>
+<p><code>DESC</code>只应用到直接位于其前面的列，如果要为多个列进行降序，就应该每个列后面加上<code>DESC</code>。</p>
+<h3 id="8-4-过滤结果集"><a href="#8-4-过滤结果集" class="headerlink" title="8.4 过滤结果集"></a>8.4 过滤结果集</h3><h4 id="8-4-1-WEHER子句操作符"><a href="#8-4-1-WEHER子句操作符" class="headerlink" title="8.4.1 WEHER子句操作符"></a>8.4.1 WEHER子句操作符</h4><ol>
+<li>等于 <code>=</code></li>
+<li>不等于 <code>&lt;&gt;</code>和<code>!=</code></li>
+<li>小于和小于等于 <code>&lt;</code>和<code>&lt;=</code></li>
+<li>大于和大于等于 <code>&gt;</code>和<code>&gt;=</code></li>
+<li>为NULL值<code>IS NULL</code></li>
+<li>处于两者之间<code>BETWEEN</code></li>
+</ol>
+<p><code>BETWEEN</code>实例：</p>
+<pre><code>SELECT * FROM orders WHERE order_num BETWEEN 20006 AND 30000;
+</code></pre><h4 id="8-4-2-AND和OR操作符"><a href="#8-4-2-AND和OR操作符" class="headerlink" title="8.4.2 AND和OR操作符"></a>8.4.2 AND和OR操作符</h4><p>使用AND和OR操作符的时候要注意优先级是<code>AND&gt;OR</code>。比如，</p>
+<pre><code>select * from orders 
+where order_num = 20006 or order_num = 200005 and cust_id = 1000000001;
+</code></pre><p>会被当成</p>
+<pre><code>select * from orders 
+where order_num = 20006 or (order_num = 20005 and cust_id = 1000000001);
+</code></pre><p>而如果我们想要表达的意思是：</p>
+<pre><code>select * from orders 
+where (order_num = 20006 or order_num = 200005) and cust_id = 1000000001;
+</code></pre><p>因此就要在OR操作符上面增加圆括号。</p>
+<h4 id="8-4-3-IN操作符"><a href="#8-4-3-IN操作符" class="headerlink" title="8.4.3 IN操作符"></a>8.4.3 IN操作符</h4><pre><code>select * from orders where order_num in (20006, 20005);  
+</code></pre><p>IN操作符其实完成的操作和OR一样。</p>
+<h4 id="8-4-4-NOT操作"><a href="#8-4-4-NOT操作" class="headerlink" title="8.4.4 NOT操作"></a>8.4.4 NOT操作</h4><pre><code>select * from orders where not order_num = 20005;
+</code></pre><p>如上所示将not操作加在where条件的前面可以表示对条件的反。上面的效果就相当于<code>where order_num != 20005</code></p>
+<h4 id="8-4-5-exists"><a href="#8-4-5-exists" class="headerlink" title="8.4.5 exists"></a>8.4.5 exists</h4><pre><code>select * from orders t 
+where 1 = 1 
+and exists(select * from customers where cust_id = t.cust_id);
+</code></pre><h4 id="8-4-6-like"><a href="#8-4-6-like" class="headerlink" title="8.4.6 like"></a>8.4.6 like</h4><pre><code>select * from products where prod_name like &apos;%doll&apos;;
+</code></pre><p>上面的是查找所有prod_name以doll结尾的记录。还可以，比如<code>Fish%</code>用来匹配所有以Fish开头的，<code>F%y</code>用来匹配以F开头并且以y结尾的记录。</p>
+<p>通配符%可以用来匹配除NULL意外的记录，即<code>WHERE prod_name like &#39;%&#39;</code>不会找出prod_name为NULL的记录。</p>
+<h4 id="8-4-7-下划线"><a href="#8-4-7-下划线" class="headerlink" title="8.4.7 下划线"></a>8.4.7 下划线</h4><p>下划线用来匹配指定数量的字符。一个下划线匹配一个字符。</p>
+<h3 id="8-5-创建计算字段"><a href="#8-5-创建计算字段" class="headerlink" title="8.5 创建计算字段"></a>8.5 创建计算字段</h3><h4 id="8-5-1-拼接字符串"><a href="#8-5-1-拼接字符串" class="headerlink" title="8.5.1 拼接字符串"></a>8.5.1 拼接字符串</h4><pre><code>select concat(cust_name,&apos;:&apos;,cust_city) from customers;
+</code></pre><p>如上所示，使用concat函数可以将查询结果拼接起来。</p>
+<h4 id="8-5-2-使用别名"><a href="#8-5-2-使用别名" class="headerlink" title="8.5.2 使用别名"></a>8.5.2 使用别名</h4><pre><code>select concat(cust_name,&apos;:&apos;,cust_city) as cust_city from customers;
+</code></pre><p>如上所示，使用<code>AS</code>操作符来将拼接的字符串命名为cust_city.</p>
+<h4 id="8-5-3-使用正则表达式"><a href="#8-5-3-使用正则表达式" class="headerlink" title="8.5.3 使用正则表达式"></a>8.5.3 使用正则表达式</h4><p>下面的是使用正则表达式对数据进行过滤的例子，即可以将REGEXP像like一样使用，并在REGEXP后面加上正则表达式即可。下面的表达式检索出的结果是，customers中所有cust_name中包含’Fun’的记录。</p>
+<pre><code>select * from customers where cust_name REGEXP &apos;Fun&apos;;
+</code></pre><p>下面的SQL语句用来搜索出所有prod_name开头字符包含在1,2,8之内，并且字符后面是’ inch’的记录：</p>
+<pre><code>select * from products where prod_name regexp &apos;[812] inch&apos;
+</code></pre><h3 id="8-6-分组数据"><a href="#8-6-分组数据" class="headerlink" title="8.6 分组数据"></a>8.6 分组数据</h3><h4 id="8-6-1-分组过滤GROUP-BY"><a href="#8-6-1-分组过滤GROUP-BY" class="headerlink" title="8.6.1 分组过滤GROUP BY"></a>8.6.1 分组过滤GROUP BY</h4><pre><code>select order_num, count(order_num) from orderitems group by order_num;
+</code></pre><p>使用<code>GROUP BY</code>可以对数据进行分组，上面的效果是显示出指定order_num的记录的条数。</p>
+<pre><code>select t.*, sum(quantity*item_price) as total 
+from orders as t, orderitems 
+where t.order_num = orderitems.order_num 
+group by order_num;
+</code></pre><p>上面的语句的执行的结果是，得到了orders表的全部数据，以及每条订单对应的总价（根据orderitems表计算得出）。但是如果没有加入Group BY语句就无法得到上面的结果。</p>
+<p>可以使用下面的两个SQL语句的执行结果来理解GROUP BY语句的效果：</p>
+<pre><code>select sum(quantity*item_price) from orderitems;
+select sum(quantity*item_price) from orderitems group by order_num;
+</code></pre><p>如果没加Group BY得到的是两个列的每条记录的两个字段相乘之后的总和，使用之后得到的是针对每个order_num的两个字段相乘之后的总和。前面的只得到了一条记录，后面的得到了针对每个order_num的记录。</p>
+<p>下面的例子也使用了GROUP语句，但是这里在分组的时候的依据不是order_num而是cust_id。这样也是可以的，它得到的结果是：各个cust_id所应该支付的账单总额。</p>
+<pre><code>select sum(i.quantity*i.item_price) as total
+from orders as o, orderitems as i
+where o.order_num = i.order_num
+group by o.cust_id;
+</code></pre><p>如果我们再关联一张customers表，来得到用户的名称，那么我们可以写成下面的样子：</p>
+<pre><code>select c.cust_name as name, sum(i.quantity*i.item_price) as total
+from orderitems as i, orders as o, customers as c
+where i.order_num = o.order_num and c.cust_id = o.cust_id
+group by c.cust_id;
+</code></pre><h4 id="8-6-2-过滤分组HAVING"><a href="#8-6-2-过滤分组HAVING" class="headerlink" title="8.6.2 过滤分组HAVING"></a>8.6.2 过滤分组HAVING</h4><pre><code>select sum(quantity * item_price) as total 
+from orderitems 
+group by order_num 
+having total &gt; 1000;
+</code></pre><p>如上所示，我们使用<code>HAVING</code>语句来对分组之后的结果进行过滤。上面是找出总价值在1000以上的分组。</p>
+<h3 id="8-7-子查询"><a href="#8-7-子查询" class="headerlink" title="8.7 子查询"></a>8.7 子查询</h3><p>下面的使用了子查询的语句执行的结果与上面的一样：指定名称用户的总额。</p>
+<pre><code>select c.cust_name, (select sum(i.quantity*i.item_price) 
+                     from orderitems as i, orders as o
+                     where i.order_num = o.order_num and c.cust_id = o.cust_id 
+                     group by o.cust_id) as total 
+from customers as c;
+</code></pre><p>上面的这种方式是将子查询用作计算字段。</p>
+<p>子查询的另一种是用方式是将子查询的结果放在一个IN中作为取值范围。</p>
+<h3 id="8-8-联结表"><a href="#8-8-联结表" class="headerlink" title="8.8 联结表"></a>8.8 联结表</h3><p>所谓的联结可以理解成按照指定的方式将两个或者多个表组合起来，形成一个类似于新的表。因为MySQL是关系型数据库，所以经常会在多个表之间存在一对多或者多对多关系，而联结的效果就是将这样的表联结起来。比如，如果两个数据库之间是一对多关系，那么肯定有些字段只存在于父表中，在查询的时候我们要将这些存在于父表中的字段与存在于子表中的字段组合起来，形成一个完整的“数据”，就应该使用联结来实现。</p>
+<p>假如有这样的数据：</p>
+<p>在表1中存储着：A<sub>0</sub>B<sub>0</sub>, A<sub>0</sub>B<sub>1</sub><br>在表2中存储着：A<sub>0</sub>C<sub>0</sub>, A<sub>0</sub>C<sub>1</sub>, A<sub>0</sub>C<sub>2</sub></p>
+<p>这里的A, B, C表示的是数据库的列中存储的记录。A表示一个列中的数据，B也表示列中的数据，AB构成一个记录。</p>
+<p>那么，如果我们对表1和表2在A上面使用联结将得到的记录如下：</p>
+<p>B<sub>0</sub>C<sub>0</sub>, B<sub>0</sub>C<sub>1</sub>, B<sub>0</sub>C<sub>2</sub>, B<sub>1</sub>C<sub>0</sub>, B<sub>1</sub>C<sub>1</sub>, B<sub>1</sub>C<sub>2</sub></p>
+<p>这就相当于我们将B中的与A相关的字段补充了起来。</p>
+<h4 id="8-8-1-等值联结"><a href="#8-8-1-等值联结" class="headerlink" title="8.8.1 等值联结"></a>8.8.1 等值联结</h4><p>联结表的最常见的形式是使用<code>=</code>将两表的对应的字段连接起来，这叫做等值联结。</p>
+<h4 id="8-8-2-内联结"><a href="#8-8-2-内联结" class="headerlink" title="8.8.2 内联结"></a>8.8.2 内联结</h4><p>下面是使用内联结的一个实现：</p>
+<pre><code>select vend_name, prod_name
+from vendors as v inner join products as p
+on v.vend_id = p.vend_id;
+</code></pre><p>内联结相当于对两个表在指定的列上面取交集，即只有两个表中都存在的字段才会进行联结。</p>
+<h4 id="8-8-3-自联结"><a href="#8-8-3-自联结" class="headerlink" title="8.8.3 自联结"></a>8.8.3 自联结</h4><pre><code>select *
+from customers as c1, customers as c2
+where c1.cust_name = c2.cust_name
+and c2.cust_contact = &apos;Jim Jones&apos;;
+</code></pre><p>上面的SQL语句的是自联结的，需要为两个相同的表分别指定一个别名。</p>
+<h4 id="8-8-4-外联结"><a href="#8-8-4-外联结" class="headerlink" title="8.8.4 外联结"></a>8.8.4 外联结</h4><p>所谓的外联结，就是指左联结和右联结。它跟内联结不同的地方只在于，以左联结为例，如果左表中被用来指定联结的值在右表中不存在，那么也一样将左表中的记录检索出来，只是右表中指定的字段为NULL。</p>
+<pre><code>select vend_name, prod_name
+from vendors as v left join products as p
+on v.vend_id = p.vend_id;
+</code></pre><p>比如上面的SQL中，如果vendors中的vend_id在右表中不存在，那么prod_name作为NULL。同理，可得右联结。</p>
+<p>联结的语法：</p>
+<pre><code>LEFT [OUTER] JOIN，左外连接。
+RIGHT [OUTER] JOIN，右外连接。
+</code></pre><p>这里的OUTER是可选的，有没有都行。</p>
+<h4 id="8-8-5-组合查询UNION"><a href="#8-8-5-组合查询UNION" class="headerlink" title="8.8.5 组合查询UNION"></a>8.8.5 组合查询UNION</h4><pre><code>select prod_name from products
+union
+select vend_name from vendors;
+</code></pre><p>使用<code>UNION</code>可以将两个分别独立的SQL查询的结果合并起来。（但是要求两个SQL检索出的列的数目要相等，其实它的效果和OR差不多）</p>
+<p>如果查询出来的两条记录一样，重复的行会被取消，可以使用<code>UNION ALL</code>关键字来替代<code>UNION</code>，这样重复的行就不会被取消。</p>
+<p>使用UNION组合查询的时候，只能有一条ORDER BY子句，且必须位于最后一条SELECT语句的后面。</p>
+<h2 id="9、视图"><a href="#9、视图" class="headerlink" title="9、视图"></a>9、视图</h2><p>视图可以用来简化SQL操作，你可以将一次的查询结果作为一个视图，并为其添加一个名称，比如A。然后，我们可以像使用一个表一样从A中检索出数据。</p>
+<p>视图的创建语句如下：</p>
+<pre><code>create view orderdetail as
+select o.*, i.order_item, i.prod_id, i.quantity, i.item_price
+from orders as o left join orderitems as i
+on o.order_num = i.order_num;
+</code></pre><p>即在一个标准的查询语句上面增加一个<code>create view orderdetail as</code>语句来创建视图。创建完毕视图之后，我们就可以像使用表一样从视图中检索数据。比如：</p>
+<pre><code>select * from orderdetail order by cust_id;
+</code></pre><h2 id="10、存储过程"><a href="#10、存储过程" class="headerlink" title="10、存储过程"></a>10、存储过程</h2><p>存储过程和视图相似，也是提供一种SQL复用的机制。因为本身视图只能用来将指定的数据检索出来作为数据表一样使用，它本身只能用于“查询”操作，具有一定的局限性。因此，这里有存储过程来将指定功能的SQL封装起来，使其像一个函数一样可以被调用。</p>
+<p>存储过程的可移植性比较差，而且需要更高的技能和经验，因此通过被限制创建。</p>
+<h3 id="10-1-创建存储过程"><a href="#10-1-创建存储过程" class="headerlink" title="10.1 创建存储过程"></a>10.1 创建存储过程</h3><h4 id="10-1-1-创建无参存储过程"><a href="#10-1-1-创建无参存储过程" class="headerlink" title="10.1.1 创建无参存储过程"></a>10.1.1 创建无参存储过程</h4><p>在MySQL命令行中创建存储过程的示例：</p>
+<pre><code>mysql&gt; delimiter //
+mysql&gt; create procedure mypp()
+    -&gt; begin
+    -&gt; select * from orders;
+    -&gt; end//
+</code></pre><p>在这里<code>delimiter //</code>的作用是使用<code>//</code>而不是’;’作为语句分隔符。</p>
+<h4 id="10-1-2-为存储过程添加参数"><a href="#10-1-2-为存储过程添加参数" class="headerlink" title="10.1.2 为存储过程添加参数"></a>10.1.2 为存储过程添加参数</h4><p>MySQL支持IN（传递给存储过程）、 OUT（从存储过程传出，如这里所用）和INOUT（对存储过程传入和传出）类型的参数。</p>
+<pre><code>mysql&gt; create procedure avgprice(in num int, out price decimal(8,2))
+    -&gt; begin
+    -&gt;     select avg(item_price)
+    -&gt;     from orderitems
+    -&gt;     where order_num = num
+    -&gt;     into price;
+    -&gt; end//
+</code></pre><p>上面的语句中创建了一个名为avgprice的存储过程。它接受两个参数，num是传入的参数；price是传出的参数。在存储过程内部，我们为orderitems的指定order_num为num的所有记录的平均item_price赋值非price.</p>
+<p>创建完毕了存储过程之后，我们可以像下面这样调用以上存储过程：</p>
+<pre><code>call avgprice(20009, @price);
+</code></pre><p>然后，我们可以使用SELECT语句得到price的计算结果：</p>
+<pre><code>select @price
+</code></pre><h3 id="10-2-使用存储过程"><a href="#10-2-使用存储过程" class="headerlink" title="10.2 使用存储过程"></a>10.2 使用存储过程</h3><p>没有参数的存储过程的使用示例：</p>
+<pre><code>call mypp();
+</code></pre><h3 id="10-3-删除存储过程"><a href="#10-3-删除存储过程" class="headerlink" title="10.3 删除存储过程"></a>10.3 删除存储过程</h3><pre><code>drop procedure mypp;
+</code></pre><h3 id="10-4-检查存储过程"><a href="#10-4-检查存储过程" class="headerlink" title="10.4 检查存储过程"></a>10.4 检查存储过程</h3><pre><code>show create procedure avgprice;
+</code></pre><h2 id="11、游标"><a href="#11、游标" class="headerlink" title="11、游标"></a>11、游标</h2><p>MySQL游标只能用于存储过程（和函数）</p>
+<pre><code>mysql&gt; create procedure copyprodname()
+    -&gt; begin
+    -&gt;     --定义局部变量，结束条件
+    -&gt;     declare done boolean default 0;
+    -&gt;     --定义局部变量，产品名称
+    -&gt;     declare name varchar(255);
+    -&gt;
+    -&gt;     --定义游标
+    -&gt;     declare names cursor
+    -&gt;     for
+    -&gt;     select prod_name from products;
+    -&gt;
+    -&gt;     --定义循环结束条件
+    -&gt;     declare continue handler for sqlstate &apos;02000&apos; set done = 1;
+    -&gt;
+    -&gt;     --创建表
+    -&gt;     create table if not exists prod_name(name varchar(255));
+    -&gt;
+    -&gt;     --打开游标
+    -&gt;     open names;
+    -&gt;
+    -&gt;     --定义循环
+    -&gt;     repeat
+    -&gt;     --获取游标的数据，将其填充到name中
+    -&gt;     fetch names into name;
+    -&gt;     --将游标中的数据插入到prod_name表中
+    -&gt;     insert into prod_name values(name);
+    -&gt;     --定义循环的结束条件
+    -&gt;     until done end repeat;
+    -&gt;
+    -&gt;     --结束游标
+    -&gt;     close names;
+    -&gt; end//
+</code></pre><p>在上面的代码中，使用</p>
+<pre><code>declare done boolean default 0;
+</code></pre><p>定义了循环的条件为布尔类型，并将其默认值设置为0. 然后，使用定义了循环结束的条件</p>
+<pre><code>declare continue handler for sqlstate &apos;02000&apos; set done = 1;
+</code></pre><p>这里的’02000’是一个未找到条件， 当REPEAT由于没有更多的行供循环而不能继续时，出现这个条件。在使用游标之前，需要先打开游标。这通过SQL语句：</p>
+<pre><code>open names;
+</code></pre><p>来完成。当我们执行完业务逻辑之后，需要关闭游标。这通过SQL语句：</p>
+<pre><code>close names;
+</code></pre><p>来完成。在游标的打开和关闭的作用域内，我们通过</p>
+<pre><code>fetch names into name;
+</code></pre><p>将从游标中得到的数据填充到name中。</p>
+<h2 id="12、触发器"><a href="#12、触发器" class="headerlink" title="12、触发器"></a>12、触发器</h2><p>触发器用来在某事件发生时自动执行，有些类似于监听器的作用。它只能为delete, insert, update三种操作设置触发器。触发器可以设置在指定的操作执行之前或者之后触发。</p>
+<p>只有表才支触发器，视图和临时表都不支持。</p>
+<p>每个表最多设置6个触发器，且同一触发器不能与多个事件或多个表关联。</p>
+<h3 id="12-1-创建触发器"><a href="#12-1-创建触发器" class="headerlink" title="12.1 创建触发器"></a>12.1 创建触发器</h3><p>触发器创建的基本语法格式：</p>
+<pre><code>CREATE TRIGGER &lt;触发器名称&gt;  --触发器必须有名字，最多64个字符
+{ BEFORE | AFTER }  --触发器有执行的时间设置：可以设置为事件发生前或后。
+{ INSERT | UPDATE | DELETE }  --触发的事件：insert、update或delete的过程中触发。
+ON &lt;表名称&gt;  --触发器是属于某一个表的:当在这个表上执行插入、 更新或删除操作的时候就触发。
+FOR EACH ROW  --触发器的执行间隔：FOR EACH ROW子句通知触发器 每隔一行执行一次动作，而不是对整个表执行一次。
+&lt;触发器SQL语句&gt;  --触发器包含所要触发的SQL语句：这里的语句可以是任何合法的语句， 包括复合语句，但是这里的语句受的限制和函数的一样。
+</code></pre><p>触发器的使用示例：</p>
+<pre><code>mysql&gt; create trigger watcher after insert on prod_name
+    -&gt; for each row
+    -&gt; begin
+    -&gt;     insert into prod_name_copy values(new.name);
+    -&gt; end//
+</code></pre><p>上面的触发器监听prod_name表的插入操作，每当向表prod_name中插入一条记录的同时向prod_name_copy也插入一条记录。</p>
+<p><strong>insert触发器</strong>代码内，可以引用一个名为new的虚拟表，访问被插入的行。</p>
+<p><strong>delete触发器</strong>代码内，可以引用一个名为old的虚拟表，访问被删除的行。</p>
+<p><strong>update触发器</strong>代码内，可以使用一个名为old的虚拟表，访问更新之前的数据，使用名为new的虚拟表，访问更新的值。</p>
+<h3 id="12-2-删除触发器"><a href="#12-2-删除触发器" class="headerlink" title="12.2 删除触发器"></a>12.2 删除触发器</h3><pre><code>DROP TRIGGER 触发器名称：
+</code></pre><h2 id="13、事务管理"><a href="#13、事务管理" class="headerlink" title="13、事务管理"></a>13、事务管理</h2><p>事务保证了一系列操作的原子性，只有当执行过程中没有产生错误，并且提交了之后才会将执行的结果反应到数据库上。如果使用了回滚操作将回复到开始事务之前的状态。</p>
+<p>MySQL中的数据库引擎分别支持不同类型的事务。</p>
+<h4 id="13-1-基本的事务操作"><a href="#13-1-基本的事务操作" class="headerlink" title="13.1 基本的事务操作"></a>13.1 基本的事务操作</h4><p>开始事务可以使用下面的语句：</p>
+<pre><code>START TRANSACTION;
+</code></pre><p>回滚事务使用：</p>
+<pre><code>ROLLBACK;
+</code></pre><p>提交事务使用：</p>
+<pre><code>COMMIT;
+</code></pre><h3 id="13-2-创建保留点"><a href="#13-2-创建保留点" class="headerlink" title="13.2 创建保留点"></a>13.2 创建保留点</h3><p>可以使用语句</p>
+<pre><code>SAVEPOINT 名称;
+</code></pre><p>来创建保留点。在准备回滚的时候，我们可以使用</p>
+<pre><code>ROLLBACK TO 名称;
+</code></pre><p>来回滚到指定的保留点。这样指定保留点之前的操作不会回滚，而保留点之后的操作将全部被会滚。</p>
+<p>通常，保留点越多越好。当提交或者回滚之后，保留点会被自动释放。此外，也可以使用<code>RELEASE</code>来主动释放保留点。</p>
+<h3 id="13-3-修改默认提交行为"><a href="#13-3-修改默认提交行为" class="headerlink" title="13.3 修改默认提交行为"></a>13.3 修改默认提交行为</h3><p>使用</p>
+<pre><code>SET autocommit = 0;
+</code></pre><p>来设置不自动提交。</p>
+<h2 id="14、安全管理"><a href="#14、安全管理" class="headerlink" title="14、安全管理"></a>14、安全管理</h2><p>在MySQL的数据库中存在一个mysql库，那里面的user表用于存储MySQL的用户。</p>
+<pre><code>create user shouheng identified by &apos;psd&apos;;
+</code></pre><p>上面的SQL用来MySQL中添加一个用户。如果要对用户进行重命名，可以使用：</p>
+<pre><code>rename user little_boy to shouheng;
+</code></pre><p>如果删除用户可以使用：</p>
+<pre><code>drop user username;
+</code></pre><p>查看授予用户的权限：</p>
+<pre><code>show grants for shouheng;
+</code></pre><p>授予权限：</p>
+<pre><code>grant select on sql_test_db.* to shouheng;
+</code></pre><p>以上操作用来将sql_test_db的所有数据的只读权限授予指定用户。如果要回收指定用户的权限，可以使用</p>
+<pre><code>revoke select on sql_test_db.* from shouheng;
+</code></pre><p>它表示回收指定用户对sql_test_db的只读权限。</p>
+<p>除了上面示例的只读权限以外，MySQL还允许为新加入的用户指定其他权限。</p>
+<p>为指定的用户修改密码：</p>
+<pre><code>set password for shouheng = Password(&apos;psd&apos;);
+</code></pre><hr>
+<p><strong>如果您喜欢我的文章，可以在以下平台关注我：</strong></p>
+<ul>
+<li>个人主页：<a href="https://shouheng88.github.io/" target="_blank" rel="noopener">https://shouheng88.github.io/</a></li>
+<li>掘金：<a href="https://juejin.im/user/585555e11b69e6006c907a2a" target="_blank" rel="noopener">https://juejin.im/user/585555e11b69e6006c907a2a</a></li>
+<li>Github：<a href="https://github.com/Shouheng88" target="_blank" rel="noopener">https://github.com/Shouheng88</a></li>
+<li>CSDN：<a href="https://blog.csdn.net/github_35186068" target="_blank" rel="noopener">https://blog.csdn.net/github_35186068</a></li>
+<li>微博：<a href="https://weibo.com/u/5401152113" target="_blank" rel="noopener">https://weibo.com/u/5401152113</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/wx.png" alt="WngShhng wechat" style="width: 200px; max-width: 100%;"/>
+    <div>关注作者的微信公众号获取更多的学习内容</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>支持作者</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/mm_pay.png" alt="WngShhng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/ali_pay.jpg" alt="WngShhng 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/11/Android-多线程编程：IntentService-HandlerThread/" rel="next" title="Android 多线程编程：IntentService & HandlerThread">
+                <i class="fa fa-chevron-left"></i> Android 多线程编程：IntentService & HandlerThread
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/11/五分钟学习-Java-8-行为参数化/" rel="prev" title="五分钟学习 Java 8 行为参数化">
+                五分钟学习 Java 8 行为参数化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="WngShhng" />
+            
+              <p class="site-author-name" itemprop="name">WngShhng</p>
+              <p class="site-description motion-element" itemprop="description">生命就是一种表达</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Shouheng88" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shouheng2015@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://plus.google.com/u/0/102173602321685428586" target="_blank" title="Google">
+                      
+                        <i class="fa fa-fw fa-google"></i>Google</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/5527475/shouheng-wang" target="_blank" title="SOF">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>SOF</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/user/585555e11b69e6006c907a2a" title="掘金博客" target="_blank">掘金博客</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/github_35186068" title="CSDN博客" target="_blank">CSDN博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、概述"><span class="nav-number">1.</span> <span class="nav-text">1、概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-目录结构"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 目录结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-启动和停止"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 启动和停止</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-登入和登出"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 登入和登出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-登入"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3.1 登入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2-登出"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.2 登出</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-修改输入提示符"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 修改输入提示符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-查询数据库信息"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 查询数据库信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-注释"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-约定"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 约定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-关于字符编码"><span class="nav-number">1.8.</span> <span class="nav-text">1.8 关于字符编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、数据库操作"><span class="nav-number">2.</span> <span class="nav-text">2、数据库操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-创建"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-显示创建数据库的SQL语句"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 显示创建数据库的SQL语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-修改"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-删除"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-显示当前所有数据库"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 显示当前所有数据库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、数据类型"><span class="nav-number">3.</span> <span class="nav-text">3、数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-整型"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 整型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-浮点型"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 浮点型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-时间类型"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 时间类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-字符型"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 字符型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、数据表的操作"><span class="nav-number">4.</span> <span class="nav-text">4、数据表的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-创建数据表"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 创建数据表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-查看数据库的表"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 查看数据库的表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-查看列定义"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 查看列定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-约束"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 约束</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-1-表的空和非空"><span class="nav-number">4.4.1.</span> <span class="nav-text">4.4.1 表的空和非空</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-2-自增"><span class="nav-number">4.4.2.</span> <span class="nav-text">4.4.2 自增</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-3-主键"><span class="nav-number">4.4.3.</span> <span class="nav-text">4.4.3 主键</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-4-唯一约束"><span class="nav-number">4.4.4.</span> <span class="nav-text">4.4.4 唯一约束</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-5-默认约束"><span class="nav-number">4.4.5.</span> <span class="nav-text">4.4.5 默认约束</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-6-外键约束"><span class="nav-number">4.4.6.</span> <span class="nav-text">4.4.6 外键约束</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-修改表"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 修改表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-1-添加单列"><span class="nav-number">4.5.1.</span> <span class="nav-text">4.5.1 添加单列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-2-添加多个列"><span class="nav-number">4.5.2.</span> <span class="nav-text">4.5.2 添加多个列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-3-删除列"><span class="nav-number">4.5.3.</span> <span class="nav-text">4.5.3 删除列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-4-添加约束"><span class="nav-number">4.5.4.</span> <span class="nav-text">4.5.4 添加约束</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-5-删除约束"><span class="nav-number">4.5.5.</span> <span class="nav-text">4.5.5 删除约束</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-6-修改表定义"><span class="nav-number">4.5.6.</span> <span class="nav-text">4.5.6 修改表定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-7-修改表名"><span class="nav-number">4.5.7.</span> <span class="nav-text">4.5.7 修改表名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-8-增加索引"><span class="nav-number">4.5.8.</span> <span class="nav-text">4.5.8 增加索引</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、插入操作"><span class="nav-number">5.</span> <span class="nav-text">5、插入操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、更新操作"><span class="nav-number">6.</span> <span class="nav-text">6、更新操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、删除操作"><span class="nav-number">7.</span> <span class="nav-text">7、删除操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8、查找"><span class="nav-number">8.</span> <span class="nav-text">8、查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-查找不同值"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 查找不同值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-限制结果集、分页"><span class="nav-number">8.2.</span> <span class="nav-text">8.2 限制结果集、分页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-排序结果集"><span class="nav-number">8.3.</span> <span class="nav-text">8.3 排序结果集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-过滤结果集"><span class="nav-number">8.4.</span> <span class="nav-text">8.4 过滤结果集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-1-WEHER子句操作符"><span class="nav-number">8.4.1.</span> <span class="nav-text">8.4.1 WEHER子句操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-2-AND和OR操作符"><span class="nav-number">8.4.2.</span> <span class="nav-text">8.4.2 AND和OR操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-3-IN操作符"><span class="nav-number">8.4.3.</span> <span class="nav-text">8.4.3 IN操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-4-NOT操作"><span class="nav-number">8.4.4.</span> <span class="nav-text">8.4.4 NOT操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-5-exists"><span class="nav-number">8.4.5.</span> <span class="nav-text">8.4.5 exists</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-6-like"><span class="nav-number">8.4.6.</span> <span class="nav-text">8.4.6 like</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-7-下划线"><span class="nav-number">8.4.7.</span> <span class="nav-text">8.4.7 下划线</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-5-创建计算字段"><span class="nav-number">8.5.</span> <span class="nav-text">8.5 创建计算字段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-5-1-拼接字符串"><span class="nav-number">8.5.1.</span> <span class="nav-text">8.5.1 拼接字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-5-2-使用别名"><span class="nav-number">8.5.2.</span> <span class="nav-text">8.5.2 使用别名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-5-3-使用正则表达式"><span class="nav-number">8.5.3.</span> <span class="nav-text">8.5.3 使用正则表达式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-6-分组数据"><span class="nav-number">8.6.</span> <span class="nav-text">8.6 分组数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-6-1-分组过滤GROUP-BY"><span class="nav-number">8.6.1.</span> <span class="nav-text">8.6.1 分组过滤GROUP BY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-6-2-过滤分组HAVING"><span class="nav-number">8.6.2.</span> <span class="nav-text">8.6.2 过滤分组HAVING</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-7-子查询"><span class="nav-number">8.7.</span> <span class="nav-text">8.7 子查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-8-联结表"><span class="nav-number">8.8.</span> <span class="nav-text">8.8 联结表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-8-1-等值联结"><span class="nav-number">8.8.1.</span> <span class="nav-text">8.8.1 等值联结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-8-2-内联结"><span class="nav-number">8.8.2.</span> <span class="nav-text">8.8.2 内联结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-8-3-自联结"><span class="nav-number">8.8.3.</span> <span class="nav-text">8.8.3 自联结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-8-4-外联结"><span class="nav-number">8.8.4.</span> <span class="nav-text">8.8.4 外联结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-8-5-组合查询UNION"><span class="nav-number">8.8.5.</span> <span class="nav-text">8.8.5 组合查询UNION</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9、视图"><span class="nav-number">9.</span> <span class="nav-text">9、视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10、存储过程"><span class="nav-number">10.</span> <span class="nav-text">10、存储过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-1-创建存储过程"><span class="nav-number">10.1.</span> <span class="nav-text">10.1 创建存储过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#10-1-1-创建无参存储过程"><span class="nav-number">10.1.1.</span> <span class="nav-text">10.1.1 创建无参存储过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-1-2-为存储过程添加参数"><span class="nav-number">10.1.2.</span> <span class="nav-text">10.1.2 为存储过程添加参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-2-使用存储过程"><span class="nav-number">10.2.</span> <span class="nav-text">10.2 使用存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-3-删除存储过程"><span class="nav-number">10.3.</span> <span class="nav-text">10.3 删除存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-4-检查存储过程"><span class="nav-number">10.4.</span> <span class="nav-text">10.4 检查存储过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11、游标"><span class="nav-number">11.</span> <span class="nav-text">11、游标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12、触发器"><span class="nav-number">12.</span> <span class="nav-text">12、触发器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-创建触发器"><span class="nav-number">12.1.</span> <span class="nav-text">12.1 创建触发器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-删除触发器"><span class="nav-number">12.2.</span> <span class="nav-text">12.2 删除触发器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13、事务管理"><span class="nav-number">13.</span> <span class="nav-text">13、事务管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#13-1-基本的事务操作"><span class="nav-number">13.0.1.</span> <span class="nav-text">13.1 基本的事务操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-2-创建保留点"><span class="nav-number">13.1.</span> <span class="nav-text">13.2 创建保留点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-3-修改默认提交行为"><span class="nav-number">13.2.</span> <span class="nav-text">13.3 修改默认提交行为</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14、安全管理"><span class="nav-number">14.</span> <span class="nav-text">14、安全管理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WngShhng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

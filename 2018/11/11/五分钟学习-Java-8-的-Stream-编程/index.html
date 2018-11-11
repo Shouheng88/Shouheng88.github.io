@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Android,Java," />
+  <meta name="keywords" content="Java,Java8,编程语言," />
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="因为 Android 是使用 Java 开发的，所以当我们谈及 Android 中的多线程，必然绕不过 Java 中的多线程编程。但在这篇文章中，我们不会过多地分析 Java 中的多线程编程的知识。我们会在以后分析 Java 并发编程的时候分析 Java 中的多线程、线程池和并发 API 的用法。 我们先来总结一下 Android 多线程编程的演变过程：首先是 Java 的 Thread。因为本身">
-<meta name="keywords" content="Android,Java">
+<meta name="description" content="1、概述 Java8中在Collection中增加了一个stream()方法，该方法返回一个Stream类型。我们就是用该Stream来进行流编程的； 流与集合不同，流是只有在按需计算的，而集合是已经创建完毕并存在缓存中的； 流与迭代器一样都只能被遍历一次，如果想要再遍历一遍，则必须重新从数据源获取数据； 外部迭代就是指需要用户去做迭代，内部迭代在库内完成的，无需用户实现； 可以连接起来的流操作称">
+<meta name="keywords" content="Java,Java8,编程语言">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android 多线程编程：IntentService &amp; HandlerThread">
-<meta property="og:url" content="http://yoursite.com/2018/11/11/Android-多线程编程：IntentService-HandlerThread/index.html">
+<meta property="og:title" content="五分钟学习 Java 8 的 Stream 编程">
+<meta property="og:url" content="http://yoursite.com/2018/11/11/五分钟学习-Java-8-的-Stream-编程/index.html">
 <meta property="og:site_name" content="WngShhng 的博客">
-<meta property="og:description" content="因为 Android 是使用 Java 开发的，所以当我们谈及 Android 中的多线程，必然绕不过 Java 中的多线程编程。但在这篇文章中，我们不会过多地分析 Java 中的多线程编程的知识。我们会在以后分析 Java 并发编程的时候分析 Java 中的多线程、线程池和并发 API 的用法。 我们先来总结一下 Android 多线程编程的演变过程：首先是 Java 的 Thread。因为本身">
+<meta property="og:description" content="1、概述 Java8中在Collection中增加了一个stream()方法，该方法返回一个Stream类型。我们就是用该Stream来进行流编程的； 流与集合不同，流是只有在按需计算的，而集合是已经创建完毕并存在缓存中的； 流与迭代器一样都只能被遍历一次，如果想要再遍历一遍，则必须重新从数据源获取数据； 外部迭代就是指需要用户去做迭代，内部迭代在库内完成的，无需用户实现； 可以连接起来的流操作称">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-11T12:37:56.651Z">
+<meta property="og:updated_time" content="2018-11-11T12:47:17.449Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android 多线程编程：IntentService &amp; HandlerThread">
-<meta name="twitter:description" content="因为 Android 是使用 Java 开发的，所以当我们谈及 Android 中的多线程，必然绕不过 Java 中的多线程编程。但在这篇文章中，我们不会过多地分析 Java 中的多线程编程的知识。我们会在以后分析 Java 并发编程的时候分析 Java 中的多线程、线程池和并发 API 的用法。 我们先来总结一下 Android 多线程编程的演变过程：首先是 Java 的 Thread。因为本身">
+<meta name="twitter:title" content="五分钟学习 Java 8 的 Stream 编程">
+<meta name="twitter:description" content="1、概述 Java8中在Collection中增加了一个stream()方法，该方法返回一个Stream类型。我们就是用该Stream来进行流编程的； 流与集合不同，流是只有在按需计算的，而集合是已经创建完毕并存在缓存中的； 流与迭代器一样都只能被遍历一次，如果想要再遍历一遍，则必须重新从数据源获取数据； 外部迭代就是指需要用户去做迭代，内部迭代在库内完成的，无需用户实现； 可以连接起来的流操作称">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/11/11/Android-多线程编程：IntentService-HandlerThread/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/11/11/五分钟学习-Java-8-的-Stream-编程/"/>
 
 
 
 
 
-  <title>Android 多线程编程：IntentService & HandlerThread | WngShhng 的博客</title>
+  <title>五分钟学习 Java 8 的 Stream 编程 | WngShhng 的博客</title>
   
 
 
@@ -299,7 +299,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/11/Android-多线程编程：IntentService-HandlerThread/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/11/五分钟学习-Java-8-的-Stream-编程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WngShhng">
@@ -316,7 +316,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android 多线程编程：IntentService & HandlerThread</h1>
+          <h1 class="post-title" itemprop="name headline">五分钟学习 Java 8 的 Stream 编程</h1>
         
 
         <div class="post-meta">
@@ -328,7 +328,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-11T20:36:50+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-11T20:46:23+08:00">
                 2018-11-11
               </time>
             
@@ -351,8 +351,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android高阶编程/" itemprop="url" rel="index">
-                    <span itemprop="name">Android高阶编程</span>
+                  <a href="/categories/Java编程语言/" itemprop="url" rel="index">
+                    <span itemprop="name">Java编程语言</span>
                   </a>
                 </span>
 
@@ -388,160 +388,183 @@
       
 
       
-        <p>因为 Android 是使用 Java 开发的，所以当我们谈及 Android 中的多线程，必然绕不过 Java 中的多线程编程。但在这篇文章中，我们不会过多地分析 Java 中的多线程编程的知识。我们会在以后分析 Java 并发编程的时候分析 Java 中的多线程、线程池和并发 API 的用法。</p>
-<p>我们先来总结一下 Android 多线程编程的演变过程：首先是 Java 的 Thread。因为本身在创建一个线程和销毁一个线程的时候会有一定的开销，当我们任务的执行时间相比于这个开销很小的时候，单独创建一个线程就显得不划算。所以，当程序中存在大量的、小的任务的时候，建议使用线程池来进行管理。但我们一般也很少主动去创建线程池，这是因为——也许是考虑到开发者自己去维护一个线程池比较复杂—— Android 中已经为我们设计了 AsyncTask。AsyncTask 内部封装了一个线程池，我们可以使用它来执行耗时比较短的任务。但 AsyncTask 也有一些缺点：1).如果你的程序中存在很多的不同的任务的时候，你可能要为每个任务定义一个 AsyncTask 的子类。2).从异步线程切换到主线程的方式不如 RxJava 简洁。所以，在实际开发的过程中，我通常使用 RxJava 来实现异步的编程。尤其是局部的优化、不值得专门定义一个 AsyncTask 类的时候，RxJava 用起来更加舒服。</p>
-<p>上面的多线程创建的只是普通的线程，对系统来说，优先级比较低。在 Android 中还提供了 IntentService 来执行优先级相对较高的任务。启动一个 IntentService 任务的时候会将任务添加到其内部的、异步的消息队列中执行。此外，IntentService 又继承自 Service，所以这让它具有异步和较高的优先级两个优势。</p>
-<p>在之前的文章中，我们已经分析过 AsyncTask、RxJava 以及用来实现线程切换的 Handler. 这里奉上这些文章的链接：</p>
-<ul>
-<li><a href="https://juejin.im/post/5b65c71af265da0f9402ca4a" target="_blank" rel="noopener">《Android AsyncTask 源码分析》</a></li>
-<li><a href="https://juejin.im/post/5b72f76551882561354462dd" target="_blank" rel="noopener">《RxJava2 系列 (1)：一篇的比较全面的 RxJava2 方法总结》</a></li>
-<li><a href="https://juejin.im/post/5b759b9cf265da283719d187" target="_blank" rel="noopener">《RxJava2 系列 (2)：背压和Flowable》</a></li>
-<li><a href="https://juejin.im/post/5b801dfa51882542cb409905" target="_blank" rel="noopener">《RxJava2 系列 (3)：使用 Subject》</a></li>
-<li><a href="https://juejin.im/post/5bdec872e51d4551ee2761cb" target="_blank" rel="noopener">《Android 消息机制：Handler、MessageQueue 和 Looper》</a></li>
-</ul>
-<p>你可以通过以上的文章来了解这部分的内容。在本篇文章中，我们主要来梳理下另外两个多线程相关的 API，HandlerThread 和 IntentService。</p>
-<h2 id="1、异步消息队列：HandlerThread"><a href="#1、异步消息队列：HandlerThread" class="headerlink" title="1、异步消息队列：HandlerThread"></a>1、异步消息队列：HandlerThread</h2><p>如果你之前还没有了解过 Handler 的实现的话，那么最好通过我们上面的那篇文章 <a href="https://juejin.im/post/5bdec872e51d4551ee2761cb" target="_blank" rel="noopener">《Android 消息机制：Handler、MessageQueue 和 Looper》</a> 了解一下。因为 HandlerThread 就是通过封装一个 Looper 来实现的。</p>
-<h3 id="1-1-HandlerThread-的使用"><a href="#1-1-HandlerThread-的使用" class="headerlink" title="1.1 HandlerThread 的使用"></a>1.1 HandlerThread 的使用</h3><p>HandlerThread 继承自线程类 Thread，内部又维护了一个 Looper，Looper 内又维护了一个消息队列。所以，我们可以使用 HandlerThread 来创建一个异步的线程，然后不断向该线程发送任务。这些任务会被封装成消息放进 HandlerThread 的消息队列中被执行。所以，我们可以用 HandlerThread 来创建异步的消息队列。</p>
-<p>在使用 HandlerThread 的时候有两个需要注意的地方：</p>
-<ol>
-<li>因为 HandlerThread 内部的 Looper 的初始化和开启循环的过程都在 <code>run()</code> 方法中执行，所以，在使用 HandlerThread 之前，你必须调用它的 start() 方法。</li>
-<li>因为 HandlerThread 的 <code>run()</code> 方法使用 Looper 开启一个了无限循环，所以，当不再使用它的时候，应该调用它的 <code>quitSafely()</code> 或 <code>quit()</code> 方法来结束该循环。</li>
+        <h2 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h2><ol>
+<li>Java8中在Collection中增加了一个stream()方法，该方法返回一个Stream类型。我们就是用该Stream来进行流编程的；</li>
+<li>流与集合不同，流是只有在按需计算的，而集合是已经创建完毕并存在缓存中的；</li>
+<li>流与迭代器一样都只能被遍历一次，如果想要再遍历一遍，则必须重新从数据源获取数据；</li>
+<li>外部迭代就是指需要用户去做迭代，内部迭代在库内完成的，无需用户实现；</li>
+<li>可以连接起来的流操作称为中间操作，关闭流的操作称为终端操作（从形式上看，就是用<code>.</code>连起来的操作中，中间的那些叫中间操作，最终的那个操作叫终端操作）。</li>
 </ol>
-<p>在使用 HandlerThread 的时候只需要创建一个它的实例，然后使用它的 Looper 来创建 Handler 实例，并通过该 Handler 发送消息来将任务添加到队列中。下面是一个使用示例：</p>
-<pre><code>myHandlerThread = new HandlerThread(&quot;MyHandlerThread&quot;);
-myHandlerThread.start();
-handler = new Handler( myHandlerThread.getLooper() ){
+<h2 id="2、筛选"><a href="#2、筛选" class="headerlink" title="2、筛选"></a>2、筛选</h2><h3 id="2-1-过滤"><a href="#2-1-过滤" class="headerlink" title="2.1 过滤"></a>2.1 过滤</h3><pre><code>Stream&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);
+</code></pre><p>filter通过指定一个Predicate类型的行为参数对流中的元素进行过滤，最终还是会返回一个流，因为它是中间操作。中间操作返回的结果都是一个流，所以，如果我们想要得到一个集合或者其他的非流类型，就需要使用终端操作来获取。</p>
+<pre><code>List&lt;Integer&gt; list = Arrays.asList(1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9);
+List&lt;Integer&gt; filter = list.stream().filter(integer -&gt; integer &gt; 3).collect(Collectors.toList());
+// [4, 5, 5, 6, 7, 8, 9]
+</code></pre><h3 id="2-2-去重"><a href="#2-2-去重" class="headerlink" title="2.2 去重"></a>2.2 去重</h3><pre><code>Stream&lt;T&gt; distinct();
+</code></pre><p>上面就是去重的方法的定义，它会按照流中的元素的equal()和hashCode()方法进行去重。去重之后将继续返回一个流，所以它也是中间操作。</p>
+<pre><code>List&lt;Integer&gt; list = Arrays.asList(1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9);
+List&lt;Integer&gt; filter = list.stream().filter(integer -&gt; integer &gt; 3).distinct().collect(Collectors.toList());
+// [4, 5, 6, 7, 8, 9]
+</code></pre><h3 id="2-3-限制"><a href="#2-3-限制" class="headerlink" title="2.3 限制"></a>2.3 限制</h3><pre><code>Stream&lt;T&gt; limit(long maxSize);
+</code></pre><p>就像是SQL里面的limit语句，在流中也有类似的limit()方法。它用于限制返回的结果的数量，将会从流的头开始取固定数量的元素，也是中间操作，使用完之后仍然会返回一个流。</p>
+<pre><code>List&lt;Integer&gt; list = Arrays.asList(1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9);
+List&lt;Integer&gt; filter = list.stream().filter(integer -&gt; integer &gt; 3).limit(3).collect(Collectors.toList());
+// [4, 5, 5]
+</code></pre><h3 id="2-4-跳过"><a href="#2-4-跳过" class="headerlink" title="2.4 跳过"></a>2.4 跳过</h3><pre><code>Stream&lt;T&gt; skip(long n);
+</code></pre><p>这个方法的定义和limit()几分相似。它也是中间操作，用于跳过从流的头开始指定数量的元素，使用完之后仍然会返回一个流。</p>
+<pre><code>List&lt;Integer&gt; list = Arrays.asList(1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9);
+List&lt;Integer&gt; filter = list.stream().filter(integer -&gt; integer &gt; 3).skip(3).collect(Collectors.toList());
+// [6, 7, 8, 9]
+</code></pre><h2 id="3、映射"><a href="#3、映射" class="headerlink" title="3、映射"></a>3、映射</h2><pre><code>&lt;R&gt; Stream&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper);
+</code></pre><p>还记得Function函数接口的方法吗？它允许你把输入的类型转换成另一种类型。上面就是它在map()方法中的应用。在流操作中使用了该方法之后，流就会尝试将当前流中所有的元素转换成另一种类型。当你调用终端操作collect()的时候，自然也就得到了另一种类型的集合。</p>
+<pre><code>List&lt;Integer&gt; list = Arrays.asList(1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9);
+List&lt;String&gt; filter = list.stream().map((integer -&gt; String.valueOf(integer) + &quot;-&quot;)).collect(Collectors.toList());
+// 结果：[1-, 1-, 2-, 3-, 4-, 5-, 5-, 6-, 7-, 8-, 9-]
+</code></pre><h2 id="4、查找"><a href="#4、查找" class="headerlink" title="4、查找"></a>4、查找</h2><pre><code>Optional&lt;T&gt; findFirst();
+Optional&lt;T&gt; findAny();
+</code></pre><p>在指定的流中查找元素的时候可以用这两个方法，它们是Stream接口中的方法，返回的已经不再是Stream类型了，这可以说明它们是终端操作。所以，通常也是用来放在终端，继续操作的话就要使用Optional接口的方法了。</p>
+<pre><code>List&lt;Integer&gt; list = Arrays.asList(1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9);
+Optional&lt;Integer&gt; optionalInteger = list.stream().filter(integer -&gt; integer &gt; 10).findAny();
+Optional&lt;Integer&gt; optionalInteger = list.stream().filter(integer -&gt; integer &gt; 10).findFirst();
+</code></pre><p>上面是使用的两个示例，这里返回的结果是Optional类型的。Optional的设计借鉴了Guava中的Optional。使用它的好处是你不需要像以前一样将返回的结果与null进行判断，并在结果为null的时候通过<code>=</code>赋值一个默认值了。使用Optional中的方法，你可以更优雅地完成相同的操作。下面我们列出Optional中的一些常用的方法：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">编号</th>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">isPresent()</td>
+<td style="text-align:center">判断值是否存在，存在的话就返回true，否则返回false</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">isPresent(Consumer<t> block)</t></td>
+<td style="text-align:center">在值存在的时候执行给定的代码</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">T get()</td>
+<td style="text-align:center">如果值存在，那么返回该值；否则，抛出NoSuchElement异常</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">T orElse(T other)</td>
+<td style="text-align:center">如果值存在，那么返回该值；否则，则返回other</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5、匹配"><a href="#5、匹配" class="headerlink" title="5、匹配"></a>5、匹配</h2><pre><code>boolean allMatch(Predicate&lt;? super T&gt; predicate);
+boolean noneMatch(Predicate&lt;? super T&gt; predicate);
+boolean anyMatch(Predicate&lt;? super T&gt; predicate);
+</code></pre><p>从定义上面来看，上面的三个方法也是终端操作。它们分别用来判断：流中的数据是否全部匹配指定的条件，流中的数据是否全部不匹配指定的条件，流中的数据是否存在一些匹配指定的条件。下面是一些示例：</p>
+<pre><code>List&lt;Integer&gt; list = Arrays.asList(1, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9);
+boolean allMatch = list.stream().allMatch(integer -&gt; integer &lt; 10);
+boolean anyMatch = list.stream().anyMatch(integer -&gt; integer &gt; 3);
+boolean noneMatch = list.stream().noneMatch(integer -&gt; integer &gt; 100);
+</code></pre><h2 id="6、归约"><a href="#6、归约" class="headerlink" title="6、归约"></a>6、归约</h2><pre><code>Optional&lt;T&gt; reduce(BinaryOperator&lt;T&gt; accumulator);
+T reduce(T identity, BinaryOperator&lt;T&gt; accumulator);
+</code></pre><p>Stream接口中的reduce方法共有三个重载版本，上面我们给出常用的两个的定义。它们基本是类似的，只是第二个方法参数列表中多了个初始值，而没有初始值的那个，返回了Optinoal类型；所以，区别不大，我们只要搞明白它的行为就可以了。下面是归约的例子：</p>
+<pre><code>List&lt;String&gt; list = Arrays.asList(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;, &quot;f&quot;);
+String ret = list.stream().reduce(&quot;-&quot;, (a, b) -&gt; a + b);
+</code></pre><p>它的输出结果是<code>-abcdef</code>，显然它的效果就是：假如，<code>$</code>是某种操作，List是某个”数列”，那么归约的意义就是<code>初始值$n[0]$n[1]$n[2]$...$n[n-1]</code>。</p>
+<h2 id="7、数值流"><a href="#7、数值流" class="headerlink" title="7、数值流"></a>7、数值流</h2><p>同样是因为装箱的性能原因，Java8中为数值类型专门提供了数值流：IntStream DoubleStream和LongStream。Stream接口提供了三个中间方法来完成从任意流映射到数值流的操作：</p>
+<pre><code>IntStream mapToInt(ToIntFunction&lt;? super T&gt; mapper);
+LongStream mapToLong(ToLongFunction&lt;? super T&gt; mapper);
+DoubleStream mapToDouble(ToDoubleFunction&lt;? super T&gt; mapper);
+</code></pre><p>所以你可以用上面三个方法从任意流中获取数值流。然后，再利用数值流的方法来完成其他的操作。上面三个数值流和Stream接口都继承子BaseStream，所以它们包含的方法还是有区别的，但总体上来说大同小异。Stream比较具有一般性，上面三个数值流更有针对性，后者也提供了许多便利的方法。如果想要从数值流中获取对象流，你可以调用它们的<code>boxed()</code>方法，来获取装箱之后的流。</p>
+<p>这里稍提及一下，对于Optional，Java8也为我们提供了对应的数值类型：OptionalInt OptionalDouble OptionalLong。</p>
+<p>在上面的三种数值流中还有几个静态方法用于获取指定数值范围的流：</p>
+<pre><code>public static LongStream range(long startInclusive, final long endExclusive)
+public static LongStream rangeClosed(long startInclusive, final long endInclusive)
+</code></pre><p>上面是用于获取指定范围的LongStream的方法，一个对应于数学中的开区间，一个对应于数学中的闭区间的概念。</p>
+<h2 id="8、构建流"><a href="#8、构建流" class="headerlink" title="8、构建流"></a>8、构建流</h2><p>上面我们在获取流的时候，实际上都是从Collection的默认方法<code>stream()</code>中获取的流，这有些笨拙。实际上，Java8为我们提供了一些创建流的方法。这里，我们列举一下这些方法：</p>
+<pre><code>public static&lt;T&gt; Builder&lt;T&gt; builder() // 1
+public static&lt;T&gt; Stream&lt;T&gt; empty() // 2
+public static&lt;T&gt; Stream&lt;T&gt; of(T t) // 3
+public static&lt;T&gt; Stream&lt;T&gt; of(T... values) // 4
+public static&lt;T&gt; Stream&lt;T&gt; iterate(final T seed, final UnaryOperator&lt;T&gt; f) // 5
+public static&lt;T&gt; Stream&lt;T&gt; generate(Supplier&lt;T&gt; s) // 6 
+public static &lt;T&gt; Stream&lt;T&gt; concat(Stream&lt;? extends T&gt; a, Stream&lt;? extends T&gt; b) // 7
+</code></pre><p>上面的方法都是Stream接口中的静态方法，我们可以用这些方法来获取到流。下面我们对每个方法做一些简要的说明：</p>
+<ol>
+<li>从名称上就可以看出这里使用了构建者模式，你可以每次调用Builder的<code>add()</code>方法插入一个元素来创建流；</li>
+<li>用来创建一个空的流</li>
+<li>创建一个只包含一个元素的流</li>
+<li>使用不定参数创建一个包含指定元素的流</li>
+<li>弄清楚它的原理关键是要搞明白后面的UnaryOperator的含义，这是一个函数式接口，并且继承自Function，不同之处在于它的入参和回参类型相同。这个方法的原理是从某个种子值开始，按照后面的函数的规则进行计算，每次是在之前的值的基础上执行某个函数的。所以<code>Stream.iterate(2, n -&gt; n * n).limit(3)</code>将返回由<code>2 4 16</code>构成的流。</li>
+<li>这里的Supplier也是一个函数接口，它只有一个get()方法，无参，只接受指定类型的返回值。所以，这个方法需要你提供一个用于生成数值的函数（或者说规则），比如Math.random()等等。</li>
+<li>这个比较容易理解，就是通过将两个流合并来得到一个新的流。</li>
+</ol>
+<h2 id="9、收集器"><a href="#9、收集器" class="headerlink" title="9、收集器"></a>9、收集器</h2><p>上面我们已经见识过了流的规约操作，但是那些操作还比较幼稚。Java8的收集器为我们提供了更加强大的规约功能。</p>
+<p>说起收集器，肯定绕不过两个类Collector和Collectors，它俩有啥关系呢？其实Collector只是一个接口；Collectors是一个类, 其中的静态内部类CollectorImpl实现了该接口，并且被Collectors用来提供一些功能。Collectors中有许多的静态方法用于获取Collector的实例，使用这些实例我们可以完成复杂的功能。当然，我们也可以通过实现Collector接口来定义自己的收集器。</p>
+<p>Stream的collect()方法有3个重载的版本。我们就是通过其中的一个来使用收集器的，这是它的定义：</p>
+<pre><code>&lt;R, A&gt; R collect(Collector&lt;? super T, A, R&gt; collector);
+</code></pre><p>我们注意一下这个方法的参数和返回类型. 从上面我们可以看出传入的Collector有3个泛型,其中的最后一个泛类型R与返回的类型是一致的. 这很重要——可以预防你调用了某个方法却不知道最终返回的是什么类型。</p>
+<p>我们先来看一些简单的例子，这里的stream是由Student对象构成的流：</p>
+<pre><code>Optional&lt;Student&gt; student = stream.collect(Collectors.maxBy(comparator))  // 需要传入一个比较器到maxBy()方法中
+long count = stream.collect(Collectors.counting())
+</code></pre><p>上面的两种方式比较鸡肋，因为你可以使用count()和max()方法来替代它们。下面我们再看一些收集器的其他例子，注意在这些例子中，我并没有使用lambda简化函数式接口，是因为想要你更清楚地看到它的泛类型和方法定义。这可能有助于你理解这些方法的作用机理。</p>
+<h3 id="9-1-计算平均值和总数"><a href="#9-1-计算平均值和总数" class="headerlink" title="9.1 计算平均值和总数"></a>9.1 计算平均值和总数</h3><p>下面的语句用于计算平均值，类似的还有summingInt()用于计算总数。它们的用法是相似的。</p>
+<pre><code>Double d = stream.collect(Collectors.averagingInt(new ToIntFunction&lt;Student&gt;() {
     @Override
-    public void handleMessage(Message msg) {
-        // ... do something
+    public int applyAsInt(Student value) {
+        return value.getGrade();
     }
-};
-handler.sendEmptyMessage(1);
-</code></pre><p>这里我们创建了 HandlerThread 实例之后用它来创建 Handler 然后通过 Handler 把任务加入到消息队列中进行执行。</p>
-<p>显然，使用 HandlerThread 可以很轻松地实现一个消息队列。你只需要在创建了 Handler 之后向它发送消息，然后所有的任务将被加入到队列中执行。当然，它也有缺点。因为所有的任务将会被按顺序执行，所以一旦队列中有某个任务执行时间过长，那么就会导致后续的任务都会被延迟处理。</p>
-<h3 id="1-2-HandlerThread-源码解析"><a href="#1-2-HandlerThread-源码解析" class="headerlink" title="1.2 HandlerThread 源码解析"></a>1.2 HandlerThread 源码解析</h3><p>下面是该 API 的源码，实现也比较简单，我们直接通过注释来对主要部分进行说明：</p>
-<pre><code>public class HandlerThread extends Thread {
-    int mPriority;
-    int mTid = -1;
-    Looper mLooper;
-    private @Nullable Handler mHandler;
-
-    public HandlerThread(String name) {
-        super(name);
-        mPriority = Process.THREAD_PRIORITY_DEFAULT;
-    }
-
-    protected void onLooperPrepared() { }
-
-    // 在这个方法开启了 Looper 循环，因为是一个无限循环，所以不适用的时候应该将其停止
+}));
+</code></pre><p>从上面我们看出，调用averagingInt()方法的时候需要传入一个ToIntFunction函数式接口，用于根据指定的类型返回一个整数值。</p>
+<h3 id="9-2-连接字符串"><a href="#9-2-连接字符串" class="headerlink" title="9.2 连接字符串"></a>9.2 连接字符串</h3><p>joining()工厂方法是专门用来连接字符串的，它要求流是字符串流，所以在对Student流进行拼接之前，需要先将其映射成字符串流：</p>
+<pre><code>String members = stream.map(new Function&lt;Student, String&gt;() {
     @Override
-    public void run() {
-        mTid = Process.myTid();
-        Looper.prepare();
-        synchronized (this) {
-            mLooper = Looper.myLooper();
-            notifyAll();
-        }
-        Process.setThreadPriority(mPriority);
-        onLooperPrepared();
-        Looper.loop();
-        mTid = -1;
+    public String apply(Student student) {
+       return student.getName();
     }
-
-    // 获取该 HandlerThread 对应的 Looper
-    public Looper getLooper() {
-        if (!isAlive()) {
-            return null;
-        }
-        synchronized (this) {
-            while (isAlive() &amp;&amp; mLooper == null) {
-                try {
-                    wait();
-                } catch (InterruptedException e) { }
-            }
-        }
-        return mLooper;
-    }
-
-    public boolean quit() {
-        Looper looper = getLooper();
-        if (looper != null) {
-            looper.quit();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean quitSafely() {
-        Looper looper = getLooper();
-        if (looper != null) {
-            looper.quitSafely();
-            return true;
-        }
-        return false;
-    }
-
-    // ... 无关代码
-}
-</code></pre><p>上面的代码比较简单明了，在 run() 方法中初始化 Looper 并执行。如果 Looper 还没有被创建，那么当调用 <code>getLooper()</code> 方法获取 Looper 的时候会让线程阻塞。当 Looper 创建完毕之后会唤醒所有阻塞的线程继续执行。另外，就是两个停止 Looper 的方法。它们基本上就是对 Looper 进行了一层封装。</p>
-<h2 id="2、IntentService"><a href="#2、IntentService" class="headerlink" title="2、IntentService"></a>2、IntentService</h2><h3 id="2-1-使用-IntentService"><a href="#2-1-使用-IntentService" class="headerlink" title="2.1 使用 IntentService"></a>2.1 使用 IntentService</h3><p>IntentService 继承自 Serivce，因此它比普通的多线程任务优先级要高。这使得它相比于普通的异步任务不容易被系统 kill 掉。它内部也是通过一个 Looper 来实现的，所以也是一种消息队列。在研究它的源码之前，我们先来看一下它的使用。</p>
-<p>IntentService 的使用是比较简单的，只需要：1).继承它并实现其中的 <code>onHandleIntent()</code> 方法；2). 将 IntentService 注册到 manifest 中；3). 像开启一个普通的服务那样开启一个 IntentService 即可。下面是该类的一个使用示例：</p>
-<pre><code>public class FileRecognizeTask extends IntentService {
-
-    public static void start(Context context) {
-        Intent intent = new Intent(context, FileRecognizeTask.class);
-        context.startService(intent);
-    }
-
-    public FileRecognizeTask() {
-        super(&quot;FileRecognizeTask&quot;);
-    }
-
+}).collect(Collectors.joining(&quot;, &quot;)); // 使用&apos;,&apos;将字符串拼接起来
+</code></pre><h3 id="9-3-广义的规约汇总"><a href="#9-3-广义的规约汇总" class="headerlink" title="9.3 广义的规约汇总"></a>9.3 广义的规约汇总</h3><pre><code>Optional&lt;Student&gt; optional = stream.collect(Collectors.reducing(new BinaryOperator&lt;Student&gt;() {
     @Override
-    protected void onHandleIntent(@androidx.annotation.Nullable @Nullable Intent intent) {
-        // 你的需要异步执行的业务逻辑
+    public Student apply(Student student, Student student2) {
+        return student.getGrade() &gt; student2.getGrade() ? student : student2;
     }
-}
-</code></pre><p>OK，介绍完了 IntentService 的使用，我们再来分析一下它的源码。</p>
-<h3 id="2-2-IntentService-源码分析"><a href="#2-2-IntentService-源码分析" class="headerlink" title="2.2 IntentService 源码分析"></a>2.2 IntentService 源码分析</h3><p>实现 IntentService 的时候使用到了我们上面分析过的 HandlerThread. 首先，在 <code>onCreate()</code> 回调方法中创建了一个 HandlerThread，然后使用它的 Looper 创建了一个 ServiceHandler：</p>
-<pre><code>HandlerThread thread = new HandlerThread(&quot;IntentService[&quot; + mName + &quot;]&quot;);
-thread.start();
-mServiceLooper = thread.getLooper();
-mServiceHandler = new ServiceHandler(mServiceLooper);
-</code></pre><p>ServiceHandler 是 IntentSerice 的内部类，其定义如下：</p>
-<pre><code>private final class ServiceHandler extends Handler {
-
-    public ServiceHandler(Looper looper) {
-        super(looper);
-    }
-
+}));
+</code></pre><p>上面的就是用来规约的函数。我们用了reducing工厂方法，并向其中传入一个BinaryOperator类型。这里我们指定最终的返回类型是Student。所以，上面的代码的效果是获取成绩最大的学生。</p>
+<h3 id="9-4-分组"><a href="#9-4-分组" class="headerlink" title="9.4 分组"></a>9.4 分组</h3><p>Collectors中的分组还是比较有意思的。我们先看groupingBy方法的定义：</p>
+<pre><code>Collector&lt;T, ?, Map&lt;K, D&gt;&gt; groupingBy(Function&lt;? super T, ? extends K&gt; classifier)
+Collector&lt;T, ?, Map&lt;K, D&gt;&gt; groupingBy(Function&lt;? super T, ? extends K&gt; classifier, Collector&lt;? super T, A, D&gt; downstream)
+</code></pre><p>groupingBy方法有3个重载的版本，这里我们给出其中常用的两个。第一个方法是通过指定规则对流进行分组的，而第二个方法先通过classifier指定的规则对流进行分组，然后用downstream的规则对分组后的流进行后续的操作。注意第二个参数仍然是Collector类型，这说明我们仍然可以对分组后的流再次收集，比如再分组、求最大值等等。</p>
+<pre><code>Map&lt;Integer, List&lt;Student&gt;&gt; map = stream.collect(Collectors.groupingBy(new Function&lt;Student, Integer&gt;() {
     @Override
-    public void handleMessage(Message msg) {
-        onHandleIntent((Intent)msg.obj);
-        stopSelf(msg.arg1);
+    public Integer apply(Student student) {
+       return student.getClazz();
     }
-}
-</code></pre><p>ServiceHandler 用来执行被添加到队列中的消息。它会回调 IntentService 中的 <code>onHandleIntent()</code> 方法，也就是我们实现业务逻辑的方法。当消息执行完毕之后，会调用 Service 的 <code>stopSelf(int)</code> 方法来尝试停止服务。注意这里调用的是 <code>stopSelf(int)</code> 而不是 <code>stopSelf()</code>。它们之间的区别是，当还存在没有完成的任务的时候 <code>stopSelf(int)</code> 不会立即停止服务，而 <code>stopSelf()</code> 方法会立即停止服务。</p>
-<p>IntentSerivce 的 <code>onCreate()</code> 方法会在第一次启动的时候被调用，来创建服务。而 <code>onStartCommond()</code> 方法会在每次启动的时候被调用。下面是该方法的定义。</p>
-<pre><code>@Override
-public void onStart(@Nullable Intent intent, int startId) {
-    Message msg = mServiceHandler.obtainMessage();
-    msg.arg1 = startId;
-    msg.obj = intent;
-    mServiceHandler.sendMessage(msg);
-}
-
-@Override
-public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-    onStart(intent, startId);
-    return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;
-}
-</code></pre><p><code>onStartCommand()</code> 内部调用了 <code>onStart()</code> 来处理请求。在 <code>onStart()</code> 方法中会通过 mServiceHandler 创建一个消息，并将该消息发送给 mServiceHandler. 该消息会在被 mServiceHandler 放进消息队列中排队，并在合适的时机被执行。</p>
-<p>因此，我们可以总结一下 IntentService 的工作过程：首先，当我们第一次启动 IntentService 的时候会初始化一个 Looper 和 Handler；然后调用它的 onStartCommond() 方法，把请求包装成消息之后发送到消息队列中等待执行；当消息被 Handler 处理的时候会回调 IntentService 的 <code>onHandleIntent()</code> 方法来执行。此时，如果又有一个任务需要执行，那么 IntentService 的 onStartCommond() 方法会再次被执行并把请求封装之后放入队列中。当队列中的所有的消息都执行完毕，并且没有新加入的请求，那么此时服务就会自动停止，否则服务还会继续在后台执行。</p>
-<p>这里，同样也应该注意下，IntentService 中的任务是按照被添加的顺序来执行的。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是我们对 IntentService 和 HandlerThread 的分析。它们都是使用了 Handler 来实现，所以搞懂它们的前提是搞懂 Handler。关于 Handler，还是推荐一下笔者的另一篇文章 <a href="https://juejin.im/post/5bdec872e51d4551ee2761cb" target="_blank" rel="noopener">《Android 消息机制：Handler、MessageQueue 和 Looper》</a>。</p>
+}));
+</code></pre><p>以上是groupingBy()方法的第一个例子。注意这里我们是通过将Student通过’班级字段’映射成一个整数来进行分组的。下面是一个二次分组的例子。这里的用了上面的第二个groupingBy()方法，并在downstream中指定了另一个分组操作。</p>
+<pre><code>Map&lt;Integer, Map&lt;Integer, List&lt;Student&gt;&gt;&gt; map = stream.collect(Collectors.groupingBy(new Function&lt;Student, Integer&gt;() {
+    @Override
+    public Integer apply(Student student) {
+       return student.getClazz();
+    }
+}, Collectors.groupingBy(new Function&lt;Student, Integer&gt;() {
+    @Override
+    public Integer apply(Student student) {
+        return student.getGrade() == 100 ? 1 : student.getGrade() &gt; 90 ? 2 : student.getGrade() &gt; 80 ? 3 : 4;
+    }
+})));
+</code></pre><h3 id="9-5-分区"><a href="#9-5-分区" class="headerlink" title="9.5 分区"></a>9.5 分区</h3><p>与分组类似的还有一个分区的操作，分区只是分组的一种特例。它们的使用方式也基本一致，它的方法签名与上面的groupingBy方法类似。我们直接看它的一个使用的方式好了：</p>
+<pre><code>Map&lt;Boolean, List&lt;Student&gt;&gt; map = stream.collect(Collectors.partitioningBy(new Predicate&lt;Student&gt;() {
+    @Override
+    public boolean test(Student student) {
+        return student.getGrade() &gt; 90;
+    }
+}));
+</code></pre><p>这就是分区的使用方式。它通过一个指定的函数式接口，将指定的类型映射到一个布尔类型。所以，它类似与分组，只不过它分组的结果只有两种，要么true，要么false。当然，类似于分组，你也可以在partitioningBy()方法的第二个参数中再指定一个收集器，这样就可以对分区后的流进行后续的操作了。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>以上就是Java8中的流的常见的用法，这里只是列举了一些常见的、Java8 API中提供的一些类和方法。重点仍然是搞清楚其中的设计的原理，不要盲目记忆。学习的时候结合JDK源码进行，看到方法的定义就大致了解了它的设计原理。最后，不得不说的是，使用流编程确实很简洁和优雅。</p>
+<p>相关代码：<a href="https://github.com/Shouheng88/Java-advanced" target="_blank" rel="noopener">Github</a></p>
 <hr>
-<p><strong>我是 WngShhng. 如果您喜欢我的文章，可以在以下平台关注我：</strong></p>
+<p><strong>如果您喜欢我的文章，可以在以下平台关注我：</strong></p>
 <ul>
 <li>个人主页：<a href="https://shouheng88.github.io/" target="_blank" rel="noopener">https://shouheng88.github.io/</a></li>
 <li>掘金：<a href="https://juejin.im/user/585555e11b69e6006c907a2a" target="_blank" rel="noopener">https://juejin.im/user/585555e11b69e6006c907a2a</a></li>
@@ -603,9 +626,11 @@ public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
       
         <div class="post-tags">
           
-            <a href="/tags/Android/" rel="tag"># Android</a>
-          
             <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Java8/" rel="tag"># Java8</a>
+          
+            <a href="/tags/编程语言/" rel="tag"># 编程语言</a>
           
         </div>
       
@@ -618,8 +643,8 @@ public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/11/迁移到-AndroidX-过程中遇到的各种问题/" rel="next" title="迁移到 AndroidX 过程中遇到的各种问题">
-                <i class="fa fa-chevron-left"></i> 迁移到 AndroidX 过程中遇到的各种问题
+              <a href="/2018/11/11/五分钟学习-Java-8-行为参数化/" rel="next" title="五分钟学习 Java 8 行为参数化">
+                <i class="fa fa-chevron-left"></i> 五分钟学习 Java 8 行为参数化
               </a>
             
           </div>
@@ -627,10 +652,6 @@ public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/11/MySQL基础知识总结/" rel="prev" title="MySQL基础知识总结">
-                MySQL基础知识总结 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -819,7 +840,7 @@ public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、异步消息队列：HandlerThread"><span class="nav-number">1.</span> <span class="nav-text">1、异步消息队列：HandlerThread</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-HandlerThread-的使用"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 HandlerThread 的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-HandlerThread-源码解析"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 HandlerThread 源码解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、IntentService"><span class="nav-number">2.</span> <span class="nav-text">2、IntentService</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-使用-IntentService"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 使用 IntentService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-IntentService-源码分析"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 IntentService 源码分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、概述"><span class="nav-number">1.</span> <span class="nav-text">1、概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、筛选"><span class="nav-number">2.</span> <span class="nav-text">2、筛选</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-过滤"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-去重"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 去重</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-限制"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-跳过"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 跳过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、映射"><span class="nav-number">3.</span> <span class="nav-text">3、映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、查找"><span class="nav-number">4.</span> <span class="nav-text">4、查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、匹配"><span class="nav-number">5.</span> <span class="nav-text">5、匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、归约"><span class="nav-number">6.</span> <span class="nav-text">6、归约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、数值流"><span class="nav-number">7.</span> <span class="nav-text">7、数值流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8、构建流"><span class="nav-number">8.</span> <span class="nav-text">8、构建流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9、收集器"><span class="nav-number">9.</span> <span class="nav-text">9、收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-1-计算平均值和总数"><span class="nav-number">9.1.</span> <span class="nav-text">9.1 计算平均值和总数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-2-连接字符串"><span class="nav-number">9.2.</span> <span class="nav-text">9.2 连接字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-3-广义的规约汇总"><span class="nav-number">9.3.</span> <span class="nav-text">9.3 广义的规约汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-4-分组"><span class="nav-number">9.4.</span> <span class="nav-text">9.4 分组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-5-分区"><span class="nav-number">9.5.</span> <span class="nav-text">9.5 分区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结："><span class="nav-number">10.</span> <span class="nav-text">总结：</span></a></li></ol></div>
             
 
           </div>
